@@ -22,7 +22,6 @@ const Experience = () => {
     window.addEventListener("resize", updateCanvasSize)
     return () => window.removeEventListener("resize", updateCanvasSize)
   }, [updateCanvasSize])
-  console.log(canvasSize)
   return (
     <>
     <Application

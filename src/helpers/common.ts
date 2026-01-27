@@ -1,5 +1,4 @@
-import { COLLISION_MAP } from '../constants/collision-map'
-import { COLS, TILE_SIZE } from '../constants/game-world'
+import { GAME_HEIGHT, GAME_WIDTH, OFFSET_X, OFFSET_Y, TILE_SIZE } from '../constants/game-world'
 import type { Direction, IPosition } from '../types/common'
 
 export const calculateCanvasSize = () => {
@@ -53,14 +52,14 @@ export const reachedDestination = (
 }
 
 export const checkCanMove = (target: IPosition) => {
-  const row = Math.floor(target.y / TILE_SIZE)
-  const col = Math.floor(target.x / TILE_SIZE)
-  const index = COLS * row + col
-
-  if (index < 0 || index >= COLLISION_MAP.length) {
+  if (
+    target.x < OFFSET_X ||
+    target.y < OFFSET_Y ||
+    target.x > OFFSET_X + GAME_WIDTH ||
+    target.y > OFFSET_Y + GAME_HEIGHT
+  ) {
     return false
   }
-
   return true
 }
 
@@ -100,8 +99,6 @@ export const handleMovement = (
   moveSpeed: number,
   delta: number
 ) => {
-  // console.log(currentPosition)
-  // console.log(targetPosition)
   const step = moveSpeed * TILE_SIZE * delta
   const distance = Math.hypot(
     targetPosition.x - currentPosition.x,
