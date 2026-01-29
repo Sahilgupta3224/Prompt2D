@@ -30,7 +30,6 @@ export const useHeroAnimation = ({
 
   const update = (direction: Direction | null, moving: boolean) => {
     const row = getRowByDirection(direction)
-    console.log(moving)
     if (moving) {
       elapsedRef.current += animationSpeed
       if (elapsedRef.current >= 1) {
@@ -40,8 +39,9 @@ export const useHeroAnimation = ({
     } else {
       frameRef.current = 0
     }
+    // console.log(`Frame: ${frameRef.current * frameWidth}`, row * frameHeight)
 
-    return new Texture({
+    texture = new Texture({
       source: texture.source,
       frame: new Rectangle(
         frameRef.current * frameWidth,
@@ -50,6 +50,8 @@ export const useHeroAnimation = ({
         frameHeight
       ),
     })
+    // console.log(texture.frame)
+    return texture
   }
 
   return { update }

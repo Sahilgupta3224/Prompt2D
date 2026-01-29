@@ -1,15 +1,12 @@
 import { Sprite } from "pixi.js";
 
-export interface Entity{
+export interface Object{
     x:number,
     y:number,
     vx:number,
     vy:number,
     scale:number,
-    parent?: Entity | null
-    localOffset?: { x: number; y: number }
     sprite: React.MutableRefObject<Sprite | null>
     currentanim: string,
     state: Record<string, any>;
-    container: any
 }

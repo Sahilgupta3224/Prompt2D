@@ -8,9 +8,9 @@ export const GAME_HEIGHT = 500
 export const OFFSET_X = 25
 export const OFFSET_Y = 0
 
-export const MOVE_SPEED = 0.03
+export const MOVE_SPEED = 1
 export const ANIMATION_SPEED = 0.25
-export const DEFAULT_X_POS = 350
+export const DEFAULT_X_POS = 370
 export const DEFAULT_Y_POS = 450
 
 export const ZOOM = 3

@@ -1,30 +1,63 @@
 import type { ActionDefinition } from "../types/Action";
-import type { Entity } from "../types/Entity";
-
-type MoveParams = { x: number, y: number };
+import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination } from "../helpers/common";
+import { MOVE_SPEED } from "../constants/game-world";
+type MoveParams = { destination: { x: number; y: number }; };
 
 export const MoveAction: ActionDefinition<MoveParams> = {
-  
+
   enter: (entity) => {
+    entity.state.direction = null
+    entity.state.targetPosition = null
     entity.state.moveStart = { x: entity.x, y: entity.y };
     entity.state.isMoving = true;
   },
+  update: (entity, { destination }, delta) => {
+    if (!entity.state.direction) {
+      const angle = calculateAngle(
+        { x: entity.x, y: entity.y },
+        destination
+      )
 
-  update: (entity, { x, y }, dt) => {
-    const dx = x - entity.x;
-    const dy = y - entity.y;
-    const dist = Math.hypot(dx, dy);
+      entity.state.direction = {
+        x: Math.cos(angle),
+        y: Math.sin(angle),
+      }
+    }
+    if (!entity.state.targetPosition) {
+      const nextStep = moveByAngle(
+        { x: entity.x, y: entity.y },
+        entity.state.direction,
+        MOVE_SPEED,
+        delta
+      )
 
-    if (dist < 5) return true;
-
-    const speed = 5 * dt;
-    entity.x += (dx / dist) * speed;
-    entity.y += (dy / dist) * speed;
-    
+      if (checkCanMove(nextStep)) {
+        entity.state.targetPosition = nextStep
+      }
+    }
+    if (entity.state.targetPosition) {
+      const { position: newPosition, completed } = handleMovement(
+        { x: entity.x, y: entity.y },
+        entity.state.targetPosition,
+        MOVE_SPEED,
+        delta
+      )
+      entity.x = newPosition.x
+      entity.y = newPosition.y
+      if (completed) {
+        entity.state.targetPosition = null
+      }
+    }
+    if (reachedDestination({ x: entity.x, y: entity.y }, destination)) {
+      return true;
+    }
     return false;
   },
 
   exit: (entity) => {
-    entity.state.isMoving = false;
+    entity.state.isMoving = false
+    delete entity.state.direction
+    delete entity.state.targetPosition
+    delete entity.state.moveStart
   }
 };
