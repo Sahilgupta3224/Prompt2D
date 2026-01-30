@@ -5,11 +5,13 @@ type GrabParams = { object:Entity, localOffset:{ x: number; y: number }};
 export const GrabAction: ActionDefinition<GrabParams> = {
 
   enter: (entity,{object, localOffset}) => {
+    console.log(object)
     object.parent = entity;
     object.localOffset = localOffset;
+    console.log(object.parent)
   },
   update: () => {
-    return true;
+    return false;
   },
 
   exit: (entity,{object}) => {

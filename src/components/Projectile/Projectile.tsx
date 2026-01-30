@@ -19,7 +19,7 @@ type Projectile = {
 
 export const ProjectileSystem = ({ projectileRef }: { projectileRef: React.MutableRefObject<Projectile> }) => {
   const spriteRef = useRef<Sprite>(null)
-  console.log(projectileRef)
+  // console.log(projectileRef)
   useTick((ticker: Ticker) => {
   const p = projectileRef.current
   const sprite = spriteRef.current
@@ -27,7 +27,7 @@ export const ProjectileSystem = ({ projectileRef }: { projectileRef: React.Mutab
   if (!p || !p.alive || !sprite) {
     return
   }
-  console.log(p.x," ", p.y)
+  // console.log(p.x," ", p.y)
 
     p.vy += p.gravity * dt
     p.x += p.vx * dt
@@ -49,7 +49,6 @@ export const ProjectileSystem = ({ projectileRef }: { projectileRef: React.Mutab
     sprite.visible = true
   }
 )
-  console.log(projectileRef)
 
   return (
           <pixiSprite 

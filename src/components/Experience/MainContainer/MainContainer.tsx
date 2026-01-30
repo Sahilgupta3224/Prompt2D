@@ -71,7 +71,7 @@ export const MainContainer = ({
       {children}
       <Level />
       <Hero 
-        texture={heroTexture} 
+        herotexture={heroTexture} 
         onMove={updateHeroPosition} 
         projectileRef={projectileRef}
       />

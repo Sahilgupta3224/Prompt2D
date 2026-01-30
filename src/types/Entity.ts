@@ -1,4 +1,4 @@
-import { Sprite } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 
 export interface Entity{
     x:number,
@@ -8,8 +8,10 @@ export interface Entity{
     scale:number,
     parent?: Entity | null
     localOffset?: { x: number; y: number }
-    sprite: React.MutableRefObject<Sprite | null>
+    // sprite: React.MutableRefObject<Sprite | null>
     currentanim: string,
     state: Record<string, any>;
-    container: any
+    sprite: React.RefObject<Sprite | null>;
+    container: React.RefObject<Container | null>;
+    texture?: Texture | null;
 }
