@@ -1,6 +1,6 @@
-import type { ActionDefinition } from "../types/Action";
-import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination } from "../helpers/common";
-import { MOVE_SPEED } from "../constants/game-world";
+import type { ActionDefinition } from "../../types/Action";
+import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection } from "../../helpers/common";
+import { MOVE_SPEED } from "../../constants/game-world";
 type MoveParams = { destination: { x: number; y: number }; };
 
 export const MoveAction: ActionDefinition<MoveParams> = {
@@ -22,6 +22,8 @@ export const MoveAction: ActionDefinition<MoveParams> = {
         x: Math.cos(angle),
         y: Math.sin(angle),
       }
+      entity.currentanim = angleToDirection(angle)
+      console.log(entity.currentanim)
     }
     if (!entity.state.targetPosition) {
       const nextStep = moveByAngle(

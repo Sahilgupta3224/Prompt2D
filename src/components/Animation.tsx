@@ -1,26 +1,27 @@
-import type { ActionDefinition } from "../../types/Action";
-import { MoveAction } from "../../actions/Move";
-import type { Entity } from "../../types/Entity";
+import type { ActionDefinition } from "../types/Action";
+import type { Entity } from "../types/Entity";
 import { useRef, useEffect, useState, createRef } from "react";
 import { Assets, Container, Sprite, Texture, Ticker } from "pixi.js";
 import { extend, useTick } from "@pixi/react";
 extend({ Container, Sprite });
 
-import { useHeroAnimation } from "./useHeroAnimation";
-import objectAsset from "../../assets/rock.png";
+import { useHeroAnimation } from "../helpers/useHeroAnimation";
+import objectAsset from "../assets/rock.png";
 import {
   ANIMATION_SPEED,
   DEFAULT_X_POS,
-} from "../../constants/game-world";
-import { GrabAction } from "../../actions/Grab";
+} from "../constants/game-world";
+
+import { TimelineRunner } from "../executor/TimelineRunner";
+import type { TimelineNode } from "../types/Timeline";
+import { HERO_ATTACHMENTS } from "../config/hero-attachments";
 
 interface IHeroProps {
   herotexture: Texture | null;
-  onMove: (gridX: number, gridY: number) => void;
   projectileRef: React.MutableRefObject<any>;
 }
 
-export const Hero = ({ herotexture, onMove, projectileRef }: IHeroProps) => {
+export const Animation = ({ herotexture, projectileRef }: IHeroProps) => {
   if (!herotexture) return null;
 
   const heroRef = useRef<Entity>({
@@ -35,10 +36,12 @@ export const Hero = ({ herotexture, onMove, projectileRef }: IHeroProps) => {
     currentanim: "RIGHT",
     state: {},
     parent: null,
+    attachmentConfig: HERO_ATTACHMENTS,
+    currentFrame: 0,
   });
   const rockRef = useRef<Entity>({
-    x: DEFAULT_X_POS + 100,
-    y: DEFAULT_X_POS,
+    x: 670,
+    y: 50,
     vx: 0,
     vy: 0,
     scale: 0.005,
@@ -58,16 +61,13 @@ export const Hero = ({ herotexture, onMove, projectileRef }: IHeroProps) => {
     { def: ActionDefinition<any>; params: any }[]
   >([])
 
-  const runAction = (def: ActionDefinition<any>, params: any) => {
-    def.enter?.(hero, params);
-    activeActions.current.push({ def, params })
-  };
+  const runnerRef = useRef<TimelineRunner | null>(null);
 
   const { update: heroAnimUpdate } = useHeroAnimation({
     texture: herotexture,
     frameWidth: 64,
     frameHeight: 64,
-    totalFrames: 9,
+    totalFrames: 7,
     animationSpeed: ANIMATION_SPEED,
   });
 
@@ -77,33 +77,59 @@ export const Hero = ({ herotexture, onMove, projectileRef }: IHeroProps) => {
       rock.texture = t as Texture;
       setRockLoaded(true);
     });
-  }, []); 
+  }, []);
 
   useEffect(() => {
     hero.texture = herotexture;
   }, [herotexture]);
 
   useEffect(() => {
-    runAction(MoveAction, { destination: { x: 370, y: 120 } });
+    const plan: TimelineNode = {
+      type: "sequence",
+      children: [
+        {
+          type: "action",
+          name: "move",
+          params: { destination: { x: 300, y: 300 } }
+        },
+        {
+          type: "action",
+          name: "jump",
+          params: { height: 150, duration: 1000 }
+        },
+        {
+          type: "action",
+          name: "wait",
+          params: { duration: 500 }
+        },
+        {
+          type: "action",
+          name: "move",
+          params: { destination: { x: 500, y: 300 } }
+        }
+      ]
+    };
+
+    runnerRef.current = new TimelineRunner(plan, hero);
   }, []);
 
-  useEffect(() => {
-    if (!rock.texture) return
-    const i = setTimeout(() => {
-      runAction(GrabAction, {
-        object: rock,
-        localOffset: { x: 40, y: 35 },
-      })
-    }, 50)
-
-    return () => clearTimeout(i)
-  }, [rock.texture])
-
-
   function updateEntityTransform(e: Entity) {
-    if (e.parent && e.localOffset) {
-      e.x = e.parent.x + e.localOffset.x;
-      e.y = e.parent.y + e.localOffset.y;
+    if (e.parent) {
+      let offset = e.localOffset || { x: 0, y: 0 };
+      if (e.attachmentPoint && e.parent.attachmentConfig) {
+        const anim = e.parent.currentanim;
+        const frame = e.parent.currentFrame || 0;
+        const config = e.parent.attachmentConfig[anim]?.[e.attachmentPoint];
+        if (config) {
+          if (Array.isArray(config)) {
+            offset = config[frame % config.length];
+          } else {
+            offset = config;
+          }
+        }
+      }
+      e.x = e.parent.x + offset.x;
+      e.y = e.parent.y + offset.y;
     }
     const c = e.container.current;
     if (c) {
@@ -115,13 +141,17 @@ export const Hero = ({ herotexture, onMove, projectileRef }: IHeroProps) => {
   useTick((ticker: Ticker) => {
     const dt = ticker.deltaTime;
 
-    activeActions.current = activeActions.current.filter(a => {
-      const done = a.def.update(hero, a.params, dt)
-      if (done) {
-        a.def.exit?.(hero, a.params)
-      }
-      return !done
-    })
+    if (runnerRef.current) {
+      runnerRef.current.update(dt);
+    } else {
+      activeActions.current = activeActions.current.filter(a => {
+        const done = a.def.update(hero, a.params, dt)
+        if (done) {
+          a.def.exit?.(hero, a.params)
+        }
+        return !done
+      })
+    }
 
     for (const e of entitiesRef.current) {
       updateEntityTransform(e);
@@ -129,18 +159,10 @@ export const Hero = ({ herotexture, onMove, projectileRef }: IHeroProps) => {
 
     const heroSprite = hero.sprite.current;
     if (heroSprite) {
-      const frameTexture = heroAnimUpdate(hero.currentanim as any, !!hero.state.isMoving);
+      const { texture: frameTexture, frameIndex } = heroAnimUpdate(hero.currentanim as any, !!hero.state.isMoving || !!hero.state.isJumping);
       heroSprite.texture = frameTexture;
+      hero.currentFrame = frameIndex;
     }
-
-    // const rockSprite = rock.sprite.current;
-    // if (rockSprite && rock.texture) {
-    //   if (rockSprite.texture !== rock.texture) {
-    //     rockSprite.texture = rock.texture;
-    //   }
-    // }
-
-    // onMove(Math.floor(hero.x / 64), Math.floor((hero.y || 0) / 64));
   });
 
   return (
@@ -155,6 +177,5 @@ export const Hero = ({ herotexture, onMove, projectileRef }: IHeroProps) => {
         </pixiContainer>
       ))}
     </pixiContainer>
-
   );
 };

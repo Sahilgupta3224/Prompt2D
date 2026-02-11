@@ -18,12 +18,21 @@ export const calculateNewTarget = (
       (direction === 'LEFT'
         ? -TILE_SIZE
         : direction === 'RIGHT'
-        ? TILE_SIZE
-        : 0),
+          ? TILE_SIZE
+          : 0),
     y:
       (y / TILE_SIZE) * TILE_SIZE +
       (direction === 'UP' ? -TILE_SIZE : direction === 'DOWN' ? TILE_SIZE : 0),
   }
+}
+
+export const angleToDirection = (angle: number) => {
+  const deg = angle * 180 / Math.PI
+
+  if (deg >= -45 && deg < 45) return "RIGHT"
+  if (deg >= 45 && deg < 135) return "DOWN"
+  if (deg >= -135 && deg < -45) return "UP"
+  return "LEFT"
 }
 
 export const moveByAngle = (
