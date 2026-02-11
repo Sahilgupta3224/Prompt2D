@@ -67,7 +67,6 @@ export const Animation = ({ herotexture, projectileRef }: IHeroProps) => {
     texture: herotexture,
     frameWidth: 64,
     frameHeight: 64,
-    totalFrames: 7,
     animationSpeed: ANIMATION_SPEED,
   });
 

@@ -6,13 +6,11 @@ export const useHeroAnimation = ({
   texture,
   frameWidth,
   frameHeight,
-  totalFrames,
   animationSpeed,
 }: {
   texture: Texture
   frameWidth: number
   frameHeight: number
-  totalFrames: number
   animationSpeed: number
 }) => {
   const frameRef = useRef(0)
@@ -20,23 +18,24 @@ export const useHeroAnimation = ({
 
   const getRowByDirection = (direction: Direction | null) => {
     switch (direction) {
-      case "UP": return 8
-      case "LEFT": return 9
-      case "DOWN": return 10
-      case "RIGHT": return 11
-      case "DANCE": return 2
-      default: return 0
+      case "UP": return { row: 8, frames: 9 }
+      case "LEFT": return { row: 9, frames: 9 }
+      case "DOWN": return { row: 10, frames: 9 }
+      case "RIGHT": return { row: 11, frames: 9 }
+      case "DANCE": return { row: 2, frames: 9 }
+      case "STILL": return { row: 10, frames: 9 }
+      default: return { row: 0, frames: 7 }
     }
   }
 
   const update = (direction: Direction | null, moving: boolean) => {
-    const row = getRowByDirection(direction)
-    console.log(row)
-    if (moving) {
+    const { row, frames } = getRowByDirection(direction)
+    // console.log(row)
+    if (moving && direction !== "STILL") {
       elapsedRef.current += animationSpeed
       if (elapsedRef.current >= 1) {
         elapsedRef.current = 0
-        frameRef.current = (frameRef.current + 1) % totalFrames
+        frameRef.current = (frameRef.current + 1) % frames
       }
     } else {
       frameRef.current = 0
