@@ -176,6 +176,7 @@ export const Animation = ({ herotexture }: IHeroProps) => {
     }
 
     const heroSprite = hero.sprite.current;
+    console.log(hero.animMode)
     if (heroSprite) {
       const mode = hero.animMode ?? (!!hero.state.isMoving || !!hero.state.isJumping ? "loop" : "static");
       const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(hero.currentanim as any, mode);

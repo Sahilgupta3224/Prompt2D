@@ -26,12 +26,12 @@ export const useHeroAnimation = ({
       case "RIGHT": return { row: 11, frames: 9 }
       case "DANCE": return { row: 2, frames: 9 }
       case "STILL": return { row: 10, frames: 9 }
-      case "SIT": return {row:19,frames:13}
+      case "SIT": return { row: 19, frames: 13 }
       default: return { row: 0, frames: 7 }
     }
   }
 
-  const update = (direction: Direction | null, animMode: "loop" | "once" | "static" = "loop") => {
+  const update = (direction: Direction | null, animMode: "loop" | "once" | "static" | "freeze" = "loop") => {
     const { row, frames } = getRowByDirection(direction)
     // console.log(direction)
     if (prevAnimRef.current !== direction) {
@@ -59,8 +59,9 @@ export const useHeroAnimation = ({
         elapsedRef.current = 0
         frameRef.current = (frameRef.current + 1) % frames
       }
+    } else if (animMode === "freeze") {
+      
     } else {
-      console.log("called")
       frameRef.current = 0
     }
 

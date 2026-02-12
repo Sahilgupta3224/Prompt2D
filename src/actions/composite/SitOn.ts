@@ -63,7 +63,7 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
         entity.state.isMoving = false;
         delete entity.state.sitPhase;
         delete entity.state.sitElapsed;
-        delete entity.animMode;
+        entity.animMode = "freeze";
         delete entity.animFinished;
     },
 };
