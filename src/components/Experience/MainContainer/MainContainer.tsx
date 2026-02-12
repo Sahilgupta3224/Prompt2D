@@ -20,7 +20,6 @@ extend({
 })
 import backgroundAsset from '../../../assets/space-stars.jpg'
 import { Level } from "../../Levels/Level"
-import { ProjectileSystem } from "../../Projectile/Projectile"
 
 interface IMainContainerProps {
   canvasSize: { width: number; height: number }
@@ -63,9 +62,7 @@ export const MainContainer = ({
       <Level />
       <Animation
         herotexture={heroTexture}
-        projectileRef={projectileRef}
       />
-      <ProjectileSystem projectileRef={projectileRef} />
     </pixiContainer>
   )
 }

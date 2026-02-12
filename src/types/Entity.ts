@@ -7,7 +7,7 @@ export interface Entity {
     vy: number,
     scale: number,
     parent?: Entity | null
-    localOffset?: { x: number; y: number }
+    localOffset?: { x: number; y: number } | null
     currentanim: string,
     state: Record<string, any>;
     sprite: React.RefObject<Sprite | null>;

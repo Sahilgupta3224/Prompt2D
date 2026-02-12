@@ -1,21 +1,28 @@
 import type { ActionDefinition } from "../../types/Action";
 import type { Entity } from "../../types/Entity";
-type GrabParams = { object: Entity, localOffset: { x: number; y: number } };
+
+type GrabParams = {
+  object: Entity;
+  localOffset?: { x: number; y: number };
+  attachmentPoint?: string;
+};
 
 export const GrabAction: ActionDefinition<GrabParams> = {
-
-  enter: (entity, { object, localOffset }) => {
-    console.log(object)
+  enter: (entity, { object, localOffset, attachmentPoint }) => {
     object.parent = entity;
     object.localOffset = localOffset;
-    console.log(object.parent)
-  },
-  update: () => {
-    return false;
+
+    if (attachmentPoint) {
+      object.attachmentPoint = attachmentPoint;
+    }
+
+    entity.state.grabbedObject = object;
   },
 
-  exit: (entity, { object }) => {
-    delete object.parent;
-    delete object.localOffset;
-  }
+  update: () => {
+    return true;
+  },
+
+  exit: () => {
+  },
 };

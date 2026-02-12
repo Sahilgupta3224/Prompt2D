@@ -18,10 +18,9 @@ import { HERO_ATTACHMENTS } from "../config/hero-attachments";
 
 interface IHeroProps {
   herotexture: Texture | null;
-  projectileRef: React.MutableRefObject<any>;
 }
 
-export const Animation = ({ herotexture, projectileRef }: IHeroProps) => {
+export const Animation = ({ herotexture }: IHeroProps) => {
   if (!herotexture) return null;
 
   const heroRef = useRef<Entity>({
@@ -89,7 +88,12 @@ export const Animation = ({ herotexture, projectileRef }: IHeroProps) => {
         {
           type: "action",
           name: "move",
-          params: { destination: { x: 300, y: 300 } }
+          params: { destination: { x: 200, y: 200 } }
+        },
+        {
+          type: "action",
+          name: "grab",
+          params:{object:rock,attachmentPoint:"hand"}
         },
         {
           type: "action",
@@ -98,14 +102,24 @@ export const Animation = ({ herotexture, projectileRef }: IHeroProps) => {
         },
         {
           type: "action",
-          name: "wait",
-          params: { duration: 500 }
+          name: "throw",
+          params:{object:rock,target:{x:300,y:300}, arcHeight:150}
         },
-        {
-          type: "action",
-          name: "move",
-          params: { destination: { x: 500, y: 300 } }
-        }
+        // {
+        //   type: "action",
+        //   name: "detach",
+        //   params:{object:rock}
+        // },
+        // {
+        //   type: "action",
+        //   name: "wait",
+        //   params: { duration: 500 }
+        // },
+        // {
+        //   type: "action",
+        //   name: "move",
+        //   params: { destination: { x: 500, y: 300 } }
+        // }
       ]
     };
 
