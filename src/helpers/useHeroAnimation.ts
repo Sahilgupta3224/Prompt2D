@@ -15,6 +15,8 @@ export const useHeroAnimation = ({
 }) => {
   const frameRef = useRef(0)
   const elapsedRef = useRef(0)
+  const prevAnimRef = useRef<string | null>(null)
+  // console.log()
 
   const getRowByDirection = (direction: Direction | null) => {
     switch (direction) {
@@ -24,23 +26,43 @@ export const useHeroAnimation = ({
       case "RIGHT": return { row: 11, frames: 9 }
       case "DANCE": return { row: 2, frames: 9 }
       case "STILL": return { row: 10, frames: 9 }
+      case "SIT": return {row:19,frames:13}
       default: return { row: 0, frames: 7 }
     }
   }
 
-  const update = (direction: Direction | null, moving: boolean) => {
+  const update = (direction: Direction | null, animMode: "loop" | "once" | "static" = "loop") => {
     const { row, frames } = getRowByDirection(direction)
-    // console.log(row)
-    if (moving && direction !== "STILL") {
+    // console.log(direction)
+    if (prevAnimRef.current !== direction) {
+      frameRef.current = 0
+      elapsedRef.current = 0
+      prevAnimRef.current = direction
+    }
+
+    let finished = false
+
+    if (animMode === "once") {
+      // console.log(frameRef.current)
+      if (frameRef.current < frames - 1) {
+        elapsedRef.current += animationSpeed
+        if (elapsedRef.current >= 1) {
+          elapsedRef.current = 0
+          frameRef.current++
+        }
+      } else {
+        finished = true
+      }
+    } else if (animMode === "loop") {
       elapsedRef.current += animationSpeed
       if (elapsedRef.current >= 1) {
         elapsedRef.current = 0
         frameRef.current = (frameRef.current + 1) % frames
       }
     } else {
+      console.log("called")
       frameRef.current = 0
     }
-    // console.log(`Frame: ${frameRef.current * frameWidth}`, row * frameHeight)
 
     texture = new Texture({
       source: texture.source,
@@ -51,8 +73,7 @@ export const useHeroAnimation = ({
         frameHeight
       ),
     })
-    // console.log(texture.frame)
-    return { texture, frameIndex: frameRef.current }
+    return { texture, frameIndex: frameRef.current, finished }
   }
 
   return { update }

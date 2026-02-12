@@ -92,19 +92,24 @@ export const Animation = ({ herotexture }: IHeroProps) => {
         },
         {
           type: "action",
-          name: "grab",
-          params:{object:rock,attachmentPoint:"hand"}
+          name: "sitOn",
+          params: { seat: { x: 100, y: 100 },moveSpeed:1 }
         },
-        {
-          type: "action",
-          name: "jump",
-          params: { height: 150, duration: 1000 }
-        },
-        {
-          type: "action",
-          name: "throw",
-          params:{object:rock,target:{x:300,y:300}, arcHeight:150}
-        },
+        // {
+        //   type: "action",
+        //   name: "grab",
+        //   params: { object: rock, attachmentPoint: "hand" }
+        // },
+        // {
+        //   type: "action",
+        //   name: "jump",
+        //   params: { height: 150, duration: 1000 }
+        // },
+        // {
+        //   type: "action",
+        //   name: "throw",
+        //   params: { object: rock, target: { x: 300, y: 300 }, arcHeight: 150 }
+        // },
         // {
         //   type: "action",
         //   name: "detach",
@@ -172,9 +177,13 @@ export const Animation = ({ herotexture }: IHeroProps) => {
 
     const heroSprite = hero.sprite.current;
     if (heroSprite) {
-      const { texture: frameTexture, frameIndex } = heroAnimUpdate(hero.currentanim as any, !!hero.state.isMoving || !!hero.state.isJumping);
+      const mode = hero.animMode ?? (!!hero.state.isMoving || !!hero.state.isJumping ? "loop" : "static");
+      const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(hero.currentanim as any, mode);
       heroSprite.texture = frameTexture;
       hero.currentFrame = frameIndex;
+      if (finished) {
+        hero.animFinished = true;
+      }
     }
   });
 

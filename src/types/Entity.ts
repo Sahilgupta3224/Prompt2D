@@ -16,4 +16,6 @@ export interface Entity {
     attachmentPoint?: string;
     attachmentConfig?: Record<string, Record<string, { x: number, y: number } | { x: number, y: number }[]>>;
     currentFrame?: number;
+    animMode?: "loop" | "once" | "static";
+    animFinished?: boolean;
 }

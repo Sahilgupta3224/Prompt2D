@@ -92,12 +92,14 @@ export class TimelineRunner {
         if (isComplete) {
             actionDef.exit?.(this.entity, node.params);
             state.completed = true;
+            console.log("exit")
+            console.log(actionDef)
         }
     }
 
     private processSequence(node: SequenceNode, state: NodeState, dt: number) {
 
-        const idx = state.sequenceIndex||0;
+        const idx = state.sequenceIndex || 0;
         if (idx >= node.children.length) {
             state.completed = true;
             return;

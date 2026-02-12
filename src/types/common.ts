@@ -3,4 +3,4 @@ export interface IPosition {
   y: number
 }
 
-export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'DANCE' | 'STILL'
+export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'DANCE' | 'STILL' | 'SIT'

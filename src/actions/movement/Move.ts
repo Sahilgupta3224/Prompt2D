@@ -2,6 +2,8 @@ import type { ActionDefinition } from "../../types/Action";
 import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
 type MoveParams = { destination: { x: number; y: number }; };
+import { playAnimation } from "../../helpers/animationTools";
+import { playAnimationOnce } from "../../helpers/animationTools";
 
 export const MoveAction: ActionDefinition<MoveParams> = {
 
@@ -22,7 +24,8 @@ export const MoveAction: ActionDefinition<MoveParams> = {
         x: Math.cos(angle),
         y: Math.sin(angle),
       }
-      entity.currentanim = angleToDirection(angle)
+      // entity.currentanim = angleToDirection(angle)
+      playAnimation(entity, angleToDirection(angle));
       console.log(entity.currentanim)
     }
     if (!entity.state.targetPosition) {
@@ -61,5 +64,6 @@ export const MoveAction: ActionDefinition<MoveParams> = {
     delete entity.state.direction
     delete entity.state.targetPosition
     delete entity.state.moveStart
+    delete entity.animMode
   }
 };
