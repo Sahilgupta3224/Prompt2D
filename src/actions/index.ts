@@ -7,6 +7,10 @@ import { DetachAction } from "./composite/Detach";
 import { SetStateAction } from "./composite/SetState";
 import { SitOnAction } from "./composite/SitOn";
 import { WaitAction } from "./composite/Wait";
+import { SpeakAction } from "./composite/Speak";
+import { EmoteAction } from "./composite/Emote";
+import { SpawnAction } from "./composite/Spawn";
+import { DespawnAction } from "./composite/Despawn";
 import { MovePathAction } from "./movement/MovePath";
 import { FollowAction } from "./movement/Follow";
 import { LookAction } from "./movement/Look";
@@ -25,6 +29,10 @@ export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     setState: SetStateAction,
     sitOn: SitOnAction,
     wait: WaitAction,
+    speak: SpeakAction,
+    emote: EmoteAction,
+    spawn: SpawnAction,
+    despawn: DespawnAction,
     movePath: MovePathAction,
     follow: FollowAction,
     look: LookAction,
@@ -32,3 +40,4 @@ export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     jump: JumpAction,
     applyForce: ApplyForceAction,
 };
+

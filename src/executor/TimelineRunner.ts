@@ -7,10 +7,12 @@ export class TimelineRunner {
     private rootNode: TimelineNode;
     private rootState: NodeState;
     private entity: Entity;
+    private registry: EntityRegistry;
 
-    constructor(plan: TimelineNode, entity: Entity) {
+    constructor(plan: TimelineNode, entity: Entity, registry: EntityRegistry) {
         this.rootNode = plan;
         this.entity = entity;
+        this.registry = registry;
         this.rootState = this.createState(plan);
     }
 
@@ -83,17 +85,21 @@ export class TimelineRunner {
             return;
         }
 
-        const resolvedParams = EntityRegistry.resolveParams(node.params ?? {});
+        const targetEntity = node.entityId
+            ? this.registry.get(node.entityId) ?? this.entity
+            : this.entity;
+
+        const resolvedParams = this.registry.resolveParams(node.params ?? {});
 
         if (!state.actionState.started) {
-            actionDef.enter?.(this.entity, resolvedParams);
+            actionDef.enter?.(targetEntity, resolvedParams);
             state.actionState.started = true;
         }
 
-        const isComplete = actionDef.update(this.entity, resolvedParams, dt);
+        const isComplete = actionDef.update(targetEntity, resolvedParams, dt);
 
         if (isComplete) {
-            actionDef.exit?.(this.entity, resolvedParams);
+            actionDef.exit?.(targetEntity, resolvedParams);
             state.completed = true;
         }
     }

@@ -1,10 +1,17 @@
+import { createRef } from "react";
+import { Container, Sprite } from "pixi.js";
 import type { Entity } from "../types/Entity";
+import type { EntityDefinition } from "../types/Scene";
 
-class EntityRegistryClass {
+type ChangeListener = () => void;
+
+export class EntityRegistry {
     private entities: Map<string, Entity> = new Map();
+    private listeners: Set<ChangeListener> = new Set();
 
     register(id: string, entity: Entity): void {
         this.entities.set(id, entity);
+        this.notify();
     }
 
     get(id: string): Entity | undefined {
@@ -13,6 +20,7 @@ class EntityRegistryClass {
 
     remove(id: string): void {
         this.entities.delete(id);
+        this.notify();
     }
 
     getAll(): Entity[] {
@@ -29,6 +37,54 @@ class EntityRegistryClass {
 
     clear(): void {
         this.entities.clear();
+        this.notify();
+    }
+
+    subscribe(listener: ChangeListener): () => void {
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
+    }
+
+    private notify(): void {
+        for (const listener of this.listeners) {
+            listener();
+        }
+    }
+
+    createEntity(options: {
+        id: string;
+        x: number;
+        y: number;
+        scale?: number;
+    }): Entity {
+        const entity: Entity = {
+            x: options.x,
+            y: options.y,
+            vx: 0,
+            vy: 0,
+            scale: options.scale ?? 1,
+            sprite: createRef<Sprite | null>(),
+            container: createRef<Container | null>(),
+            texture: null,
+            currentanim: "",
+            state: {},
+            parent: null,
+        };
+        this.register(options.id, entity);
+        return entity;
+    }
+
+    createFromDefinition(def: EntityDefinition): Entity {
+        const entity = this.createEntity({
+            id: def.id,
+            x: def.position.x,
+            y: def.position.y,
+            scale: def.scale,
+        });
+        if (def.attachments) {
+            entity.attachmentConfig = def.attachments;
+        }
+        return entity;
     }
 
     resolveParams<T extends Record<string, any>>(params: T): T {
@@ -50,4 +106,4 @@ class EntityRegistryClass {
     }
 }
 
-export const EntityRegistry = new EntityRegistryClass();
+export const defaultRegistry = new EntityRegistry();

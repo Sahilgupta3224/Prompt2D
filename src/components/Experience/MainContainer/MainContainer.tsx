@@ -20,6 +20,7 @@ extend({
 })
 import backgroundAsset from '../../../assets/space-stars.jpg'
 import { Level } from "../../Levels/Level"
+import objectAsset from "../../../assets/rock.png";
 
 interface IMainContainerProps {
   canvasSize: { width: number; height: number }
@@ -33,13 +34,16 @@ export const MainContainer = ({
 
   const [backgroundTexture, setBackgroundTexture] = useState<Texture | null>(null)
   const [heroTexture, setHeroTexture] = useState<Texture | null>(null)
-
+  const [rockTexture, setRockTexture] = useState<Texture | null>(null)
   useEffect(() => {
     Assets.load(backgroundAsset).then((texture) => {
       setBackgroundTexture(texture as Texture)
     })
     Assets.load(heroAsset).then((texture) => {
       setHeroTexture(texture as Texture)
+    })
+    Assets.load(objectAsset).then((texture) => {
+      setRockTexture(texture as Texture)
     })
   }, [])
 
@@ -61,7 +65,7 @@ export const MainContainer = ({
       {children}
       <Level />
       <Animation
-        herotexture={heroTexture}
+        herotexture={heroTexture} rocktexture={rockTexture}
       />
     </pixiContainer>
   )

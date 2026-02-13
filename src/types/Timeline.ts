@@ -8,6 +8,7 @@ export interface ActionNode {
     type: "action";
     name: string;
     params: any;
+    entityId?: string;
     id?: string;
 }
 

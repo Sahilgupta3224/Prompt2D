@@ -1,67 +1,83 @@
-import type { ActionDefinition } from "../types/Action";
 import type { Entity } from "../types/Entity";
-import { useRef, useEffect, useState, createRef } from "react";
-import { Assets, Container, Sprite, Texture, Ticker } from "pixi.js";
+import { useRef, useEffect, useState } from "react";
+import { Container, Sprite, Texture, Ticker } from "pixi.js";
 import { extend, useTick } from "@pixi/react";
 extend({ Container, Sprite });
 
 import { useHeroAnimation } from "../helpers/useHeroAnimation";
-import objectAsset from "../assets/rock.png";
-import {
-  ANIMATION_SPEED,
-  DEFAULT_X_POS,
-} from "../constants/game-world";
-
-import { TimelineRunner } from "../executor/TimelineRunner";
-import type { TimelineNode } from "../types/Timeline";
+import { ANIMATION_SPEED, DEFAULT_X_POS } from "../constants/game-world";
 import { HERO_ATTACHMENTS } from "../config/hero-attachments";
-import { EntityRegistry } from "../core/EntityRegistry";
+import { SceneRunner } from "../core/SceneRunner";
+import type { SceneDefinition } from "../types/Scene";
 
 interface IHeroProps {
   herotexture: Texture | null;
+  rocktexture: Texture | null;
 }
 
-export const Animation = ({ herotexture }: IHeroProps) => {
-  if (!herotexture) return null;
+const DEMO_SCENE: SceneDefinition = {
+  id: "demo",
+  name: "Demo Scene",
+  entities: [
+    {
+      id: "hero",
+      position: { x: DEFAULT_X_POS, y: DEFAULT_X_POS },
+      scale: 1,
+      attachments: HERO_ATTACHMENTS,
+    },
+    {
+      id: "rock",
+      position: { x: 670, y: 50 },
+      scale: 0.005,
+    },
+  ],
+  timeline: {
+    type: "sequence",
+    children: [
+      {
+        type: "action",
+        name: "move",
+        params: { destination: { x: 200, y: 200 } },
+      },
+      {
+        type: "action",
+        name: "speak",
+        params: { text: "Hello world!", duration: 2000 },
+      },
+      {
+        type: "action",
+        name: "emote",
+        params: { emote: "happy", duration: 1000 },
+      },
+      {
+        type: "action",
+        name: "wait",
+        params: { duration: 500 },
+      },
+      {
+        type: "action",
+        name: "grab",
+        params: { objectId: "rock", attachmentPoint: "hand" },
+      },
+      {
+        type: "action",
+        name: "jump",
+        params: { height: 50 },
+      },
+      {
+        type: "action",
+        name: "throw",
+        params: { objectId: "rock", target: { x: 300, y: 300 }, arcHeight: 50 },
+      },
+    ],
+  },
+};
 
-  const heroRef = useRef<Entity>({
-    x: DEFAULT_X_POS,
-    y: DEFAULT_X_POS,
-    vx: 0,
-    vy: 0,
-    scale: 1,
-    sprite: createRef<Sprite | null>(),
-    container: createRef<Container | null>(),
-    texture: herotexture,
-    currentanim: "RIGHT",
-    state: {},
-    parent: null,
-    attachmentConfig: HERO_ATTACHMENTS,
-    currentFrame: 0,
-  });
-  const rockRef = useRef<Entity>({
-    x: 670,
-    y: 50,
-    vx: 0,
-    vy: 0,
-    scale: 0.005,
-    sprite: createRef<Sprite | null>(),
-    container: createRef<Container | null>(),
-    texture: null,
-    currentanim: "",
-    state: {},
-    parent: null,
-  });
+export const Animation = ({ herotexture, rocktexture }: IHeroProps) => {
+  if (!herotexture || !rocktexture) return null;
 
-  const hero = heroRef.current;
-  const rock = rockRef.current;
-  const entitiesRef = useRef<Entity[]>([heroRef.current, rockRef.current]);
-
-  const activeActions = useRef<
-    { def: ActionDefinition<any>; params: any }[]
-  >([])
-
-  const runnerRef = useRef<TimelineRunner | null>(null);
+  const sceneRef = useRef<SceneRunner | null>(null);
+  const [entities, setEntities] = useState<Entity[]>([]);
 
   const { update: heroAnimUpdate } = useHeroAnimation({
     texture: herotexture,
@@ -70,82 +86,43 @@ export const Animation = ({ herotexture }: IHeroProps) => {
     animationSpeed: ANIMATION_SPEED,
   });
 
-  const [rockLoaded, setRockLoaded] = useState(false);
   useEffect(() => {
-    Assets.load(objectAsset).then((t) => {
-      rock.texture = t as Texture;
-      setRockLoaded(true);
+    const scene = new SceneRunner(DEMO_SCENE);
+    sceneRef.current = scene;
+
+    const hero = scene.registry.get("hero");
+    if (hero) {
+      hero.texture = herotexture;
+      hero.currentanim = "RIGHT";
+    }
+
+    const rock = scene.registry.get("rock");
+    if (rock) {
+      rock.texture = rocktexture;
+    }
+
+    setEntities(scene.registry.getAll());
+
+    const unsubscribe = scene.registry.subscribe(() => {
+      setEntities(scene.registry.getAll());
     });
-  }, []);
-
-  useEffect(() => {
-    hero.texture = herotexture;
-  }, [herotexture]);
-
-  useEffect(() => {
-    EntityRegistry.register("hero", hero);
-    EntityRegistry.register("rock", rock);
 
     return () => {
-      EntityRegistry.remove("hero");
-      EntityRegistry.remove("rock");
+      unsubscribe();
+      scene.destroy();
     };
   }, []);
 
   useEffect(() => {
-    const plan: TimelineNode = {
-      type: "sequence",
-      children: [
-        {
-          type: "action",
-          name: "move",
-          params: { destination: { x: 200, y: 200 } }
-        },
-        {
-          type: "action",
-          name: "wait",
-          params: { duration: 1000 }
-        },
-        // {
-        //   type: "action",
-        //   name: "faceDirection",
-        //   params: { direction: "LEFT" }
-        // },
-        // {
-        //   type: "action",
-        //   name: "wait",
-        //   params: { duration: 500 }
-        // },
-        // {
-        //   type: "action",
-        //   name: "faceDirection",
-        //   params: { direction: "DOWN" }
-        // },
-        // {
-        //   type: "action",
-        //   name: "move",
-        //   params: { destination: { x: 400, y: 300 } }
-        // },
-        {
-          type: "action",
-          name: "grab",
-          params: { objectId: "rock", attachmentPoint: "hand" }
-        },
-        {
-          type: "action",
-          name: "jump",
-          params: { height:50 }
-        },
-        {
-          type: "action",
-          name: "throw",
-          params: { objectId: "rock", target:{x:300,y:300},arcHeight:50 }
-        }
-      ]
-    };
-
-    runnerRef.current = new TimelineRunner(plan, hero);
-  }, []);
+    const hero = sceneRef.current?.registry.get("hero");
+    if (hero) {
+      hero.texture = herotexture;
+    }
+    const rock = sceneRef.current?.registry.get("rock");
+    if (rock) {
+      rock.texture = rocktexture;
+    }
+  }, [herotexture, rocktexture]);
 
   function updateEntityTransform(e: Entity) {
     if (e.parent) {
@@ -173,27 +150,21 @@ export const Animation = ({ herotexture }: IHeroProps) => {
   }
 
   useTick((ticker: Ticker) => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+
     const dt = ticker.deltaTime;
 
-    if (runnerRef.current) {
-      runnerRef.current.update(dt);
-    } else {
-      activeActions.current = activeActions.current.filter(a => {
-        const done = a.def.update(hero, a.params, dt)
-        if (done) {
-          a.def.exit?.(hero, a.params)
-        }
-        return !done
-      })
-    }
+    scene.update(dt);
 
-    for (const e of entitiesRef.current) {
+    for (const e of scene.registry.getAll()) {
       updateEntityTransform(e);
     }
+    console.log(scene.registry.getAll())
+    const hero = scene.registry.get("hero");
+    const heroSprite = hero?.sprite.current;
 
-    const heroSprite = hero.sprite.current;
-
-    if (heroSprite) {
+    if (hero && heroSprite) {
       const mode = hero.animMode ?? (!!hero.state.isMoving || !!hero.state.isJumping ? "loop" : "static");
       const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(hero.currentanim as any, mode);
       heroSprite.texture = frameTexture;
@@ -206,7 +177,7 @@ export const Animation = ({ herotexture }: IHeroProps) => {
 
   return (
     <pixiContainer>
-      {entitiesRef.current.map((e, i) => (
+      {entities.map((e, i) => (
         <pixiContainer key={i} ref={e.container}>
           <pixiSprite
             ref={e.sprite}
