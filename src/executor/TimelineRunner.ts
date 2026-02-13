@@ -1,6 +1,7 @@
 import type { Entity } from "../types/Entity";
 import type { TimelineNode, NodeState, ActionNode, SequenceNode, ParallelNode, LoopNode } from "../types/Timeline";
 import { ACTION_REGISTRY } from "../actions";
+import { EntityRegistry } from "../core/EntityRegistry";
 
 export class TimelineRunner {
     private rootNode: TimelineNode;
@@ -82,18 +83,18 @@ export class TimelineRunner {
             return;
         }
 
+        const resolvedParams = EntityRegistry.resolveParams(node.params ?? {});
+
         if (!state.actionState.started) {
-            actionDef.enter?.(this.entity, node.params);
+            actionDef.enter?.(this.entity, resolvedParams);
             state.actionState.started = true;
         }
 
-        const isComplete = actionDef.update(this.entity, node.params, dt);
+        const isComplete = actionDef.update(this.entity, resolvedParams, dt);
 
         if (isComplete) {
-            actionDef.exit?.(this.entity, node.params);
+            actionDef.exit?.(this.entity, resolvedParams);
             state.completed = true;
-            console.log("exit")
-            console.log(actionDef)
         }
     }
 

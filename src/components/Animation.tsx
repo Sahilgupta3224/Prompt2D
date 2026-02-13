@@ -15,6 +15,7 @@ import {
 import { TimelineRunner } from "../executor/TimelineRunner";
 import type { TimelineNode } from "../types/Timeline";
 import { HERO_ATTACHMENTS } from "../config/hero-attachments";
+import { EntityRegistry } from "../core/EntityRegistry";
 
 interface IHeroProps {
   herotexture: Texture | null;
@@ -82,6 +83,16 @@ export const Animation = ({ herotexture }: IHeroProps) => {
   }, [herotexture]);
 
   useEffect(() => {
+    EntityRegistry.register("hero", hero);
+    EntityRegistry.register("rock", rock);
+
+    return () => {
+      EntityRegistry.remove("hero");
+      EntityRegistry.remove("rock");
+    };
+  }, []);
+
+  useEffect(() => {
     const plan: TimelineNode = {
       type: "sequence",
       children: [
@@ -92,28 +103,13 @@ export const Animation = ({ herotexture }: IHeroProps) => {
         },
         {
           type: "action",
-          name: "sitOn",
-          params: { seat: { x: 100, y: 100 },moveSpeed:1 }
+          name: "wait",
+          params: { duration: 1000 }
         },
         // {
         //   type: "action",
-        //   name: "grab",
-        //   params: { object: rock, attachmentPoint: "hand" }
-        // },
-        // {
-        //   type: "action",
-        //   name: "jump",
-        //   params: { height: 150, duration: 1000 }
-        // },
-        // {
-        //   type: "action",
-        //   name: "throw",
-        //   params: { object: rock, target: { x: 300, y: 300 }, arcHeight: 150 }
-        // },
-        // {
-        //   type: "action",
-        //   name: "detach",
-        //   params:{object:rock}
+        //   name: "faceDirection",
+        //   params: { direction: "LEFT" }
         // },
         // {
         //   type: "action",
@@ -122,9 +118,29 @@ export const Animation = ({ herotexture }: IHeroProps) => {
         // },
         // {
         //   type: "action",
+        //   name: "faceDirection",
+        //   params: { direction: "DOWN" }
+        // },
+        // {
+        //   type: "action",
         //   name: "move",
-        //   params: { destination: { x: 500, y: 300 } }
-        // }
+        //   params: { destination: { x: 400, y: 300 } }
+        // },
+        {
+          type: "action",
+          name: "grab",
+          params: { objectId: "rock", attachmentPoint: "hand" }
+        },
+        {
+          type: "action",
+          name: "jump",
+          params: { height:50 }
+        },
+        {
+          type: "action",
+          name: "throw",
+          params: { objectId: "rock", target:{x:300,y:300},arcHeight:50 }
+        }
       ]
     };
 
@@ -176,7 +192,7 @@ export const Animation = ({ herotexture }: IHeroProps) => {
     }
 
     const heroSprite = hero.sprite.current;
-    console.log(hero.animMode)
+
     if (heroSprite) {
       const mode = hero.animMode ?? (!!hero.state.isMoving || !!hero.state.isJumping ? "loop" : "static");
       const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(hero.currentanim as any, mode);
