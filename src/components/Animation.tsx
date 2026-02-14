@@ -79,10 +79,20 @@ const DEMO_SCENE: SceneDefinition = {
       //   name: "Fade",
       //   params: {targetAlpha:0 },
       // },
+      // {
+      //   type: "action",
+      //   name: "Rotate",
+      //   params: {Angle:180, duration:10 },
+      // },
+      // {
+      //   type: "action",
+      //   name: "Oscillate",
+      //   params: {amplitude:100, duration:1000, frequency:1, axis:"x" },
+      // },
       {
         type: "action",
-        name: "Rotate",
-        params: {Angle:180, duration:10 },
+        name: "Shake",
+        params: {intensity:10, duration:1000, frequency:10, axis:"both" },
       }
     ],
   },

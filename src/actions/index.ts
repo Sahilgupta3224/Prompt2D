@@ -20,6 +20,8 @@ import { ApplyForceAction } from "./physics/ApplyForce";
 import { MoveAction } from "./movement/Move";
 import { FadeAction } from "./effects/index";
 import { RotateAction } from "./effects/index";
+import { OscillateAction } from "./effects/index";
+import { ShakeAction } from "./effects/index";
 
 export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     move: MoveAction,
@@ -42,6 +44,7 @@ export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     jump: JumpAction,
     applyForce: ApplyForceAction,
     Fade: FadeAction,
-    Rotate: RotateAction
+    Rotate: RotateAction,
+    Oscillate: OscillateAction,
+    Shake: ShakeAction
 };
-
