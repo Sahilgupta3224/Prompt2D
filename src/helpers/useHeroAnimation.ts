@@ -27,6 +27,7 @@ export const useHeroAnimation = ({
       case "DANCE": return { row: 2, frames: 9 }
       case "STILL": return { row: 10, frames: 9 }
       case "SIT": return { row: 19, frames: 13 }
+      case "HIT": return {row: 20, frames: 6}
       default: return { row: 0, frames: 7 }
     }
   }

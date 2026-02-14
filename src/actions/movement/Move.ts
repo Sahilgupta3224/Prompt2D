@@ -3,7 +3,6 @@ import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDesti
 import { MOVE_SPEED } from "../../constants/game-world";
 type MoveParams = { destination: { x: number; y: number }; };
 import { playAnimation } from "../../helpers/animationTools";
-import { playAnimationOnce } from "../../helpers/animationTools";
 
 export const MoveAction: ActionDefinition<MoveParams> = {
 
@@ -24,7 +23,6 @@ export const MoveAction: ActionDefinition<MoveParams> = {
         x: Math.cos(angle),
         y: Math.sin(angle),
       }
-      // entity.currentanim = angleToDirection(angle)
       playAnimation(entity, angleToDirection(angle));
       console.log(entity.currentanim)
     }

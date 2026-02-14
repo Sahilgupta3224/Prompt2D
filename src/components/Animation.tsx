@@ -152,7 +152,6 @@ export const Animation = ({ herotexture, rocktexture }: IHeroProps) => {
   useTick((ticker: Ticker) => {
     const scene = sceneRef.current;
     if (!scene) return;
-
     const dt = ticker.deltaTime;
 
     scene.update(dt);

@@ -3,11 +3,11 @@ import { Text, Graphics, Container } from "pixi.js";
 
 type SpeakParams = {
     text: string;
-    duration: number;
+    duration?: number;
 };
 
 export const SpeakAction: ActionDefinition<SpeakParams> = {
-    enter: (entity, { text, duration }) => {
+    enter: (entity, { text, duration = 2000 }) => {
         entity.state.speech = {
             text,
             duration,

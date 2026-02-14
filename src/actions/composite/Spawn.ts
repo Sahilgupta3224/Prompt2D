@@ -1,5 +1,4 @@
 import type { ActionDefinition } from "../../types/Action";
-import { EntityRegistry } from "../../core/EntityRegistry";
 
 type SpawnParams = {
     entityId: string;
@@ -9,11 +8,9 @@ type SpawnParams = {
 };
 
 export const SpawnAction: ActionDefinition<SpawnParams> = {
-    enter: (entity, { entityId, x, y, scale }) => {
-        const registry: EntityRegistry | undefined = entity.state.__registry__;
-        if (!registry) return;
-        if (registry.has(entityId)) return;
-        registry.createEntity({ id: entityId, x, y, scale });
+    enter: (_entity, { entityId, x, y, scale }, ctx) => {
+        if (ctx.registry.has(entityId)) return;
+        ctx.registry.createEntity({ id: entityId, x, y, scale });
     },
 
     update: () => {

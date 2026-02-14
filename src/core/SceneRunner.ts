@@ -13,13 +13,12 @@ export class SceneRunner {
         this.registry = registry ?? new EntityRegistry();
 
         for (const def of scene.entities) {
-            const entity = this.registry.createFromDefinition(def);
-            entity.state.__registry__ = this.registry;
+            this.registry.createFromDefinition(def);
         }
 
         const primary = this.registry.get(scene.entities[0].id);
         if (!primary) {
-            throw new Error(`Primary entity "${scene.entities[0].id}" could not be created`);
+            throw new Error(`primary entity not found`);
         }
         this.primaryEntity = primary;
 

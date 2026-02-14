@@ -1,4 +1,5 @@
 import type { Entity } from "../types/Entity";
+import type { ActionContext } from "../types/Action";
 import type { TimelineNode, NodeState, ActionNode, SequenceNode, ParallelNode, LoopNode } from "../types/Timeline";
 import { ACTION_REGISTRY } from "../actions";
 import { EntityRegistry } from "../core/EntityRegistry";
@@ -7,12 +8,12 @@ export class TimelineRunner {
     private rootNode: TimelineNode;
     private rootState: NodeState;
     private entity: Entity;
-    private registry: EntityRegistry;
+    private ctx: ActionContext;
 
     constructor(plan: TimelineNode, entity: Entity, registry: EntityRegistry) {
         this.rootNode = plan;
         this.entity = entity;
-        this.registry = registry;
+        this.ctx = { registry };
         this.rootState = this.createState(plan);
     }
 
@@ -86,20 +87,20 @@ export class TimelineRunner {
         }
 
         const targetEntity = node.entityId
-            ? this.registry.get(node.entityId) ?? this.entity
+            ? this.ctx.registry.get(node.entityId) ?? this.entity
             : this.entity;
 
-        const resolvedParams = this.registry.resolveParams(node.params ?? {});
+        const resolvedParams = this.ctx.registry.resolveParams(node.params ?? {});
 
         if (!state.actionState.started) {
-            actionDef.enter?.(targetEntity, resolvedParams);
+            actionDef.enter?.(targetEntity, resolvedParams, this.ctx);
             state.actionState.started = true;
         }
 
-        const isComplete = actionDef.update(targetEntity, resolvedParams, dt);
+        const isComplete = actionDef.update(targetEntity, resolvedParams, dt, this.ctx);
 
         if (isComplete) {
-            actionDef.exit?.(targetEntity, resolvedParams);
+            actionDef.exit?.(targetEntity, resolvedParams, this.ctx);
             state.completed = true;
         }
     }
