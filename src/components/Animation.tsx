@@ -74,10 +74,15 @@ const DEMO_SCENE: SceneDefinition = {
       //   name: "throw",
       //   params: { objectId: "rock", target: { x: 300, y: 300 }, arcHeight: 50 },
       // },
+      // {
+      //   type: "action",
+      //   name: "Fade",
+      //   params: {targetAlpha:0 },
+      // },
       {
         type: "action",
-        name: "Fade",
-        params: {targetAlpha:0 },
+        name: "Rotate",
+        params: {Angle:180, duration:10 },
       }
     ],
   },
