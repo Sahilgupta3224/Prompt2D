@@ -39,36 +39,46 @@ const DEMO_SCENE: SceneDefinition = {
         name: "move",
         params: { destination: { x: 200, y: 200 } },
       },
+      // {
+      //   type: "action",
+      //   name: "speak",
+      //   params: { text: "Hello world!", duration: 2000 },
+      // },
+      // {
+      //   type: "action",
+      //   name: "emote",
+      //   params: { emote: "happy", duration: 1000 },
+      // },
+      // {
+      //   type: "action",
+      //   name: "wait",
+      //   params: { duration: 500 },
+      // },
+      // {
+      //   type: "action",
+      //   name: "grab",
+      //   params: { objectId: "rock", attachmentPoint: "hand" },
+      // },
+      // {
+      //   type: "action",
+      //   name: "move",
+      //   params: { destination: { x: 300, y: 300 } },
+      // },
+      // {
+      //   type: "action",
+      //   name: "jump",
+      //   params: { height: 50 },
+      // },
+      // {
+      //   type: "action",
+      //   name: "throw",
+      //   params: { objectId: "rock", target: { x: 300, y: 300 }, arcHeight: 50 },
+      // },
       {
         type: "action",
-        name: "speak",
-        params: { text: "Hello world!", duration: 2000 },
-      },
-      {
-        type: "action",
-        name: "emote",
-        params: { emote: "happy", duration: 1000 },
-      },
-      {
-        type: "action",
-        name: "wait",
-        params: { duration: 500 },
-      },
-      {
-        type: "action",
-        name: "grab",
-        params: { objectId: "rock", attachmentPoint: "hand" },
-      },
-      {
-        type: "action",
-        name: "jump",
-        params: { height: 50 },
-      },
-      {
-        type: "action",
-        name: "throw",
-        params: { objectId: "rock", target: { x: 300, y: 300 }, arcHeight: 50 },
-      },
+        name: "Fade",
+        params: {targetAlpha:0 },
+      }
     ],
   },
 };
@@ -159,7 +169,7 @@ export const Animation = ({ herotexture, rocktexture }: IHeroProps) => {
     for (const e of scene.registry.getAll()) {
       updateEntityTransform(e);
     }
-    console.log(scene.registry.getAll())
+    // console.log(scene.registry.getAll())
     const hero = scene.registry.get("hero");
     const heroSprite = hero?.sprite.current;
 

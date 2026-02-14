@@ -1,0 +1,1 @@
+export { FadeAction } from "./fade";
