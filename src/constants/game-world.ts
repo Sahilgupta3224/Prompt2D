@@ -2,8 +2,8 @@ export const TILE_SIZE = 32
 export const COLS = 26
 export const ROWS = 17
 
-export const GAME_WIDTH = 775
-export const GAME_HEIGHT = 500
+export const GAME_WIDTH = 1400
+export const GAME_HEIGHT = 700
 
 export const OFFSET_X = 25
 export const OFFSET_Y = 0

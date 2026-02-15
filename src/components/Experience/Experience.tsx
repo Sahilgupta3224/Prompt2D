@@ -24,20 +24,13 @@ const Experience = () => {
   }, [updateCanvasSize])
   return (
     <>
-    <Application
-      width={canvasSize.width}
-      height={canvasSize.height}
-      background="#1099bb"
-    >
-      {bgTexture && (
-        <pixiSprite
-          texture={bgTexture}
-          width={canvasSize.width}
-          height={canvasSize.height}
-        />
-      )}
-    <MainContainer canvasSize={canvasSize} />
-    </Application>
+      <Application
+        width={canvasSize.width}
+        height={canvasSize.height}
+        background="#484a4aff"
+      >
+        <MainContainer canvasSize={canvasSize} />
+      </Application>
     </>
   )
 }

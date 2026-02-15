@@ -1,4 +1,5 @@
 import type { TimelineNode } from "./Timeline";
+import type { BackgroundName } from "../helpers/assets";
 
 export interface EntityDefinition {
     id: string;
@@ -15,7 +16,7 @@ export interface EntityDefinition {
 export interface SceneDefinition {
     id: string;
     name?: string;
-    background?: string;
+    background?: BackgroundName;
     entities: EntityDefinition[];
     timeline: TimelineNode;
 }

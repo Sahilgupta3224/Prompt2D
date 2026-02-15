@@ -10,6 +10,10 @@ import {
   Assets,
 } from 'pixi.js'
 import {
+  GAME_HEIGHT,
+  GAME_WIDTH,
+} from '../../../constants/game-world'
+import {
   extend
 } from '@pixi/react'
 extend({
@@ -18,7 +22,7 @@ extend({
   Sprite,
   Texture
 })
-import backgroundAsset from '../../../assets/space-stars.jpg'
+import backgroundAsset from '../../../assets/whitebg.png'
 import { Level } from "../../Levels/Level"
 import objectAsset from "../../../assets/rock.png";
 
@@ -30,7 +34,7 @@ export const MainContainer = ({
   canvasSize,
   children
 }: PropsWithChildren<IMainContainerProps>) => {
-  const projectileRef = useRef<any>({})
+  // const projectileRef = useRef<any>({})
 
   const [backgroundTexture, setBackgroundTexture] = useState<Texture | null>(null)
   const [heroTexture, setHeroTexture] = useState<Texture | null>(null)
@@ -54,18 +58,15 @@ export const MainContainer = ({
     return null
   }
 
-  const GAME_WIDTH = 775
-  const GAME_HEIGHT = 500
-
-  const centerX = (canvasSize.width - GAME_WIDTH) / 2
-  const centerY = (canvasSize.height - GAME_HEIGHT) / 2
+  const centerX = Math.max(0, (canvasSize.width - GAME_WIDTH) / 2)
+  const centerY = Math.max(0, (canvasSize.height - GAME_HEIGHT) / 2)
 
   return (
     <pixiContainer x={centerX} y={centerY}>
       {children}
-      <Level />
+      <Level backgroundTexture={backgroundTexture}/>
       <Animation
-        herotexture={heroTexture} rocktexture={rockTexture}
+        herotexture={heroTexture} rocktexture={rockTexture} setBackgroundTexture={setBackgroundTexture}
       />
     </pixiContainer>
   )
