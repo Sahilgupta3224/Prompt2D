@@ -1,5 +1,5 @@
 import type { TimelineNode } from "./Timeline";
-import type { BackgroundName } from "../helpers/assets";
+import type { BackgroundName, objectName } from "../helpers/assets";
 
 export interface EntityDefinition {
     id: string;
@@ -9,6 +9,8 @@ export interface EntityDefinition {
     spriteSheet?: string;
     frameWidth?: number;
     frameHeight?: number;
+    isObject?: boolean;
+    shape?: objectName;
     animations?: Record<string, { row: number; frames: number }>;
     attachments?: Record<string, Record<string, { x: number; y: number } | { x: number; y: number }[]>>;
 }

@@ -1,7 +1,8 @@
 import { generateActionCatalog } from "./actionManifest";
+import { GAME_WIDTH, GAME_HEIGHT } from "../constants/game-world";
 
-const CANVAS_WIDTH = 775;
-const CANVAS_HEIGHT = 500;
+const CANVAS_WIDTH = GAME_WIDTH;
+const CANVAS_HEIGHT = GAME_HEIGHT;
 
 const SCHEMA_DOCS = `
 ## Output Format
@@ -12,6 +13,7 @@ You must output ONLY valid JSON matching this exact structure. No markdown, no e
 {
   "id": string,          // unique scene identifier (e.g. "scene_1")
   "name": string,        // short descriptive name
+  "background": string,  // one of: "park", "city", "forest", "mountain", "beach", "desert"
   "entities": EntityDefinition[],
   "timeline": TimelineNode
 }
@@ -61,6 +63,7 @@ User: "A hero walks to the right and says hello"
 {
   "id": "scene_1",
   "name": "Hero greets",
+  "background": "city",
   "entities": [
     { "id": "hero", "position": { "x": 100, "y": 250 }, "scale": 1 }
   ],
@@ -74,10 +77,11 @@ User: "A hero walks to the right and says hello"
 }
 
 ### Example 2: Multi-entity interaction with parallel actions
-User: "Hero picks up a rock, jumps, and throws it while saying Yeet"
+User: "Hero picks up a rock in a ground, jumps, and throws it while saying Yeet"
 {
   "id": "scene_2",
   "name": "Hero throws rock",
+  "background":"park",
   "entities": [
     { "id": "hero", "position": { "x": 100, "y": 300 }, "scale": 1 },
     { "id": "rock", "position": { "x": 400, "y": 300 }, "scale": 0.005 }
@@ -103,6 +107,7 @@ User: "Two characters walk toward each other and wave"
 {
   "id": "scene_3",
   "name": "Characters meet",
+  "background":"city",
   "entities": [
     { "id": "char1", "position": { "x": 100, "y": 250 }, "scale": 1 },
     { "id": "char2", "position": { "x": 650, "y": 250 }, "scale": 1 }
@@ -130,22 +135,22 @@ User: "Two characters walk toward each other and wave"
 `;
 
 export function buildSystemPrompt(worldState?: string): string {
-    const parts: string[] = [
-        "You are a 2D animation scene generator. You convert natural language descriptions into structured scene definitions for a PixiJS animation engine.",
-        "",
-        SCHEMA_DOCS,
-        generateActionCatalog(),
-        RULES,
-        EXAMPLES,
-    ];
+  const parts: string[] = [
+    "You are a 2D animation scene generator. You convert natural language descriptions into structured scene definitions for a PixiJS animation engine.",
+    "",
+    SCHEMA_DOCS,
+    generateActionCatalog(),
+    RULES,
+    EXAMPLES,
+  ];
 
-    if (worldState) {
-        parts.push(`## Current World State\n\nThe following entities exist from the previous scene. Generate a NEW timeline that continues from this state. Keep existing entities unless the user asks to add or remove them.\n\n${worldState}\n`);
-    }
+  if (worldState) {
+    parts.push(`## Current World State\n\nThe following entities exist from the previous scene. Generate a NEW timeline that continues from this state. Keep existing entities unless the user asks to add or remove them.\n\n${worldState}\n`);
+  }
 
-    return parts.join("\n");
+  return parts.join("\n");
 }
 
 export function getCanvasBounds() {
-    return { width: CANVAS_WIDTH, height: CANVAS_HEIGHT };
+  return { width: CANVAS_WIDTH, height: CANVAS_HEIGHT };
 }

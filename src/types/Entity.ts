@@ -1,6 +1,8 @@
 import { Container, Sprite, Texture } from "pixi.js";
+import type { objectName } from "../helpers/assets";
 
 export interface Entity {
+    id: string,
     x: number,
     y: number,
     vx: number,
@@ -18,4 +20,6 @@ export interface Entity {
     currentFrame?: number;
     animMode?: "loop" | "once" | "static" | "freeze";
     animFinished?: boolean;
+    isObject?: boolean;
+    shape?: objectName
 }

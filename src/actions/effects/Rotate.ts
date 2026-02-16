@@ -1,26 +1,26 @@
 import type { ActionDefinition } from "../../types/Action";
 
 type RotateParams = {
-    Angle: number;
+    angle: number;
     duration?: number;
 };
 
 export const RotateAction: ActionDefinition<RotateParams> = {
-    enter: (entity, { Angle, duration = 0 }) => {
+    enter: (entity, { angle, duration = 0 }) => {
         if (!entity.state.rotation) {
             entity.state.rotation = 0;
         }
         entity.state.rotateStart = entity.state.rotation;
-        entity.state.rotateTarget = Angle;
+        entity.state.rotateTarget = angle;
         entity.state.rotateDuration = duration;
         entity.state.rotateStartTime = Date.now();
 
         if (duration === 0) {
-            entity.state.rotation = Angle;
+            entity.state.rotation = angle;
         }
     },
 
-    update: (entity, { Angle, duration = 0 }) => {
+    update: (entity, { angle, duration = 0 }) => {
         if (duration === 0) return true;
 
         const elapsed = Date.now() - entity.state.rotateStartTime;
@@ -29,9 +29,8 @@ export const RotateAction: ActionDefinition<RotateParams> = {
         let t = progress;
 
         const startAngle = entity.state.rotateStart;
-        const deltaAngle = Angle - startAngle;
+        const deltaAngle = angle - startAngle;
         entity.state.rotation = startAngle + deltaAngle * t;
-        console.log(entity.state.rotation);
         const sprite = entity.sprite.current;
         if (sprite) {
             sprite.rotation = entity.state.rotation;
@@ -41,10 +40,10 @@ export const RotateAction: ActionDefinition<RotateParams> = {
     },
 
     exit: (entity) => {
-        console.log(entity.state.rotation)
         delete entity.state.rotateStart;
         delete entity.state.rotateTarget;
-        delete entity.state.rotateDuration; 
+        delete entity.state.rotateDuration;
         delete entity.state.rotateStartTime;
     },
 };
+

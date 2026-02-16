@@ -38,16 +38,12 @@ export const MainContainer = ({
 
   const [backgroundTexture, setBackgroundTexture] = useState<Texture | null>(null)
   const [heroTexture, setHeroTexture] = useState<Texture | null>(null)
-  const [rockTexture, setRockTexture] = useState<Texture | null>(null)
   useEffect(() => {
     Assets.load(backgroundAsset).then((texture) => {
       setBackgroundTexture(texture as Texture)
     })
     Assets.load(heroAsset).then((texture) => {
       setHeroTexture(texture as Texture)
-    })
-    Assets.load(objectAsset).then((texture) => {
-      setRockTexture(texture as Texture)
     })
   }, [])
 
@@ -66,7 +62,7 @@ export const MainContainer = ({
       {children}
       <Level backgroundTexture={backgroundTexture}/>
       <Animation
-        herotexture={heroTexture} rocktexture={rockTexture} setBackgroundTexture={setBackgroundTexture}
+        herotexture={heroTexture} setBackgroundTexture={setBackgroundTexture}
       />
     </pixiContainer>
   )

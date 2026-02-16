@@ -44,6 +44,10 @@ export class SceneRunner {
         return this.registry;
     }
 
+    getObjects(): Entity[] {
+        return this.registry.getAll().filter((e) => e.isObject);
+    }
+
     getPrimaryEntity(): Entity {
         return this.primaryEntity;
     }

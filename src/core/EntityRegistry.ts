@@ -2,6 +2,7 @@ import { createRef } from "react";
 import { Container, Sprite } from "pixi.js";
 import type { Entity } from "../types/Entity";
 import type { EntityDefinition } from "../types/Scene";
+import type { objectName } from "../helpers/assets";
 
 type ChangeListener = () => void;
 
@@ -56,13 +57,18 @@ export class EntityRegistry {
         x: number;
         y: number;
         scale?: number;
+        isObject?: boolean;
+        shape?: objectName;
     }): Entity {
         const entity: Entity = {
+            id: options.id,
             x: options.x,
             y: options.y,
             vx: 0,
             vy: 0,
             scale: options.scale ?? 1,
+            isObject: options.isObject?? false,
+            shape: options.shape?? 'circle',
             sprite: createRef<Sprite | null>(),
             container: createRef<Container | null>(),
             texture: null,
@@ -80,6 +86,8 @@ export class EntityRegistry {
             x: def.position.x,
             y: def.position.y,
             scale: def.scale,
+            isObject: def.isObject,
+            shape: def.shape
         });
         if (def.attachments) {
             entity.attachmentConfig = def.attachments;

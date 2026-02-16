@@ -15,7 +15,9 @@ export const DEMO_SCENE: SceneDefinition = {
     {
       id: "rock",
       position: { x: 670, y: 50 },
-      scale: 0.01,
+      scale: 0.1,
+      isObject: true,
+      shape: "circle"
     },
   ],
   background: "park",
@@ -26,7 +28,12 @@ export const DEMO_SCENE: SceneDefinition = {
         type: "action",
         name: "move",
         params: { destination: { x: 200, y: 200 } },
-        entityId: "rock"
+        entityId: "hero"
+      },
+      {
+        type: "action",
+        name: "fade",
+        params: { targetAlpha: 0.5 }
       },
       {
         type: "action",
@@ -70,17 +77,17 @@ export const DEMO_SCENE: SceneDefinition = {
       // },
       {
         type: "action",
-        name: "Rotate",
-        params: { Angle: 180, duration: 10 },
+        name: "rotate",
+        params: { angle: 180, duration: 10 },
       },
       {
         type: "action",
-        name: "Oscillate",
+        name: "oscillate",
         params: { amplitude: 100, duration: 1000, frequency: 1, axis: "x" },
       },
       {
         type: "action",
-        name: "Shake",
+        name: "shake",
         params: { intensity: 10, duration: 1000, frequency: 10, axis: "both" },
         // entityId:"rock"
       }

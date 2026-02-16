@@ -152,6 +152,49 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         ],
     },
 
+    // ── Orientation ────────────────────────────
+    {
+        name: "turnTo",
+        description: "Instantly face a direction or angle",
+        params: [
+            { name: "direction", type: "\"UP\" | \"DOWN\" | \"LEFT\" | \"RIGHT\"", required: false, description: "Cardinal direction to face" },
+            { name: "angle", type: "number", required: false, description: "Angle in radians" },
+        ],
+        notes: "Provide exactly one of: direction or angle",
+    },
+    {
+        name: "turnTowards",
+        description: "Instantly face toward another entity or position",
+        params: [
+            { name: "targetId", type: "string", required: true, description: "Entity ID to face toward" },
+        ],
+    },
+    {
+        name: "knockBack",
+        description: "Push entity away in a direction with decaying velocity",
+        params: [
+            { name: "direction", type: "{x: number, y: number}", required: true, description: "Direction vector to knock back toward" },
+            { name: "strength", type: "number", required: true, description: "Initial knockback speed" },
+            { name: "duration", type: "number", required: false, description: "Max duration in ms (default: 500)" },
+            { name: "friction", type: "number", required: false, description: "Velocity decay per frame 0-1 (default: 0.9)" },
+        ],
+    },
+
+    // ── Animation / Pose ──────────────────────
+    {
+        name: "dance",
+        description: "Start a looping dance animation (runs forever, use in parallel with a timed action)",
+        params: [],
+    },
+    {
+        name: "any",
+        description: "Play a named pose or special animation for a duration",
+        params: [
+            { name: "Name", type: "string", required: true, description: "Pose name (e.g. 'CROUCH')" },
+            { name: "time", type: "number", required: false, description: "Duration in ms (omit for infinite)" },
+        ],
+    },
+
     // ── Timing ─────────────────────────────────
     {
         name: "wait",
@@ -170,7 +213,7 @@ export const ACTION_MANIFEST: ActionDoc[] = [
 
     // ── Effects ────────────────────────────────
     {
-        name: "Fade",
+        name: "fade",
         description: "Fade entity opacity to a target alpha value",
         params: [
             { name: "targetAlpha", type: "number", required: true, description: "Target opacity 0-1 (0=invisible, 1=fully visible)" },
@@ -179,15 +222,15 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         ],
     },
     {
-        name: "Rotate",
+        name: "rotate",
         description: "Rotate entity to a target angle",
         params: [
-            { name: "Angle", type: "number", required: true, description: "Target angle in degrees" },
+            { name: "angle", type: "number", required: true, description: "Target angle in degrees" },
             { name: "duration", type: "number", required: false, description: "Duration in ms (0=instant, default: 0)" },
         ],
     },
     {
-        name: "Oscillate",
+        name: "oscillate",
         description: "Make entity oscillate back and forth (wobble/bob)",
         params: [
             { name: "amplitude", type: "number", required: true, description: "Oscillation distance in pixels" },
@@ -197,7 +240,7 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         ],
     },
     {
-        name: "Shake",
+        name: "shake",
         description: "Shake entity randomly (impact feedback, screen shake effect)",
         params: [
             { name: "intensity", type: "number", required: true, description: "Shake intensity in pixels" },
@@ -235,6 +278,35 @@ export const ACTION_MANIFEST: ActionDoc[] = [
     },
 ];
 
+
+export const AVAILABLE_BACKGROUNDS = [
+    "park", "city", "forest", "mountain", "beach", "desert",
+] as const;
+
+
+const ANIMATION_TOOLS_DOC = `
+## Animation Modes
+
+Entities support different animation modes that control how their sprite sheet plays:
+
+- **loop**: Animation frames cycle continuously (default for walking, dancing)
+- **once**: Animation plays once then stops on the last frame (e.g. attack hit)
+- **static**: Shows a single fixed frame (poses like CROUCH, SIT)
+- **freeze**: Pauses on the current frame (hold a mid-action pose)
+
+Available animation names for characters:
+- "UP", "DOWN", "LEFT", "RIGHT" — directional walk cycles
+- "DANCE" — dance loop
+- "STILL" — idle standing
+- "SIT" — sitting pose  
+- "HIT" — taking damage (plays once)
+- "CROUCH" — crouching pose
+
+The \`any\` action can play named poses.
+The \`faceDirection\` and \`turnTo\` actions change the facing direction.
+Attack actions automatically trigger hit animations on targets.
+`;
+
 export function generateActionCatalog(): string {
     const lines: string[] = ["## Available Actions\n"];
 
@@ -256,6 +328,12 @@ export function generateActionCatalog(): string {
 
         lines.push("");
     }
+
+    lines.push(ANIMATION_TOOLS_DOC);
+
+    lines.push(`## Available Backgrounds\n`);
+    lines.push(`Set the "background" field in SceneDefinition to one of: ${AVAILABLE_BACKGROUNDS.map(b => `"${b}"`).join(", ")}`);
+    lines.push(`Choose the most appropriate background based on the scene description.\n`);
 
     return lines.join("\n");
 }

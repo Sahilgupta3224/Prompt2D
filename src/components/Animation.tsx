@@ -6,18 +6,19 @@ import { useHeroAnimation } from "../helpers/useHeroAnimation";
 import { ANIMATION_SPEED } from "../constants/game-world";
 import { SceneRunner } from "../core/SceneRunner";
 import { DEMO_SCENE } from "../constants/demo-scene";
-import { backgroundAssets } from "../helpers/assets";
+import { backgroundAssets, objectAssets, type objectName } from "../helpers/assets";
+import { serializeWorldState } from "../llm/worldState";
+import { generateScene } from "../llm/client";
 extend({ Container, Sprite });
 
 interface IHeroProps {
   herotexture: Texture | null;
-  rocktexture: Texture | null;
   setBackgroundTexture: (texture: Texture) => void;
 }
 
-export const Animation = ({ herotexture, rocktexture, setBackgroundTexture }: IHeroProps) => {
-  if (!herotexture || !rocktexture) return null;
-
+export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => {
+  if (!herotexture) return null;
+  // const hasFetched = useRef(false);
   const sceneRef = useRef<SceneRunner | null>(null);
   const [entities, setEntities] = useState<Entity[]>([]);
 
@@ -30,17 +31,19 @@ export const Animation = ({ herotexture, rocktexture, setBackgroundTexture }: IH
 
   useEffect(() => {
     const scene = new SceneRunner(DEMO_SCENE);
+
+    // if (!hasFetched.current) {
+    //   hasFetched.current = true;
+    //   generateScene("a man is eating a banana.", serializeWorldState(scene.registry))
+    //     .then(data => console.log("LLM Response:", data))
+    //     .catch(err => console.error("LLM Error:", err));
+    // }
     sceneRef.current = scene;
 
     const hero = scene.registry.get("hero");
     if (hero) {
       hero.texture = herotexture;
       hero.currentanim = "RIGHT";
-    }
-
-    const rock = scene.registry.get("rock");
-    if (rock) {
-      rock.texture = rocktexture;
     }
 
     const background = scene.getBackground();
@@ -50,7 +53,16 @@ export const Animation = ({ herotexture, rocktexture, setBackgroundTexture }: IH
       })
     }
 
-    setEntities(scene.registry.getAll());
+    const objects = scene.getObjects();
+    const texturePromises = objects.map((object) =>
+      Assets.load(objectAssets[object.shape ?? "circle"]).then((texture) => {
+        object.texture = texture as Texture;
+      })
+    );
+
+    Promise.all(texturePromises).then(() => {
+      setEntities([...scene.registry.getAll()]);
+    });
 
     const unsubscribe = scene.registry.subscribe(() => {
       setEntities(scene.registry.getAll());
@@ -60,18 +72,18 @@ export const Animation = ({ herotexture, rocktexture, setBackgroundTexture }: IH
       unsubscribe();
       scene.destroy();
     };
-  }, []);
+  }, [herotexture]);
 
-  useEffect(() => {
-    const hero = sceneRef.current?.registry.get("hero");
-    if (hero) {
-      hero.texture = herotexture;
-    }
-    const rock = sceneRef.current?.registry.get("rock");
-    if (rock) {
-      rock.texture = rocktexture;
-    }
-  }, [herotexture, rocktexture]);
+  // useEffect(() => {
+  //   const hero = sceneRef.current?.registry.get("hero");
+  //   if (hero) {
+  //     hero.texture = herotexture;
+  //   }
+  //   const rock = sceneRef.current?.registry.get("rock");
+  //   if (rock) {
+  //     rock.texture = rocktexture;
+  //   }
+  // }, [herotexture, rocktexture]);
 
   function updateEntityTransform(e: Entity) {
     if (e.parent) {
