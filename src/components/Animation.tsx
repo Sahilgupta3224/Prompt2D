@@ -1,12 +1,13 @@
 import type { Entity } from "../types/Entity";
 import { useRef, useEffect, useState } from "react";
 import { Container, Sprite, Texture, Ticker, Assets } from "pixi.js";
-import { extend, useTick } from "@pixi/react";
+import { extend, useTick, useApplication } from "@pixi/react";
 import { useHeroAnimation } from "../helpers/useHeroAnimation";
 import { ANIMATION_SPEED } from "../constants/game-world";
 import { SceneRunner } from "../core/SceneRunner";
 import { DEMO_SCENE } from "../constants/demo-scene";
-import { backgroundAssets, objectAssets, type objectName } from "../helpers/assets";
+import { backgroundAssets } from "../helpers/assets";
+import { generateShapeTexture, type ShapeName } from "../helpers/shapeFactory";
 import { serializeWorldState } from "../llm/worldState";
 import { generateScene } from "../llm/client";
 extend({ Container, Sprite });
@@ -21,6 +22,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
   // const hasFetched = useRef(false);
   const sceneRef = useRef<SceneRunner | null>(null);
   const [entities, setEntities] = useState<Entity[]>([]);
+  const { app } = useApplication();
 
   const { update: heroAnimUpdate } = useHeroAnimation({
     texture: herotexture,
@@ -52,17 +54,18 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
         setBackgroundTexture(texture as Texture)
       })
     }
-
+    
     const objects = scene.getObjects();
-    const texturePromises = objects.map((object) =>
-      Assets.load(objectAssets[object.shape ?? "circle"]).then((texture) => {
-        object.texture = texture as Texture;
-      })
-    );
-
-    Promise.all(texturePromises).then(() => {
-      setEntities([...scene.registry.getAll()]);
-    });
+    if (app?.renderer) {
+      for (const object of objects) {
+        object.texture = generateShapeTexture(app.renderer, {
+          shape: (object.shape ?? "circle") as ShapeName,
+          color: object.color ?? "#4a90d9",
+          size: 64,
+        });
+      }
+    }
+    setEntities([...scene.registry.getAll()]);
 
     const unsubscribe = scene.registry.subscribe(() => {
       setEntities(scene.registry.getAll());

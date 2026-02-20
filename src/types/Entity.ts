@@ -1,5 +1,5 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import type { objectName } from "../helpers/assets";
+import type { ShapeName } from "../helpers/shapeFactory";
 
 export interface Entity {
     id: string,
@@ -21,5 +21,6 @@ export interface Entity {
     animMode?: "loop" | "once" | "static" | "freeze";
     animFinished?: boolean;
     isObject?: boolean;
-    shape?: objectName
+    shape?: ShapeName;
+    color?: string;
 }

@@ -335,5 +335,11 @@ export function generateActionCatalog(): string {
     lines.push(`Set the "background" field in SceneDefinition to one of: ${AVAILABLE_BACKGROUNDS.map(b => `"${b}"`).join(", ")}`);
     lines.push(`Choose the most appropriate background based on the scene description.\n`);
 
+    lines.push(`## Object Shapes & Colors\n`);
+    lines.push(`When creating object entities (isObject: true), you can set according to the shape of object:`);
+    lines.push(`  - "shape": one of: "circle", "square", "rectangle", "triangle", "diamond", "hexagon", "pentagon", "star", "heart", "ellipse", "capsule", "arrow", "cross", "ring", "semicircle", "cone", "cylinder", "pyramid"`);
+    lines.push(`  - "color": any CSS hex color (e.g. "#ff5500", "#2ecc71"). Default: "#4a90d9"`);
+    lines.push(`Choose shapes and colors that match the scene context.\n`);
+
     return lines.join("\n");
 }

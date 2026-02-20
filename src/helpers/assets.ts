@@ -1,5 +1,5 @@
 import backgroundAsset from "../assets/whitebg.png";
-import circle from "../assets/space-stars.jpg";
+// import circle from "../assets/space-stars.jpg";
 // import square from "../assets/square.png";
 // import rectangle from "../assets/rectangle.png";
 // import cylinder from "../assets/cylinder.png";
@@ -16,7 +16,7 @@ export const backgroundAssets = {
 }
 
 export const objectAssets = {
-  circle: circle,
+  circle: backgroundAsset,
   square: backgroundAsset,
   rectangle: backgroundAsset,
   cylinder: backgroundAsset,

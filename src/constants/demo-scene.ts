@@ -15,9 +15,10 @@ export const DEMO_SCENE: SceneDefinition = {
     {
       id: "rock",
       position: { x: 670, y: 50 },
-      scale: 0.1,
+      scale: 0.3,
       isObject: true,
-      shape: "circle"
+      shape: "circle",
+      color: "#111010"
     },
   ],
   background: "park",
@@ -75,11 +76,11 @@ export const DEMO_SCENE: SceneDefinition = {
       //   name: "Fade",
       //   params: {targetAlpha:0 },
       // },
-      {
-        type: "action",
-        name: "rotate",
-        params: { angle: 180, duration: 10 },
-      },
+      // {
+      //   type: "action",
+      //   name: "rotate",
+      //   params: { angle: 180, duration: 10 },
+      // },
       {
         type: "action",
         name: "oscillate",
