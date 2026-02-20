@@ -15,9 +15,9 @@ export const DEMO_SCENE: SceneDefinition = {
     {
       id: "rock",
       position: { x: 670, y: 50 },
-      scale: 0.3,
+      scale: 0.4,
       isObject: true,
-      shape: "circle",
+      shape: "randomPolygon",
       color: "#111010"
     },
   ],

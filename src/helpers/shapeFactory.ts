@@ -15,6 +15,7 @@ export type ShapeName =
     | "ring"
     | "cone"
     | "cylinder"
+    | "randomPolygon"
 
 export interface ShapeOptions {
     shape: ShapeName;
@@ -137,20 +138,33 @@ function drawShape(g: Graphics, shape: ShapeName, size: number): void {
             g.ellipse(half, size * 0.85, half, size * 0.15);
             break;
 
+        case "randomPolygon": {
+            let seed = size * 9301 + 49297;
+            const rand = () => {
+                seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+                return (seed >>> 0) / 0xffffffff;
+            };
+
+            const sides = 5 + Math.floor(rand() * 5);
+            const angleStep = (Math.PI * 2) / sides;
+            const minR = half * 0.55;
+            const maxR = half * 0.95;
+
+            for (let i = 0; i < sides; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const r = minR + rand() * (maxR - minR);
+                const x = half + r * Math.cos(angle);
+                const y = half + r * Math.sin(angle);
+                if (i === 0) g.moveTo(x, y);
+                else g.lineTo(x, y);
+            }
+            g.closePath();
+            break;
+        }
+
         default:
             g.circle(half, half, half);
     }
-}
-
-function drawPolygon(g: Graphics, cx: number, cy: number, r: number, sides: number): void {
-    for (let i = 0; i < sides; i++) {
-        const angle = (Math.PI * 2 * i) / sides - Math.PI / 2;
-        const x = cx + r * Math.cos(angle);
-        const y = cy + r * Math.sin(angle);
-        if (i === 0) g.moveTo(x, y);
-        else g.lineTo(x, y);
-    }
-    g.closePath();
 }
 
 export function generateShapeTexture(
@@ -188,6 +202,6 @@ export function getAvailableShapes(): ShapeName[] {
         "circle", "square", "rectangle", "triangle", "diamond",
         "star", "heart", "ellipse",
         "capsule", "arrow", "cross", "ring",
-        "cone", "cylinder"
+        "cone", "cylinder", "randomPolygon"
     ];
 }
