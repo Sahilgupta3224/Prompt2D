@@ -2,6 +2,26 @@ import { useRef } from "react"
 import { Texture, Rectangle } from "pixi.js"
 import type { Direction } from "../types/common"
 
+interface AnimState {
+  frame: number
+  elapsed: number
+  prevAnim: string | null
+}
+
+const getRowByDirection = (direction: Direction | null) => {
+  switch (direction) {
+    case "UP": return { row: 8, frames: 9 }
+    case "LEFT": return { row: 9, frames: 9 }
+    case "DOWN": return { row: 10, frames: 9 }
+    case "RIGHT": return { row: 11, frames: 9 }
+    case "DANCE": return { row: 2, frames: 9 }
+    case "STILL": return { row: 10, frames: 9 }
+    case "SIT": return { row: 19, frames: 13 }
+    case "HIT": return { row: 20, frames: 6 }
+    default: return { row: 0, frames: 7 }
+  }
+}
+
 export const useHeroAnimation = ({
   texture,
   frameWidth,
@@ -13,69 +33,63 @@ export const useHeroAnimation = ({
   frameHeight: number
   animationSpeed: number
 }) => {
-  const frameRef = useRef(0)
-  const elapsedRef = useRef(0)
-  const prevAnimRef = useRef<string | null>(null)
-  // console.log()
+  const statesRef = useRef<Map<string, AnimState>>(new Map())
 
-  const getRowByDirection = (direction: Direction | null) => {
-    switch (direction) {
-      case "UP": return { row: 8, frames: 9 }
-      case "LEFT": return { row: 9, frames: 9 }
-      case "DOWN": return { row: 10, frames: 9 }
-      case "RIGHT": return { row: 11, frames: 9 }
-      case "DANCE": return { row: 2, frames: 9 }
-      case "STILL": return { row: 10, frames: 9 }
-      case "SIT": return { row: 19, frames: 13 }
-      case "HIT": return {row: 20, frames: 6}
-      default: return { row: 0, frames: 7 }
+  const getOrCreateState = (entityId: string): AnimState => {
+    if (!statesRef.current.has(entityId)) {
+      statesRef.current.set(entityId, { frame: 0, elapsed: 0, prevAnim: null })
     }
+    return statesRef.current.get(entityId)!
   }
 
-  const update = (direction: Direction | null, animMode: "loop" | "once" | "static" | "freeze" = "loop") => {
+  const update = (
+    entityId: string,
+    direction: Direction | null,
+    animMode: "loop" | "once" | "static" | "freeze" = "loop"
+  ) => {
+    const state = getOrCreateState(entityId)
     const { row, frames } = getRowByDirection(direction)
-    // console.log(direction)
-    if (prevAnimRef.current !== direction) {
-      frameRef.current = 0
-      elapsedRef.current = 0
-      prevAnimRef.current = direction
+
+    if (state.prevAnim !== direction) {
+      state.frame = 0
+      state.elapsed = 0
+      state.prevAnim = direction
     }
 
     let finished = false
 
     if (animMode === "once") {
-      // console.log(frameRef.current)
-      if (frameRef.current < frames - 1) {
-        elapsedRef.current += animationSpeed
-        if (elapsedRef.current >= 1) {
-          elapsedRef.current = 0
-          frameRef.current++
+      if (state.frame < frames - 1) {
+        state.elapsed += animationSpeed
+        if (state.elapsed >= 1) {
+          state.elapsed = 0
+          state.frame++
         }
       } else {
         finished = true
       }
     } else if (animMode === "loop") {
-      elapsedRef.current += animationSpeed
-      if (elapsedRef.current >= 1) {
-        elapsedRef.current = 0
-        frameRef.current = (frameRef.current + 1) % frames
+      state.elapsed += animationSpeed
+      if (state.elapsed >= 1) {
+        state.elapsed = 0
+        state.frame = (state.frame + 1) % frames
       }
     } else if (animMode === "freeze") {
-      
     } else {
-      frameRef.current = 0
+      state.frame = 0
     }
 
-    texture = new Texture({
+    const frameTexture = new Texture({
       source: texture.source,
       frame: new Rectangle(
-        frameRef.current * frameWidth,
+        state.frame * frameWidth,
         row * frameHeight,
         frameWidth,
         frameHeight
       ),
     })
-    return { texture, frameIndex: frameRef.current, finished }
+
+    return { texture: frameTexture, frameIndex: state.frame, finished }
   }
 
   return { update }

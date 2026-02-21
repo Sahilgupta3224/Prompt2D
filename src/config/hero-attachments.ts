@@ -26,15 +26,15 @@ export const HERO_ATTACHMENTS: Record<string, Record<string, { x: number, y: num
         ]
     },
     RIGHT: {
-        hand: { x: 40, y: 35 }
+        hand: { x: 40, y: 85 }
     },
     LEFT: {
-        hand: { x: -40, y: 35 }
+        hand: { x: 40, y: 85 }
     },
     UP: {
-        hand: { x: 40, y: 35 }
+        hand: { x: 30, y: 85 }
     },
     DOWN: {
-        hand: { x: 40, y: 35 }
+        hand: { x: 30, y: 85 }
     }
 };

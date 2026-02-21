@@ -54,7 +54,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
         setBackgroundTexture(texture as Texture)
       })
     }
-    
+
     const objects = scene.getObjects();
     if (app?.renderer) {
       for (const object of objects) {
@@ -122,18 +122,17 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
 
     for (const e of scene.registry.getAll()) {
       updateEntityTransform(e);
-    }
-    // console.log(scene.registry.getAll())
-    const hero = scene.registry.get("hero");
-    const heroSprite = hero?.sprite.current;
-
-    if (hero && heroSprite) {
-      const mode = hero.animMode ?? (!!hero.state.isMoving || !!hero.state.isJumping ? "loop" : "static");
-      const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(hero.currentanim as any, mode);
-      heroSprite.texture = frameTexture;
-      hero.currentFrame = frameIndex;
-      if (finished) {
-        hero.animFinished = true;
+      const sprite = e.sprite.current;
+      if (e && sprite && !e.isObject) {
+        // console.log("hero", e)
+        const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
+        console.log(mode, e.id)
+        const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(e.id, e.currentanim as any, mode);
+        sprite.texture = frameTexture;
+        e.currentFrame = frameIndex;
+        if (finished) {
+          e.animFinished = true;
+        }
       }
     }
   });

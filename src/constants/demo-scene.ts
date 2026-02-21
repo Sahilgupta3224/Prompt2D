@@ -7,8 +7,14 @@ export const DEMO_SCENE: SceneDefinition = {
   name: "Demo Scene",
   entities: [
     {
-      id: "hero",
+      id: "hero1",
       position: { x: DEFAULT_X_POS, y: DEFAULT_Y_POS },
+      scale: 2,
+      attachments: HERO_ATTACHMENTS,
+    },
+    {
+      id: "hero2",
+      position: { x: DEFAULT_X_POS + 100, y: DEFAULT_Y_POS },
       scale: 2,
       attachments: HERO_ATTACHMENTS,
     },
@@ -29,12 +35,19 @@ export const DEMO_SCENE: SceneDefinition = {
         type: "action",
         name: "move",
         params: { destination: { x: 200, y: 200 } },
-        entityId: "hero"
+        entityId: "hero1"
+      },
+      {
+        type: "action",
+        name: "move",
+        params: { destination: { x: 300, y: 200 } },
+        entityId: "hero2"
       },
       {
         type: "action",
         name: "fade",
-        params: { targetAlpha: 0.5 }
+        params: { targetAlpha: 0.5 },
+        // entityId: "hero2"
       },
       {
         type: "action",
@@ -45,6 +58,7 @@ export const DEMO_SCENE: SceneDefinition = {
         type: "action",
         name: "emote",
         params: { emote: "happy", duration: 1000 },
+        entityId: "hero2"
       },
       {
         type: "action",
@@ -59,7 +73,7 @@ export const DEMO_SCENE: SceneDefinition = {
       {
         type: "action",
         name: "move",
-        params: { destination: { x: 300, y: 300 } },
+        params: { destination: { x: 600, y: 300 } },
       },
       {
         type: "action",
