@@ -107,28 +107,30 @@ export class TimelineRunner {
     }
 
     private processSequence(node: SequenceNode, state: NodeState, dt: number) {
-
-        const idx = state.sequenceIndex || 0;
-        if (idx >= node.children.length) {
-            state.completed = true;
-            return;
-        }
-
-        const currentChild = node.children[idx];
-        const childState = state.childrenStates![idx];
-
-        childState.active = true;
-
-        this.processNode(currentChild, childState, dt);
-
-        if (childState.completed) {
-            childState.active = false;
-            state.sequenceIndex!++;
-            if (state.sequenceIndex! >= node.children.length) {
+        while (!state.completed) {
+            const idx = state.sequenceIndex || 0;
+            if (idx >= node.children.length) {
                 state.completed = true;
+                break;
+            }
+
+            const currentChild = node.children[idx];
+            const childState = state.childrenStates![idx];
+
+            childState.active = true;
+            this.processNode(currentChild, childState, dt);
+
+            if (childState.completed) {
+                childState.active = false;
+                state.sequenceIndex = (state.sequenceIndex || 0) + 1;
+
+                if (state.sequenceIndex >= node.children.length) {
+                    state.completed = true;
+                }
+                // Continue the while loop to start the next child in the same frame!
             } else {
-                const nextState = state.childrenStates![state.sequenceIndex!];
-                nextState.active = true;
+                // Current child is still working, exit the loop for this frame.
+                break;
             }
         }
     }

@@ -103,10 +103,11 @@ export class EntityRegistry {
         const resolved = { ...params };
 
         for (const key of Object.keys(resolved)) {
-            if (key.endsWith("Id") && typeof resolved[key] === "string") {
-                const entityKey = key.slice(0, -2);
-                const entityId = resolved[key] as string;
+            if (key.endsWith("Id") && typeof (resolved as any)[key] === "string") {
+                const entityKey = key.slice(0, -2); 
+                const entityId = (resolved as any)[key] as string;
                 const entity = this.get(entityId);
+
                 if (entity) {
                     (resolved as any)[entityKey] = entity;
                 } else {

@@ -64,6 +64,7 @@ export class SceneRunner {
         }
         this.primaryEntity = primary;
         this.runner = new TimelineRunner(scene.timeline, this.primaryEntity, this.registry);
+        (window as any).__pixi_engine = this;  //need to remove later ( essential )
     }
 
     update(dt: number): boolean {

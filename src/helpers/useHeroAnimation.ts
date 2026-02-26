@@ -34,6 +34,7 @@ export const useHeroAnimation = ({
   animationSpeed: number
 }) => {
   const statesRef = useRef<Map<string, AnimState>>(new Map())
+  const textureCache = useRef<Map<string, Texture>>(new Map())
 
   const getOrCreateState = (entityId: string): AnimState => {
     if (!statesRef.current.has(entityId)) {
@@ -75,19 +76,26 @@ export const useHeroAnimation = ({
         state.frame = (state.frame + 1) % frames
       }
     } else if (animMode === "freeze") {
+      // Keep current frame
     } else {
       state.frame = 0
     }
+    
+    const cacheKey = `${texture.uid}_${row}_${state.frame}`;
+    let frameTexture = textureCache.current.get(cacheKey);
 
-    const frameTexture = new Texture({
-      source: texture.source,
-      frame: new Rectangle(
-        state.frame * frameWidth,
-        row * frameHeight,
-        frameWidth,
-        frameHeight
-      ),
-    })
+    if (!frameTexture) {
+      frameTexture = new Texture({
+        source: texture.source,
+        frame: new Rectangle(
+          state.frame * frameWidth,
+          row * frameHeight,
+          frameWidth,
+          frameHeight
+        ),
+      });
+      textureCache.current.set(cacheKey, frameTexture);
+    }
 
     return { texture: frameTexture, frameIndex: state.frame, finished }
   }
