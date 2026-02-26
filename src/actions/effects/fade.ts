@@ -7,26 +7,22 @@ type FadeParams = {
 };
 
 export const FadeAction: ActionDefinition<FadeParams> = {
-    enter: (entity, { targetAlpha, duration = 1000 }) => {
-        if (entity.state.alpha === undefined) {
-            const sprite = entity.sprite.current;
-            entity.state.alpha = sprite ? sprite.alpha : 1;
-        }
-
-        entity.state.fadeStart = entity.state.alpha;
-        entity.state.fadeTarget = Math.max(0, Math.min(1, targetAlpha));
-        entity.state.fadeDuration = duration;
-        entity.state.fadeStartTime = Date.now();
+    enter: (entity, { targetAlpha, duration = 1000 }, _ctx, s) => {
+        const sprite = entity.sprite.current;
+        s.startAlpha = sprite ? sprite.alpha : 1;
+        s.targetAlpha = Math.max(0, Math.min(1, targetAlpha));
+        s.startTime = Date.now();
 
         if (duration === 0) {
-            entity.state.alpha = entity.state.fadeTarget;
+            const sp = entity.sprite.current;
+            if (sp) sp.alpha = s.targetAlpha;
         }
     },
 
-    update: (entity, { duration = 1000, easing = "linear" }) => {
+    update: (entity, { duration = 1000, easing = "linear" }, _dt, _ctx, s) => {
         if (duration === 0) return true;
 
-        const elapsed = Date.now() - entity.state.fadeStartTime;
+        const elapsed = Date.now() - s.startTime;
         const p = Math.min(elapsed / duration, 1);
 
         let t = p;
@@ -38,24 +34,16 @@ export const FadeAction: ActionDefinition<FadeParams> = {
                 t = p * (2 - p);
                 break;
             case "easeInOut":
-                t = p < 0.5? 2 * p * p: -1 + (4 - 2 * p) * p;
+                t = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
                 break;
         }
 
-        const { fadeStart, fadeTarget } = entity.state;
-        entity.state.alpha = fadeStart + (fadeTarget - fadeStart) * t;
+        const alpha = s.startAlpha + (s.targetAlpha - s.startAlpha) * t;
         const sprite = entity.sprite.current;
         if (sprite) {
-            sprite.alpha = entity.state.alpha;
+            sprite.alpha = alpha;
         }
 
         return p >= 1;
-    },
-
-    exit: (entity) => {
-        delete entity.state.fadeStart;
-        delete entity.state.fadeTarget;
-        delete entity.state.fadeDuration;
-        delete entity.state.fadeStartTime;
     },
 };

@@ -16,13 +16,10 @@ export const GrabAction: ActionDefinition<GrabParams> = {
       object.attachmentPoint = attachmentPoint;
     }
 
-    entity.state.grabbedObject = object;
+    entity.state.heldObjectId = object.id;
   },
 
   update: () => {
     return true;
-  },
-
-  exit: () => {
   },
 };

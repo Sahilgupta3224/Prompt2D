@@ -9,16 +9,11 @@ type FaceDirectionParams = {
 export const FaceDirectionAction: ActionDefinition<FaceDirectionParams> = {
     enter: (entity, { direction }) => {
         playAnimation(entity, direction);
-        entity.state.faceDirectionSet = true;
     },
 
     update: (entity, { direction }) => {
         stopAnimation(entity);
         entity.currentanim = direction;
         return true;
-    },
-
-    exit: (entity) => {
-        delete entity.state.faceDirectionSet;
     },
 };

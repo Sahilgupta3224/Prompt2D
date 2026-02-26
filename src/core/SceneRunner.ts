@@ -1,8 +1,46 @@
-import type { SceneDefinition } from "../types/Scene";
+import type { SceneDefinition, EntityDefinition } from "../types/Scene";
 import type { Entity } from "../types/Entity";
 import { EntityRegistry } from "./EntityRegistry";
 import { TimelineRunner } from "../executor/TimelineRunner";
-import type{ BackgroundName } from "../helpers/assets";
+import type { BackgroundName } from "../helpers/assets";
+
+const MIN_SPAWN_DISTANCE = 20;
+const NUDGE_AMOUNT = 25;
+
+function resolvePositionConflicts(defs: EntityDefinition[]): EntityDefinition[] {
+    const resolved: EntityDefinition[] = [];
+
+    for (const def of defs) {
+        let x = def.position.x;
+        let y = def.position.y;
+
+        let hasConflict = true;
+        while (hasConflict) {
+            hasConflict = false;
+            for (const placed of resolved) {
+                const dx = x - placed.position.x;
+                const dy = y - placed.position.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < MIN_SPAWN_DISTANCE) {
+                    // having this just for the sake of testing
+                    console.warn(
+                        `[SceneRunner] Position conflict: entity "${def.id}" at (${x}, ${y}) ` +
+                        `is too close to "${placed.id}" at (${placed.position.x}, ${placed.position.y}). ` +
+                        `Nudging to (${placed.position.x + NUDGE_AMOUNT}, ${y}).`
+                    );
+                    x = placed.position.x + NUDGE_AMOUNT;
+                    hasConflict = true;
+                    break;
+                }
+            }
+        }
+
+        resolved.push({ ...def, position: { x, y } });
+    }
+
+    return resolved;
+}
 
 export class SceneRunner {
     readonly registry: EntityRegistry;
@@ -14,11 +52,13 @@ export class SceneRunner {
     constructor(scene: SceneDefinition, registry?: EntityRegistry) {
         this.registry = registry ?? new EntityRegistry();
 
-        for (const def of scene.entities) {
+        const safeEntities = resolvePositionConflicts(scene.entities);
+
+        for (const def of safeEntities) {
             this.registry.createFromDefinition(def);
         }
         this.backgroundTexture = scene.background;
-        const primary = this.registry.get(scene.entities[0].id);
+        const primary = this.registry.get(safeEntities[0].id);
         if (!primary) {
             throw new Error(`primary entity not found`);
         }
@@ -65,3 +105,4 @@ export class SceneRunner {
         this.registry.clear();
     }
 }
+

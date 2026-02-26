@@ -1,5 +1,5 @@
 import type { ActionDefinition } from "../../types/Action";
-import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection} from "../../helpers/common";
+import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
 
 type MovePathParams = {
@@ -9,80 +9,77 @@ type MovePathParams = {
 };
 
 export const MovePathAction: ActionDefinition<MovePathParams> = {
-    enter: (entity, { path, speed = MOVE_SPEED, loop = false }) => {
-        entity.state.pathWaypoints = [...path];
-        entity.state.pathCurrentIndex = 0;
-        entity.state.pathSpeed = speed;
-        entity.state.pathLoop = loop;
-        entity.state.direction = null;
-        entity.state.targetPosition = null;
+    enter: (entity, { path, speed = MOVE_SPEED, loop = false }, _ctx, s) => {
+        s.waypoints = [...path];
+        s.currentIndex = 0;
+        s.speed = speed;
+        s.loop = loop;
+        s.direction = null;
+        s.targetPosition = null;
         entity.state.isMoving = true;
     },
 
-    update: (entity, { speed = MOVE_SPEED }, delta) => {
-        const { pathWaypoints, pathCurrentIndex, pathLoop } = entity.state;
-
-        if (pathCurrentIndex >= pathWaypoints.length) {
-            if (pathLoop) {
-                entity.state.pathCurrentIndex = 0;
-                entity.state.direction = null;
-                entity.state.targetPosition = null;
+    update: (entity, { speed = MOVE_SPEED }, delta, _ctx, s) => {
+        if (s.currentIndex >= s.waypoints.length) {
+            if (s.loop) {
+                s.currentIndex = 0;
+                s.direction = null;
+                s.targetPosition = null;
             } else {
                 return true;
             }
         }
 
-        const currentDestination = pathWaypoints[entity.state.pathCurrentIndex];
+        const currentDestination = s.waypoints[s.currentIndex];
 
         if (reachedDestination({ x: entity.x, y: entity.y }, currentDestination)) {
-            entity.state.pathCurrentIndex++;
-            entity.state.direction = null;
-            entity.state.targetPosition = null;
+            s.currentIndex++;
+            s.direction = null;
+            s.targetPosition = null;
 
-            if (entity.state.pathCurrentIndex >= pathWaypoints.length && !pathLoop) {
+            if (s.currentIndex >= s.waypoints.length && !s.loop) {
                 return true;
             }
 
             return false;
         }
 
-        if (!entity.state.direction) {
+        if (!s.direction) {
             const angle = calculateAngle(
                 { x: entity.x, y: entity.y },
                 currentDestination
             );
-            entity.state.direction = {
+            s.direction = {
                 x: Math.cos(angle),
                 y: Math.sin(angle),
             };
-            entity.currentanim = angleToDirection(angle)
-            console.log(entity.currentanim)
+            entity.currentanim = angleToDirection(angle);
         }
 
-        if (!entity.state.targetPosition) {
+        if (!s.targetPosition) {
             const nextStep = moveByAngle(
                 { x: entity.x, y: entity.y },
-                entity.state.direction,
+                s.direction,
                 speed,
                 delta
             );
 
             if (checkCanMove(nextStep)) {
-                entity.state.targetPosition = nextStep;
+                s.targetPosition = nextStep;
             }
         }
 
-        if (entity.state.targetPosition) {
+        if (s.targetPosition) {
             const { position: newPosition, completed } = handleMovement(
                 { x: entity.x, y: entity.y },
-                entity.state.targetPosition,
+                s.targetPosition,
                 speed,
                 delta
             );
             entity.x = newPosition.x;
             entity.y = newPosition.y;
             if (completed) {
-                entity.state.targetPosition = null;
+                s.targetPosition = null;
             }
         }
 
@@ -91,11 +88,5 @@ export const MovePathAction: ActionDefinition<MovePathParams> = {
 
     exit: (entity) => {
         entity.state.isMoving = false;
-        delete entity.state.pathWaypoints;
-        delete entity.state.pathCurrentIndex;
-        delete entity.state.pathSpeed;
-        delete entity.state.pathLoop;
-        delete entity.state.direction;
-        delete entity.state.targetPosition;
     },
 };

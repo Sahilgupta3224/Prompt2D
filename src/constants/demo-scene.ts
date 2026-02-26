@@ -33,6 +33,11 @@ export const DEMO_SCENE: SceneDefinition = {
     children: [
       {
         type: "action",
+        name: "grab",
+        params: { objectId: "rock", attachmentPoint: "hand" },
+      },
+      {
+        type: "action",
         name: "move",
         params: { destination: { x: 200, y: 200 } },
         entityId: "hero1"
@@ -43,12 +48,12 @@ export const DEMO_SCENE: SceneDefinition = {
         params: { destination: { x: 300, y: 200 } },
         entityId: "hero2"
       },
-      {
-        type: "action",
-        name: "fade",
-        params: { targetAlpha: 0.5 },
-        // entityId: "hero2"
-      },
+      // {
+      //   type: "action",
+      //   name: "fade",
+      //   params: { targetAlpha: 0.5 },
+      //   // entityId: "hero2"
+      // },
       {
         type: "action",
         name: "speak",

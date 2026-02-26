@@ -8,16 +8,15 @@ type KnockBackParams = {
 };
 
 export const KnockBackAction: ActionDefinition<KnockBackParams> = {
-    enter: (entity, { direction, strength, duration, friction }) => {
-        entity.state.currentanim = "KNOCKED"
+    enter: (entity, { direction, strength, duration, friction }, _ctx, s) => {
         const len = Math.hypot(direction.x, direction.y) || 1;
         const nx = direction.x / len;
         const ny = direction.y / len;
-        entity.state.vx = nx * strength;
-        entity.state.vy = ny * strength;
-        entity.state.friction = friction || 0.9;
-        entity.state.duration = duration || 500;
-        entity.state.startTime = Date.now();
+        s.vx = nx * strength;
+        s.vy = ny * strength;
+        s.friction = friction || 0.9;
+        s.duration = duration || 500;
+        s.startTime = Date.now();
         if (Math.abs(nx) > Math.abs(ny)) {
             entity.currentanim = nx > 0 ? "RIGHT" : "LEFT";
         } else {
@@ -25,26 +24,16 @@ export const KnockBackAction: ActionDefinition<KnockBackParams> = {
         }
     },
 
-    update: (entity, _, delta) => {
-        const elapsed = Date.now() - entity.state.startTime;
-        const speed = Math.hypot(entity.vx, entity.vy);
-        if (speed<0.1 || elapsed > entity.state.duration) {
-            entity.state.vx = 0;
-            entity.state.vy = 0;
+    update: (entity, _, delta, _ctx, s) => {
+        const elapsed = Date.now() - s.startTime;
+        const speed = Math.hypot(s.vx, s.vy);
+        if (speed < 0.1 || elapsed > s.duration) {
             return true;
         }
-        entity.x += entity.state.vx * delta;
-        entity.y += entity.state.vy * delta;
-        entity.state.vx *= entity.state.friction;
-        entity.state.vy *= entity.state.friction;
+        entity.x += s.vx * delta;
+        entity.y += s.vy * delta;
+        s.vx *= s.friction;
+        s.vy *= s.friction;
         return false;
-    },
-
-    exit: (entity) => {
-        delete entity.state.vx;
-        delete entity.state.vy;
-        delete entity.state.friction;
-        delete entity.state.duration;
-        delete entity.state.startTime;
     },
 };

@@ -12,17 +12,16 @@ type PickUpParams = {
 };
 
 export const PickUpAction: ActionDefinition<PickUpParams> = {
-    enter: (entity, { object }) => {
-        entity.state.pickupPhase = "moving";
-        entity.state.pickupTarget = object;
+    enter: (entity, { object }, _ctx, s) => {
+        s.phase = "moving";
         entity.state.isMoving = true;
 
         const angle = calculateAngle({ x: entity.x, y: entity.y }, { x: object.x, y: object.y });
         entity.currentanim = angleToDirection(angle);
     },
 
-    update: (entity, { object, localOffset = { x: 0, y: 0 }, attachmentPoint, reachDistance , moveSpeed = MOVE_SPEED }, dt) => {
-        if (entity.state.pickupPhase === "moving") {
+    update: (entity, { object, localOffset = { x: 0, y: 0 }, attachmentPoint, reachDistance, moveSpeed = MOVE_SPEED }, dt, _ctx, s) => {
+        if (s.phase === "moving") {
             const angle = calculateAngle({ x: entity.x, y: entity.y }, { x: object.x, y: object.y });
             const speed = moveSpeed * dt;
 
@@ -31,7 +30,7 @@ export const PickUpAction: ActionDefinition<PickUpParams> = {
             entity.currentanim = angleToDirection(angle);
 
             if (reachedDestination({ x: entity.x, y: entity.y }, { x: object.x, y: object.y }, reachDistance)) {
-                entity.state.pickupPhase = "grabbed";
+                s.phase = "grabbed";
                 entity.state.isMoving = false;
 
                 object.parent = entity;
@@ -39,7 +38,7 @@ export const PickUpAction: ActionDefinition<PickUpParams> = {
                 if (attachmentPoint) {
                     object.attachmentPoint = attachmentPoint;
                 }
-                entity.state.grabbedObject = object;
+                entity.state.heldObjectId = object.id;
 
                 return true;
             }
@@ -50,7 +49,5 @@ export const PickUpAction: ActionDefinition<PickUpParams> = {
 
     exit: (entity) => {
         entity.state.isMoving = false;
-        delete entity.state.pickupPhase;
-        delete entity.state.pickupTarget;
     },
 };

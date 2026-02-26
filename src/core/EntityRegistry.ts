@@ -68,6 +68,7 @@ export class EntityRegistry {
             vx: 0,
             vy: 0,
             scale: options.scale ?? 1,
+            zIndex: options.isObject ? 11 : 10,
             isObject: options.isObject?? false,
             shape: options.shape?? 'circle',
             color: options.color,
@@ -104,7 +105,8 @@ export class EntityRegistry {
         for (const key of Object.keys(resolved)) {
             if (key.endsWith("Id") && typeof resolved[key] === "string") {
                 const entityKey = key.slice(0, -2);
-                const entity = this.get(resolved[key]);
+                const entityId = resolved[key] as string;
+                const entity = this.get(entityId);
                 if (entity) {
                     (resolved as any)[entityKey] = entity;
                 } else {

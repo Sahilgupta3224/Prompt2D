@@ -7,12 +7,9 @@ type SpeakParams = {
 };
 
 export const SpeakAction: ActionDefinition<SpeakParams> = {
-    enter: (entity, { text, duration = 2000 }) => {
-        entity.state.speech = {
-            text,
-            duration,
-            elapsed: 0,
-        };
+    enter: (entity, { text, duration = 2000 }, _ctx, s) => {
+        s.elapsed = 0;
+        s.duration = duration;
 
         const container = entity.container.current;
         if (container) {
@@ -60,14 +57,9 @@ export const SpeakAction: ActionDefinition<SpeakParams> = {
         }
     },
 
-    update: (entity, _, dt) => {
-        entity.state.speech.elapsed += dt * (1000 / 60);
-
-        if (entity.state.speech.elapsed >= entity.state.speech.duration) {
-            return true;
-        }
-
-        return false;
+    update: (_entity, _, dt, _ctx, s) => {
+        s.elapsed += dt * (1000 / 60);
+        return s.elapsed >= s.duration;
     },
 
     exit: (entity) => {
@@ -81,6 +73,5 @@ export const SpeakAction: ActionDefinition<SpeakParams> = {
                 bubble.destroy();
             }
         }
-        delete entity.state.speech;
     },
 };

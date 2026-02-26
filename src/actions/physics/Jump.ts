@@ -1,36 +1,33 @@
-import type { ActionDefinition } from "../../types/Action"; //GOOD
+import type { ActionDefinition } from "../../types/Action";
 
 type JumpParams = {
     height: number;
     distance?: number;
-    duration?: number; 
+    duration?: number;
     gravity?: number;
 };
 
 export const JumpAction: ActionDefinition<JumpParams> = {
-    enter: (entity, { height, distance = 0, duration = 600, gravity = 1 }) => {
-        entity.state.jumpPreviousAnim = entity.currentanim;
+    enter: (entity, { height, distance = 0, duration = 600, gravity = 1 }, _ctx, s) => {
+        s.previousAnim = entity.currentanim;
         entity.currentanim = "JUMP";
 
-        entity.state.jumpStartY = entity.y;
-        entity.state.jumpStartX = entity.x;
-        entity.state.jumpHeight = height;
-        entity.state.jumpDistance = distance;
-        entity.state.jumpDuration = duration;
-        entity.state.jumpGravity = gravity;
-        entity.state.jumpStartTime = Date.now();
-        entity.state.jumpProgress = 0;
+        s.startY = entity.y;
+        s.startX = entity.x;
+        s.height = height;
+        s.distance = distance;
+        s.duration = duration;
+        s.gravity = gravity;
+        s.startTime = Date.now();
         entity.state.isJumping = true;
-        entity.state.jumpInitialVelocity = Math.sqrt(2 * gravity * height * 60); 
     },
 
-    update: (entity, { height, distance = 0, duration = 600, gravity = 1 }, delta) => {
-        const elapsed = Date.now() - entity.state.jumpStartTime;
+    update: (entity, { height, distance = 0, duration = 600, gravity = 1 }, _delta, _ctx, s) => {
+        const elapsed = Date.now() - s.startTime;
         const progress = Math.min(elapsed / duration, 1);
-        entity.state.jumpProgress = progress;
 
         if (distance !== 0) {
-            entity.x = entity.state.jumpStartX + distance * progress;
+            entity.x = s.startX + distance * progress;
         }
 
         const t = progress * 2;
@@ -43,26 +40,15 @@ export const JumpAction: ActionDefinition<JumpParams> = {
             verticalOffset = -height * (1 - fallT * fallT * gravity);
         }
 
-        entity.y = entity.state.jumpStartY + verticalOffset;
+        entity.y = s.startY + verticalOffset;
 
         return progress >= 1;
     },
 
-    exit: (entity) => {
-        if (entity.state.jumpPreviousAnim) {
-            entity.currentanim = entity.state.jumpPreviousAnim;
+    exit: (entity, _params, _ctx, s) => {
+        if (s.previousAnim) {
+            entity.currentanim = s.previousAnim;
         }
-
         entity.state.isJumping = false;
-        delete entity.state.jumpStartY;
-        delete entity.state.jumpStartX;
-        delete entity.state.jumpHeight;
-        delete entity.state.jumpDistance;
-        delete entity.state.jumpDuration;
-        delete entity.state.jumpGravity;
-        delete entity.state.jumpStartTime;
-        delete entity.state.jumpProgress;
-        delete entity.state.jumpInitialVelocity;
-        delete entity.state.jumpPreviousAnim;
     },
 };

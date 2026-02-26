@@ -5,19 +5,17 @@ import { playAnimation, playAnimationOnce } from "../../helpers/animationTools";
 
 type SitOnParams = {
     seat: { x: number; y: number };
-    // duration?: number;
     moveSpeed?: number;
 };
 
 export const SitOnAction: ActionDefinition<SitOnParams> = {
-    enter: (entity) => {
-        entity.state.sitPhase = "moving";
+    enter: (entity, _params, _ctx, s) => {
+        s.phase = "moving";
         entity.state.isMoving = true;
-        entity.state.sitElapsed = 0;
     },
 
-    update: (entity, { seat, moveSpeed = MOVE_SPEED }, dt) => {
-        if (entity.state.sitPhase === "moving") {
+    update: (entity, { seat, moveSpeed = MOVE_SPEED }, dt, _ctx, s) => {
+        if (s.phase === "moving") {
             const angle = calculateAngle({ x: entity.x, y: entity.y }, seat);
             const speed = moveSpeed * dt;
 
@@ -26,10 +24,9 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
             playAnimation(entity, angleToDirection(angle));
 
             if (reachedDestination({ x: entity.x, y: entity.y }, seat, 5)) {
-                console.log("reached")
                 entity.x = seat.x;
                 entity.y = seat.y;
-                entity.state.sitPhase = "sitTransition";
+                s.phase = "sitTransition";
                 entity.state.isMoving = false;
                 entity.state.isSitting = true;
                 playAnimationOnce(entity, "SIT");
@@ -37,23 +34,12 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
             return false;
         }
 
-        if (entity.state.sitPhase === "sitTransition") {
+        if (s.phase === "sitTransition") {
             if (entity.animFinished) {
-                console.log("khatam")
-                entity.state.sitPhase = "sitting";
+                s.phase = "sitting";
                 return true;
             }
         }
-
-        // if (entity.state.sitPhase === "sitting") {
-        //     if (duration !== undefined) {
-        //         entity.state.sitElapsed += dt * (1000 / 60);
-        //         if (entity.state.sitElapsed >= duration) {
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // }
 
         return false;
     },
@@ -61,8 +47,6 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
     exit: (entity) => {
         entity.state.isSitting = false;
         entity.state.isMoving = false;
-        delete entity.state.sitPhase;
-        delete entity.state.sitElapsed;
         entity.animMode = "freeze";
         delete entity.animFinished;
     },

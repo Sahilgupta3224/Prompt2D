@@ -8,56 +8,48 @@ type ShakeParams = {
 };
 
 export const ShakeAction: ActionDefinition<ShakeParams> = {
-    enter: (entity, { intensity, duration, frequency = 10, axis = "both" }) => {
-        entity.state.shakeCenter = { x: entity.x, y: entity.y };
-        entity.state.shakeIntensity = intensity;
-        entity.state.shakeDuration = duration;
-        entity.state.shakeFrequency = frequency;
-        entity.state.shakeAxis = axis;
-        entity.state.shakeStartTime = Date.now();
-        entity.state.shakeLastUpdate = 0;
+    enter: (entity, { intensity, duration, frequency = 10, axis = "both" }, _ctx, s) => {
+        s.center = { x: entity.x, y: entity.y };
+        s.intensity = intensity;
+        s.duration = duration;
+        s.frequency = frequency;
+        s.axis = axis;
+        s.startTime = Date.now();
+        s.lastUpdate = 0;
     },
 
-    update: (entity, { intensity, duration, frequency = 10, axis = "both" }, delta) => {
-        const elapsed = Date.now() - entity.state.shakeStartTime;
+    update: (entity, { intensity, duration, frequency = 10, axis = "both" }, delta, _ctx, s) => {
+        const elapsed = Date.now() - s.startTime;
 
         if (duration !== undefined && elapsed >= duration) {
-            entity.x = entity.state.shakeCenter.x;
-            entity.y = entity.state.shakeCenter.y;
+            entity.x = s.center.x;
+            entity.y = s.center.y;
             return true;
         }
         const updateInterval = 1000 / frequency;
-        entity.state.shakeLastUpdate += delta * 16.67;
+        s.lastUpdate += delta * 16.67;
 
-        if (entity.state.shakeLastUpdate >= updateInterval) {
-            entity.state.shakeLastUpdate = 0;
+        if (s.lastUpdate >= updateInterval) {
+            s.lastUpdate = 0;
 
-            const { shakeCenter } = entity.state;
             const offsetX = (Math.random() - 0.5) * 2 * intensity;
             const offsetY = (Math.random() - 0.5) * 2 * intensity;
 
             if (axis === "x" || axis === "both") {
-                entity.x = shakeCenter.x + offsetX;
+                entity.x = s.center.x + offsetX;
             }
             if (axis === "y" || axis === "both") {
-                entity.y = shakeCenter.y + offsetY;
+                entity.y = s.center.y + offsetY;
             }
         }
 
         return false;
     },
 
-    exit: (entity) => {
-        if (entity.state.shakeCenter) {
-            entity.x = entity.state.shakeCenter.x;
-            entity.y = entity.state.shakeCenter.y;
+    exit: (entity, _params, _ctx, s) => {
+        if (s.center) {
+            entity.x = s.center.x;
+            entity.y = s.center.y;
         }
-        delete entity.state.shakeCenter;
-        delete entity.state.shakeIntensity;
-        delete entity.state.shakeDuration;
-        delete entity.state.shakeFrequency;
-        delete entity.state.shakeAxis;
-        delete entity.state.shakeStartTime;
-        delete entity.state.shakeLastUpdate;
     },
 };

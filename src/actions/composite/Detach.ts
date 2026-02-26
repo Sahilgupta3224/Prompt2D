@@ -10,13 +10,10 @@ export const DetachAction: ActionDefinition<DetachParams> = {
     object.parent = null;
     delete object.localOffset;
     delete object.attachmentPoint;
-    delete entity.state.grabbedObject
-  },
-  
-  update: () => {
-    return true;
+    delete entity.state.heldObjectId;
   },
 
-  exit: () => {
+  update: () => {
+    return true;
   },
 };

@@ -126,7 +126,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
       if (e && sprite && !e.isObject) {
         // console.log("hero", e)
         const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
-        console.log(mode, e.id)
+        // console.log(mode, e.id)
         const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(e.id, e.currentanim as any, mode);
         sprite.texture = frameTexture;
         e.currentFrame = frameIndex;
@@ -139,15 +139,17 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
 
   return (
     <pixiContainer>
-      {entities.map((e, i) => (
-        <pixiContainer key={i} ref={e.container}>
-          <pixiSprite
-            ref={e.sprite}
-            texture={e.texture ?? undefined}
-            scale={e.scale}
-          />
-        </pixiContainer>
-      ))}
+      {[...entities]
+        .sort((a, b) => a.zIndex - b.zIndex)
+        .map((e, i) => (
+          <pixiContainer key={i} ref={e.container} zIndex={e.zIndex}>
+            <pixiSprite
+              ref={e.sprite}
+              texture={e.texture ?? undefined}
+              scale={e.scale}
+            />
+          </pixiContainer>
+        ))}
     </pixiContainer>
   );
 };

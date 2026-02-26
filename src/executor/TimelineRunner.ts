@@ -91,16 +91,17 @@ export class TimelineRunner {
             : this.entity;
 
         const resolvedParams = this.ctx.registry.resolveParams(node.params ?? {});
+        const aState = state.actionState;
 
-        if (!state.actionState.started) {
-            actionDef.enter?.(targetEntity, resolvedParams, this.ctx);
-            state.actionState.started = true;
+        if (!aState.started) {
+            actionDef.enter?.(targetEntity, resolvedParams, this.ctx, aState);
+            aState.started = true;
         }
 
-        const isComplete = actionDef.update(targetEntity, resolvedParams, dt, this.ctx);
+        const isComplete = actionDef.update(targetEntity, resolvedParams, dt, this.ctx, aState);
 
         if (isComplete) {
-            actionDef.exit?.(targetEntity, resolvedParams, this.ctx);
+            actionDef.exit?.(targetEntity, resolvedParams, this.ctx, aState);
             state.completed = true;
         }
     }

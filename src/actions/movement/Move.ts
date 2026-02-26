@@ -6,49 +6,48 @@ import { playAnimation } from "../../helpers/animationTools";
 
 export const MoveAction: ActionDefinition<MoveParams> = {
 
-  enter: (entity) => {
-    entity.state.direction = null
-    entity.state.targetPosition = null
-    entity.state.moveStart = { x: entity.x, y: entity.y };
+  enter: (entity, _params, _ctx, s) => {
+    s.direction = null;
+    s.targetPosition = null;
+    s.moveStart = { x: entity.x, y: entity.y };
     entity.state.isMoving = true;
   },
-  update: (entity, { destination }, delta) => {
-    if (!entity.state.direction) {
+  update: (entity, { destination }, delta, _ctx, s) => {
+    if (!s.direction) {
       const angle = calculateAngle(
         { x: entity.x, y: entity.y },
         destination
       )
 
-      entity.state.direction = {
+      s.direction = {
         x: Math.cos(angle),
         y: Math.sin(angle),
       }
       playAnimation(entity, angleToDirection(angle));
-      console.log(entity.currentanim)
     }
-    if (!entity.state.targetPosition) {
+    if (!s.targetPosition) {
       const nextStep = moveByAngle(
         { x: entity.x, y: entity.y },
-        entity.state.direction,
+        s.direction,
         MOVE_SPEED,
         delta
       )
 
       if (checkCanMove(nextStep)) {
-        entity.state.targetPosition = nextStep
+        s.targetPosition = nextStep
       }
     }
-    if (entity.state.targetPosition) {
+    if (s.targetPosition) {
       const { position: newPosition, completed } = handleMovement(
         { x: entity.x, y: entity.y },
-        entity.state.targetPosition,
+        s.targetPosition,
         MOVE_SPEED,
         delta
       )
       entity.x = newPosition.x
       entity.y = newPosition.y
       if (completed) {
-        entity.state.targetPosition = null
+        s.targetPosition = null
       }
     }
     if (reachedDestination({ x: entity.x, y: entity.y }, destination)) {
@@ -58,10 +57,7 @@ export const MoveAction: ActionDefinition<MoveParams> = {
   },
 
   exit: (entity) => {
-    entity.state.isMoving = false
-    delete entity.state.direction
-    delete entity.state.targetPosition
-    delete entity.state.moveStart
-    delete entity.animMode
+    entity.state.isMoving = false;
+    delete entity.animMode;
   }
 };

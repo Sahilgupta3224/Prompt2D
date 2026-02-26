@@ -1,27 +1,17 @@
 import type { ActionDefinition } from "../../types/Action";
 
 type WaitParams = {
-    duration: number; 
+    duration: number;
 };
 
 export const WaitAction: ActionDefinition<WaitParams> = {
-    enter: (entity, { duration }) => {
-        entity.state.waitElapsed = 0;
-        entity.state.waitDuration = duration;
+    enter: (_entity, { duration }, _ctx, s) => {
+        s.elapsed = 0;
+        s.duration = duration;
     },
 
-    update: (entity, _, dt) => {
-        entity.state.waitElapsed += dt * (1000 / 60);
-
-        if (entity.state.waitElapsed >= entity.state.waitDuration) {
-            return true;
-        }
-
-        return false;
-    },
-
-    exit: (entity) => {
-        delete entity.state.waitElapsed;
-        delete entity.state.waitDuration;
+    update: (_entity, _, dt, _ctx, s) => {
+        s.elapsed += dt * (1000 / 60);
+        return s.elapsed >= s.duration;
     },
 };

@@ -2,8 +2,6 @@ import type { ActionDefinition } from "../../types/Action";
 import type { Entity } from "../../types/Entity";
 import { calculateAngle } from "../../helpers/common";
 
-
-
 type LookParams = {
     target?: Entity | { x: number; y: number };
     direction?: { x: number; y: number };
@@ -12,7 +10,7 @@ type LookParams = {
 };
 
 export const LookAction: ActionDefinition<LookParams> = {
-    enter: (entity, { target, direction, angle, instant = false }) => {
+    enter: (entity, { target, direction, angle, instant = false }, _ctx, s) => {
         let targetAngle: number;
 
         if (angle !== undefined) {
@@ -28,55 +26,39 @@ export const LookAction: ActionDefinition<LookParams> = {
             throw new Error("Look action requires target, direction, or angle");
         }
 
-        if (!entity.state.rotation) {
-            entity.state.rotation = 0;
-        }
+        const sprite = entity.sprite.current;
+        s.currentRotation = sprite ? sprite.rotation : 0;
+        s.targetAngle = targetAngle;
+        s.instant = instant;
 
-        entity.state.lookTargetAngle = targetAngle;
-        entity.state.lookInstant = instant;
-
-        if (instant) {
-            entity.state.rotation = targetAngle;
-            const sprite = entity.sprite.current;
-            if (sprite) {
-                sprite.rotation = targetAngle;
-            }
+        if (instant && sprite) {
+            sprite.rotation = targetAngle;
         }
     },
 
-    update: (entity, { instant = false }, delta) => {
+    update: (entity, { instant = false }, delta, _ctx, s) => {
         if (instant) return true;
 
-        const targetAngle = entity.state.lookTargetAngle;
-        const currentAngle = entity.state.rotation || 0;
+        const currentAngle = s.currentRotation || 0;
 
-        // Calculate shortest rotation direction
-        let angleDiff = targetAngle - currentAngle;
+        let angleDiff = s.targetAngle - currentAngle;
 
-        // Normalize to -PI to PI range
         while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
         while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
 
-        // Smooth rotation (5 degrees per frame scaled by delta)
         const rotationSpeed = (5 * Math.PI / 180) * delta;
 
         if (Math.abs(angleDiff) < rotationSpeed) {
-            entity.state.rotation = targetAngle;
+            s.currentRotation = s.targetAngle;
         } else {
-            entity.state.rotation += Math.sign(angleDiff) * rotationSpeed;
+            s.currentRotation += Math.sign(angleDiff) * rotationSpeed;
         }
 
-        // Update sprite rotation
         const sprite = entity.sprite.current;
         if (sprite) {
-            sprite.rotation = entity.state.rotation;
+            sprite.rotation = s.currentRotation;
         }
 
-        return Math.abs(angleDiff) < 0.01; // Complete when close enough
-    },
-
-    exit: (entity) => {
-        delete entity.state.lookTargetAngle;
-        delete entity.state.lookInstant;
+        return Math.abs(angleDiff) < 0.01;
     },
 };

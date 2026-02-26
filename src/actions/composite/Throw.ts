@@ -9,11 +9,11 @@ type ThrowParams = {
 };
 
 export const ThrowAction: ActionDefinition<ThrowParams> = {
-    enter: (entity, { object, target, arcHeight, gravity = 2000 }) => {
+    enter: (entity, { object, target, arcHeight, gravity = 2000 }, _ctx, s) => {
         object.parent = null;
         delete object.localOffset;
         delete object.attachmentPoint;
-        delete entity.state.grabbedObject;
+        delete entity.state.heldObjectId;
 
         const startX = object.x;
         const startY = object.y;
@@ -28,36 +28,29 @@ export const ThrowAction: ActionDefinition<ThrowParams> = {
 
         object.vx = vx;
         object.vy = vy;
-        entity.state.throwGravity = gravity;
-        entity.state.throwElapsed = 0;
-        entity.state.throwDuration = t;
-        entity.state.throwTarget = target;
+        s.gravity = gravity;
+        s.elapsed = 0;
+        s.duration = t;
+        s.target = target;
     },
 
-    update: (entity, { object }, dt) => {
+    update: (_entity, { object }, dt, _ctx, s) => {
         const dtSeconds = dt / 60;
 
-        entity.state.throwElapsed += dtSeconds;
+        s.elapsed += dtSeconds;
 
-        object.vy += entity.state.throwGravity * dtSeconds;
+        object.vy += s.gravity * dtSeconds;
         object.x += object.vx * dtSeconds;
         object.y += object.vy * dtSeconds;
 
-        if (entity.state.throwElapsed >= entity.state.throwDuration) {
-            object.x = entity.state.throwTarget.x;
-            object.y = entity.state.throwTarget.y;
+        if (s.elapsed >= s.duration) {
+            object.x = s.target.x;
+            object.y = s.target.y;
             object.vx = 0;
             object.vy = 0;
             return true;
         }
 
         return false;
-    },
-
-    exit: (entity) => {
-        delete entity.state.throwGravity;
-        delete entity.state.throwElapsed;
-        delete entity.state.throwDuration;
-        delete entity.state.throwTarget;
     },
 };

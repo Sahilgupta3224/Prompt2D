@@ -4,18 +4,16 @@ import type { Entity } from "../../types/Entity";
 type FollowParams = {
     target: Entity;
     offset?: { x: number; y: number };
-    smoothing?: number; 
-    maintainDistance?: number; 
+    smoothing?: number;
+    maintainDistance?: number;
 };
 
 export const FollowAction: ActionDefinition<FollowParams> = {
-    enter: (entity, { offset = { x: 0, y: 0 }, smoothing = 0.1 }) => {
-        entity.state.followOffset = offset;
-        entity.state.followSmoothing = Math.max(0, Math.min(1, smoothing));
-        entity.state.isFollowing = true;
+    enter: (entity) => {
+        entity.state.isMoving = true;
     },
 
-    update: (entity, { target, offset = { x: 0, y: 0 }, smoothing=0.9, maintainDistance }, delta) => {
+    update: (entity, { target, offset = { x: 0, y: 0 }, smoothing = 0.9, maintainDistance }, delta) => {
         if (!target) {
             return true;
         }
@@ -37,8 +35,6 @@ export const FollowAction: ActionDefinition<FollowParams> = {
     },
 
     exit: (entity) => {
-        entity.state.isFollowing = false;
-        delete entity.state.followOffset;
-        delete entity.state.followSmoothing;
+        entity.state.isMoving = false;
     },
 };
