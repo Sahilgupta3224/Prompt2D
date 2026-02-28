@@ -1,3 +1,5 @@
+// we can use wait action before every action to have clear animation
+
 import type { SceneDefinition } from "../types/Scene";
 import { DEFAULT_X_POS, DEFAULT_Y_POS } from "./game-world";
 import { HERO_ATTACHMENTS } from "../config/hero-attachments";
@@ -60,21 +62,22 @@ export const DEMO_SCENE: SceneDefinition = {
       // //   params: { targetAlpha: 0.5 },
       // //   // entityId: "hero2"
       // // },
+      {
+        type: "action",
+        name: "speak",
+        params: { text: "HIIIIIIIIIIIIIIIII   !!", duration: 2000 },
+        entityId: "hero2"
+      },
       // {
       //   type: "action",
-      //   name: "speak",
-      //   params: { text: "Hello world!", duration: 2000 },
-      // },
-      // {
-      //   type: "action",
-      //   name: "emote",
-      //   params: { emote: "happy", duration: 1000 },
-      //   entityId: "hero2"
+      //   name: "wait",
+      //   params: { duration: 500 },
       // },
       {
         type: "action",
-        name: "wait",
-        params: { duration: 500 },
+        name: "emote",
+        params: { emote: "happy", duration: 1000 },
+        entityId: "hero2"
       },
       // {
       //   type: "action",
@@ -86,6 +89,12 @@ export const DEMO_SCENE: SceneDefinition = {
       //   name: "move",
       //   params: { destination: { x: 600, y: 300 } },
       // },
+
+      {
+        type: "action",
+        name: "attack",
+        params: { targetId: "hero2", weapon: "melee" },
+      },
       // {
       //   type: "action",
       //   name: "jump",

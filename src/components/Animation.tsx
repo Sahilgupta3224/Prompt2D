@@ -91,7 +91,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
   function updateEntityTransform(e: Entity) {
     if (e.parent) {
       let offset = e.localOffset || { x: 0, y: 0 };
-      console.log(e.parent)
+      // console.log(e.parent)
       if (e.attachmentPoint && e.parent.attachmentConfig) {
         const anim = e.parent.currentanim;
         const frame = e.parent.currentFrame || 0;
