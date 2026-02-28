@@ -20,11 +20,16 @@ const EMOTE_MAP: Record<string, string> = {
 };
 
 export const EmoteAction: ActionDefinition<EmoteParams> = {
-    enter: (entity, { emote, duration }, _ctx, s) => {
+    enter: (entity, { emote, duration }) => {
         const symbol = EMOTE_MAP[emote] ?? emote;
-        s.elapsed = 0;
-        s.duration = duration;
-        s.startY = -20;
+
+        entity.state.emote = {
+            type: emote,
+            symbol,
+            duration,
+            elapsed: 0,
+            startY: -20,
+        };
 
         const container = entity.container.current;
         if (container) {
@@ -47,8 +52,8 @@ export const EmoteAction: ActionDefinition<EmoteParams> = {
         }
     },
 
-    update: (entity, _, dt, _ctx, s) => {
-        s.elapsed += dt * (1000 / 60);
+    update: (entity, _, dt) => {
+        entity.state.emote.elapsed += dt * (1000 / 60);
 
         const container = entity.container.current;
         if (container) {
@@ -56,13 +61,17 @@ export const EmoteAction: ActionDefinition<EmoteParams> = {
                 (c) => c.label === "__emote__"
             );
             if (emoteContainer) {
-                const progress = s.elapsed / s.duration;
-                emoteContainer.y = s.startY - Math.sin(progress * Math.PI) * 15;
+                const progress = entity.state.emote.elapsed / entity.state.emote.duration;
+                emoteContainer.y = entity.state.emote.startY - Math.sin(progress * Math.PI) * 15;
                 emoteContainer.alpha = progress > 0.7 ? 1 - (progress - 0.7) / 0.3 : 1;
             }
         }
 
-        return s.elapsed >= s.duration;
+        if (entity.state.emote.elapsed >= entity.state.emote.duration) {
+            return true;
+        }
+
+        return false;
     },
 
     exit: (entity) => {
@@ -76,5 +85,6 @@ export const EmoteAction: ActionDefinition<EmoteParams> = {
                 emoteContainer.destroy();
             }
         }
+        delete entity.state.emote;
     },
 };

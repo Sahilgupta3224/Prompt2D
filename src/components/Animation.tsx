@@ -91,10 +91,13 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
   function updateEntityTransform(e: Entity) {
     if (e.parent) {
       let offset = e.localOffset || { x: 0, y: 0 };
+      console.log(e.parent)
       if (e.attachmentPoint && e.parent.attachmentConfig) {
         const anim = e.parent.currentanim;
         const frame = e.parent.currentFrame || 0;
-        const config = e.parent.attachmentConfig[anim]?.[e.attachmentPoint];
+        // console.log(anim)
+        const config = e.parent.attachmentConfig[anim === "" ? "UP" : anim]?.[e.attachmentPoint];
+        // console.log(config, e)
         if (config) {
           if (Array.isArray(config)) {
             offset = config[frame % config.length];
@@ -102,6 +105,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
             offset = config;
           }
         }
+        // console.log(config, offset)
       }
       e.x = e.parent.x + offset.x;
       e.y = e.parent.y + offset.y;
