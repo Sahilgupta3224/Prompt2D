@@ -56,12 +56,12 @@ export const DEMO_SCENE: SceneDefinition = {
       //   params: { destination: { x: 300, y: 200 } },
       //   entityId: "hero2"
       // },
-      // // {
-      // //   type: "action",
-      // //   name: "fade",
-      // //   params: { targetAlpha: 0.5 },
-      // //   // entityId: "hero2"
-      // // },
+      {
+        type: "action",
+        name: "fade",
+        params: { targetAlpha: 0.5 },
+        // entityId: "hero2"
+      },
       {
         type: "action",
         name: "speak",
@@ -89,7 +89,12 @@ export const DEMO_SCENE: SceneDefinition = {
       //   name: "move",
       //   params: { destination: { x: 600, y: 300 } },
       // },
-
+      {
+        type: "action",
+        name: "shake",
+        params: { intensity: 10, duration: 1000, frequency: 10, axis: "both", decay: true },
+        // entityId:"rock"
+      },
       {
         type: "action",
         name: "attack",
@@ -110,21 +115,15 @@ export const DEMO_SCENE: SceneDefinition = {
       // //   name: "Fade",
       // //   params: {targetAlpha:0 },
       // // },
-      // // {
-      // //   type: "action",
-      // //   name: "rotate",
-      // //   params: { angle: 180, duration: 10 },
-      // // },
+      {
+        type: "action",
+        name: "rotate",
+        params: { angle: 360, duration: 1000, speed: 1 },
+      },
       // {
       //   type: "action",
       //   name: "oscillate",
-      //   params: { amplitude: 100, duration: 1000, frequency: 1, axis: "x" },
-      // },
-      // {
-      //   type: "action",
-      //   name: "shake",
-      //   params: { intensity: 10, duration: 1000, frequency: 10, axis: "both" },
-      //   // entityId:"rock"
+      //   params: { amplitude: 100, amplitudeY: 100, duration: 1000, frequency: 1, axis: "both" },
       // }
     ],
   },
