@@ -118,26 +118,28 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
   }
 
   useTick((ticker: Ticker) => {
-    const scene = sceneRef.current;
-    if (!scene) return;
     const dt = ticker.deltaTime;
-
-    scene.update(dt);
-
-    for (const e of scene.registry.getAll()) {
-      updateEntityTransform(e);
-      const sprite = e.sprite.current;
-      if (e && sprite && !e.isObject) {
-        // console.log("hero", e)
-        const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
-        // console.log(mode, e.id)
-        const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(e.id, e.currentanim as any, mode);
-        sprite.texture = frameTexture;
-        e.currentFrame = frameIndex;
-        if (finished) {
-          e.animFinished = true;
+    try{
+      const scene = sceneRef.current;
+      if (!scene) return;
+      scene.update(dt);
+  
+      for (const e of scene.registry.getAll()) {
+        updateEntityTransform(e);
+        const sprite = e.sprite.current;
+        if (e && sprite && !e.isObject) {
+          const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
+          const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(e.id, e.currentanim as any, mode);
+          sprite.texture = frameTexture;
+          e.currentFrame = frameIndex;
+          if (finished) {
+            e.animFinished = true;
+          }
         }
       }
+    }
+    catch(e){
+      console.warn(e)
     }
   });
 
