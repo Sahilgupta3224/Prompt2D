@@ -7,13 +7,25 @@ type DetachParams = {
 
 export const DetachAction: ActionDefinition<DetachParams> = {
   enter: (entity, { object }) => {
+    if (!object) {
+      return;
+    }
+
+    if (object.parent && object.parent !== entity) {
+      delete object.parent.state.heldObjectId;
+    } else {
+      delete entity.state.heldObjectId;
+    }
+
     object.parent = null;
     delete object.localOffset;
     delete object.attachmentPoint;
-    delete entity.state.heldObjectId;
   },
 
   update: () => {
     return true;
+  },
+
+  exit: () => {
   },
 };

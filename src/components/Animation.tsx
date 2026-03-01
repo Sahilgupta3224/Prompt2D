@@ -92,10 +92,13 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
   function updateEntityTransform(e: Entity) {
     if (e.parent) {
       let offset = e.localOffset || { x: 0, y: 0 };
+      // console.log(e.parent)
       if (e.attachmentPoint && e.parent.attachmentConfig) {
         const anim = e.parent.currentanim;
         const frame = e.parent.currentFrame || 0;
-        const config = e.parent.attachmentConfig[anim]?.[e.attachmentPoint];
+        // console.log(anim)
+        const config = e.parent.attachmentConfig[anim === "" ? "UP" : anim]?.[e.attachmentPoint];
+        // console.log(config, e)
         if (config) {
           if (Array.isArray(config)) {
             offset = config[frame % config.length];
@@ -103,6 +106,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
             offset = config;
           }
         }
+        // console.log(config, offset)
       }
       e.x = e.parent.x + offset.x;
       e.y = e.parent.y + offset.y;
@@ -115,26 +119,28 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
   }
 
   useTick((ticker: Ticker) => {
-    const scene = sceneRef.current;
-    if (!scene) return;
     const dt = ticker.deltaTime;
-
-    scene.update(dt);
-
-    for (const e of scene.registry.getAll()) {
-      updateEntityTransform(e);
-      const sprite = e.sprite.current;
-      if (e && sprite && !e.isObject) {
-        // console.log("hero", e)
-        const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
-        // console.log(mode, e.id)
-        const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(e.id, e.currentanim as any, mode);
-        sprite.texture = frameTexture;
-        e.currentFrame = frameIndex;
-        if (finished) {
-          e.animFinished = true;
+    try{
+      const scene = sceneRef.current;
+      if (!scene) return;
+      scene.update(dt);
+  
+      for (const e of scene.registry.getAll()) {
+        updateEntityTransform(e);
+        const sprite = e.sprite.current;
+        if (e && sprite && !e.isObject) {
+          const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
+          const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(e.id, e.currentanim as any, mode);
+          sprite.texture = frameTexture;
+          e.currentFrame = frameIndex;
+          if (finished) {
+            e.animFinished = true;
+          }
         }
       }
+    }
+    catch(e){
+      console.warn(e)
     }
   });
 

@@ -1,4 +1,4 @@
-import { GAME_HEIGHT, GAME_WIDTH, OFFSET_X, OFFSET_Y, TILE_SIZE } from '../constants/game-world'
+import { GAME_HEIGHT, GAME_WIDTH, OFFSET_X, OFFSET_Y} from '../constants/game-world'
 import type { IPosition } from '../types/common'
 
 export const calculateCanvasSize = () => {
@@ -89,7 +89,7 @@ export const handleMovement = (
   moveSpeed: number,
   delta: number
 ) => {
-  const step = moveSpeed * TILE_SIZE * delta
+  const step = moveSpeed * 32 * delta
   const distance = Math.hypot(
     targetPosition.x - currentPosition.x,
     targetPosition.y - currentPosition.y

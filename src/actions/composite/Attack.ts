@@ -2,7 +2,7 @@ import type { ActionDefinition } from "../../types/Action";
 import type { Entity } from "../../types/Entity";
 import { calculateAngle, angleToDirection } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
-import { playAnimationOnce } from "../../helpers/animationTools";
+import { playAnimation, playAnimationOnce, stopAnimation } from "../../helpers/animationTools";
 
 type AttackParams = {
     target: Entity;
@@ -12,70 +12,76 @@ type AttackParams = {
     moveSpeed?: number;
 };
 
-const ATTACK_FRAMES = 7;
-const MELEE_RANGE = 40;
+const MELEE_RANGE = 60;
 const GUN_RANGE = 300;
-const FRAME_SPEED = 0.15;
+const FRAME_DURATION = 100; 
 
 export const AttackAction: ActionDefinition<AttackParams> = {
     enter: (entity, { weapon, range }, _ctx, s) => {
         s.phase = "approach";
         s.range = range ?? (weapon === "melee" ? MELEE_RANGE : GUN_RANGE);
         s.frameTimer = 0;
-        s.frame = 0;
+        s.hitDealt = false;
         s.previousAnim = entity.currentanim;
+        s.previousMode = entity.animMode;
         entity.state.isMoving = weapon === "melee";
     },
 
     update: (entity, { target, weapon, damage = 10, moveSpeed = MOVE_SPEED }, dt, _ctx, s) => {
+        if (!target) return true;
+
+        const dx = target.x - entity.x;
+        const dy = target.y - entity.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
         const angle = calculateAngle({ x: entity.x, y: entity.y }, { x: target.x, y: target.y });
-        const dir = angleToDirection(angle);
 
         if (s.phase === "approach") {
-            const dx = target.x - entity.x;
-            const dy = target.y - entity.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
             if (weapon === "melee" && dist > s.range) {
                 const speed = moveSpeed * dt;
                 entity.x += Math.cos(angle) * speed;
                 entity.y += Math.sin(angle) * speed;
-                entity.currentanim = dir;
+                playAnimation(entity, angleToDirection(angle));
                 return false;
             }
 
-            entity.currentanim = dir;
-            s.phase = "animating";
+            stopAnimation(entity);
             entity.state.isMoving = false;
+            s.phase = "strike";
+            s.frameTimer = 0;
             return false;
         }
 
-        if (s.phase === "animating") {
-            s.frameTimer += FRAME_SPEED;
-            if (s.frameTimer >= 1) {
-                s.frameTimer = 0;
-                s.frame++;
+        if (s.phase === "strike") {
+            s.frameTimer += dt * (1000 / 60);
 
-                if (s.frame === 4) {
-                    target.state.hp = ((target.state.hp as number) ?? 100) - damage;
-                    target.state.isHit = true;
-                    playAnimationOnce(target, "HIT");
+            if (!s.hitDealt && s.frameTimer >= FRAME_DURATION * 3) {
+                s.hitDealt = true;
+                if (typeof target.state.hp !== "number") {
+                    target.state.hp = 100;
                 }
-
-                if (s.frame >= ATTACK_FRAMES) {
-                    return true;
-                }
+                target.state.hp -= damage;
+                target.state.isHit = true;
+                playAnimationOnce(target, "HIT");
             }
-            return false;
+
+            if (s.frameTimer >= FRAME_DURATION * 7) {
+                target.state.isHit = false;
+                return true;
+            }
         }
 
         return false;
     },
 
-    exit: (entity, _params, _ctx, s) => {
+    exit: (entity, _p, _ctx, s) => {
+        entity.state.isMoving = false;
         if (s.previousAnim) {
             entity.currentanim = s.previousAnim;
         }
-        entity.state.isMoving = false;
+        if (s.previousMode) {
+            entity.animMode = s.previousMode;
+        } else {
+            stopAnimation(entity);
+        }
     },
 };
