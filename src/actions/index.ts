@@ -28,8 +28,13 @@ import { FadeAction } from "./effects/index";
 import { RotateAction } from "./effects/index";
 import { OscillateAction } from "./effects/index";
 import { ShakeAction } from "./effects/index";
-
+import { SpinAction } from "./composite/spin";
+import { SleepAction } from "./composite/sleep";
+import { CrawlAction } from "./composite/crawl";
 export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
+    sleep:SleepAction,
+    spin:SpinAction,
+    crawl:CrawlAction,
     move: MoveAction,
     grab: GrabAction,
     throw: ThrowAction,
