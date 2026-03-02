@@ -25,7 +25,7 @@ export const CrawlAction: ActionDefinition<CrawlParams> = {
     entity.y = state.startY + state.dy * t;
     entity.y += Math.sin(t*20)*2;
     entity.currentanim = "crawl";
-    return t >= 1; 
+    return t >1; 
   },
 
   exit(entity) {

@@ -37,7 +37,13 @@ export const FOOTBALL_SCENE: SceneDefinition = {
     children: [
       {
         type: "action",
-        name: "move",
+        name: "crouch",
+        entityId: "boy",
+        params: { duration: 3000 },
+      },
+      {
+        type: "action",
+        name: "wander",
         entityId: "boy",
         params: {
           destination: { x: 380, y: 350 },
@@ -66,7 +72,6 @@ export const FOOTBALL_SCENE: SceneDefinition = {
         params: { duration: 600 },
       },
 
-      
       {
         type: "action",
         name: "throw",
@@ -98,22 +103,22 @@ export const FOOTBALL_SCENE: SceneDefinition = {
         },
       },
       {
-        type:"action",
-        name:"crawl",
-        entityId:"boy",
-        params:{
+        type: "action",
+        name: "crawl",
+        entityId: "boy",
+        params: {
           destination: { x: 450, y: 350 },
-          duration: 2000
-         }
+          duration: 2000,
+        },
       },
       {
-        type:"action",
-        name:"sleep",
-        entityId:"boy",
-        params:{
-            duration:5000,
-        }
-      }
+        type: "action",
+        name: "sleep",
+        entityId: "boy",
+        params: {
+          duration: 5000,
+        },
+      },
     ],
   },
 };

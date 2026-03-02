@@ -1,4 +1,6 @@
 import type { ActionDefinition } from "../types/Action";
+import { WanderAction } from "./composite/wander";
+import { CrouchAction } from "./composite/crouch";
 import { GrabAction } from "./composite/index";
 import { ThrowAction } from "./composite/index";
 import { PickUpAction } from "./composite/index";
@@ -33,6 +35,8 @@ import { SleepAction } from "./composite/sleep";
 import { CrawlAction } from "./composite/crawl";
 export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     sleep:SleepAction,
+    wander:WanderAction,
+    crouch:CrouchAction,
     spin:SpinAction,
     crawl:CrawlAction,
     move: MoveAction,
