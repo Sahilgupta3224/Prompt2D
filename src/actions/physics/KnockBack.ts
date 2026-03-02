@@ -1,6 +1,5 @@
 import type { ActionDefinition } from "../../types/Action";
-import { playAnimationOnce, freezeFrame } from "../../helpers/animationTools";
-import { angleToDirection } from "../../helpers/common";
+import { playAnimationOnce, stopAnimation } from "../../helpers/animationTools";
 
 type KnockBackParams = {
     direction: { x: number; y: number };
@@ -21,8 +20,7 @@ export const KnockBackAction: ActionDefinition<KnockBackParams> = {
         s.elapsed = 0;
         s.previousAnim = entity.currentanim;
         s.previousMode = entity.animMode;
-        const angle = Math.atan2(ny, nx);
-        playAnimationOnce(entity, angleToDirection(angle));
+        playAnimationOnce(entity, "HURT");
     },
 
     update: (entity, _, dt, _ctx, s) => {
@@ -48,7 +46,7 @@ export const KnockBackAction: ActionDefinition<KnockBackParams> = {
         if (s.previousMode) {
             entity.animMode = s.previousMode;
         } else {
-            freezeFrame(entity);
+            stopAnimation(entity);
         }
     },
 };

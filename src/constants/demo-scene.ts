@@ -79,6 +79,19 @@ export const DEMO_SCENE: SceneDefinition = {
         params: { emote: "happy", duration: 1000 },
         entityId: "hero2"
       },
+      {
+        type: "action",
+        name: "applyForce",
+        params: { mode:"push", force:{x:10,y:0}, duration:1000, continuous:false},
+        entityId: "hero2"
+      },
+
+      {
+        type: "action",
+        name: "knockBack",
+        params: { direction: { x: 1, y: 1 }, strength: 100, duration: 1000, friction: 0.85 },
+        entityId: "hero1"
+      },
       // {
       //   type: "action",
       //   name: "grab",
