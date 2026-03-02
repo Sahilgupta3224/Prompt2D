@@ -1,5 +1,6 @@
 import type { ActionDefinition } from "../../types/Action";
 import { playAnimationOnce, stopAnimation } from "../../helpers/animationTools";
+import { angleToJumpDirection } from "../../helpers/common";
 
 type JumpParams = {
     height: number;
@@ -20,7 +21,10 @@ export const JumpAction: ActionDefinition<JumpParams> = {
         s.previousAnim = entity.currentanim;
         s.previousMode = entity.animMode;
         entity.state.isJumping = true;
-        playAnimationOnce(entity, "JUMP");
+        const jumpAnim = Math.abs(s.distance) <1
+            ? angleToJumpDirection(Math.atan2(0, s.distance > 0 ? 1 : -1))
+            : "JUMPUP";
+        playAnimationOnce(entity, jumpAnim);
     },
 
     update: (entity, _, dt, _ctx, s) => {

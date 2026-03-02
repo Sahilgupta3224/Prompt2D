@@ -1,4 +1,4 @@
-import { GAME_HEIGHT, GAME_WIDTH, OFFSET_X, OFFSET_Y} from '../constants/game-world'
+import { GAME_HEIGHT, GAME_WIDTH, OFFSET_X, OFFSET_Y } from '../constants/game-world'
 import type { IPosition } from '../types/common'
 
 export const calculateCanvasSize = () => {
@@ -7,13 +7,50 @@ export const calculateCanvasSize = () => {
   return { width, height }
 }
 
-export const angleToDirection = (angle: number) => {
+function _cardinal(angle: number): "UP" | "DOWN" | "LEFT" | "RIGHT" {
   const deg = angle * 180 / Math.PI
-
   if (deg >= -45 && deg < 45) return "RIGHT"
   if (deg >= 45 && deg < 135) return "DOWN"
   if (deg >= -135 && deg < -45) return "UP"
   return "LEFT"
+}
+
+export const angleToDirection = (angle: number): string => {
+  return "MOVE" + _cardinal(angle)
+}
+
+export const angleToRunDirection = (angle: number): string => {
+  return "RUN" + _cardinal(angle)
+}
+
+export const angleToIdleDirection = (angle: number): string => {
+  return "IDLE" + _cardinal(angle)
+}
+
+export const angleToJumpDirection = (angle: number): string => {
+  return "JUMP" + _cardinal(angle)
+}
+
+export const angleToSitDirection = (angle: number): string => {
+  return "SIT" + _cardinal(angle)
+}
+
+export const angleToAttackDirection = (
+  angle: number,
+  weapon: "melee" | "punch" | "gun" | "thrust" | "spell" = "melee"
+): string => {
+  const dir = _cardinal(angle)
+  switch (weapon) {
+    case "punch": return "PUNCH" + dir
+    case "gun": return "SHOOT" + dir
+    case "thrust": return "THRUST" + dir
+    case "spell": return "SPELLCAST" + dir
+    default: return "SLASH" + dir  // melee
+  }
+}
+
+export const angleToCombatIdleDirection = (angle: number): string => {
+  return "COMBATIDLE" + _cardinal(angle)
 }
 
 export const moveByAngle = (

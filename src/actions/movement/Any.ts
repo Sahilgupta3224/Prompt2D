@@ -1,24 +1,26 @@
 import type { ActionDefinition } from "../../types/Action";
+import { playAnimationOnce, stopAnimation } from "../../helpers/animationTools";
 
-type AnyParams = { Name: string, time: Number }
+type AnyParams = {
+  Name: string;
+  time?: number;
+};
+
 export const AnyAction: ActionDefinition<AnyParams> = {
   enter: (entity, { Name }, _ctx, s) => {
-    switch (Name) {
-      case "CROUCH":
-        entity.currentanim = "CROUCH";
-        break;
-      default:
-        entity.currentanim = "STILL";
-        break;
-    }
-    s.startTime = Date.now();
+    s.elapsed = 0;
+    playAnimationOnce(entity, Name);
   },
-  update: (_entity, { time }, _dt, _ctx, s) => {
-    if (time) {
-      if (Date.now() - s.startTime >= time) {
-        return true;
-      }
+
+  update: (_entity, { time }, dt, _ctx, s) => {
+    if (time !== undefined) {
+      s.elapsed += dt * (1000 / 60);
+      return s.elapsed >= time;
     }
-    return false;
+    return true;
+  },
+
+  exit: (entity) => {
+    stopAnimation(entity);
   },
 };

@@ -1,6 +1,7 @@
 import type { ActionDefinition } from "../../types/Action";
-import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection } from "../../helpers/common";
+import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection} from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
+import { playAnimation, freezeFrame, stopAnimation } from "../../helpers/animationTools";
 
 type MovePathParams = {
     path: Array<{ x: number; y: number }>;
@@ -53,7 +54,7 @@ export const MovePathAction: ActionDefinition<MovePathParams> = {
                 x: Math.cos(angle),
                 y: Math.sin(angle),
             };
-            entity.currentanim = angleToDirection(angle);
+            playAnimation(entity, angleToDirection(angle));
         }
 
         if (!s.targetPosition) {
@@ -88,5 +89,6 @@ export const MovePathAction: ActionDefinition<MovePathParams> = {
 
     exit: (entity) => {
         entity.state.isMoving = false;
+        stopAnimation(entity);
     },
 };

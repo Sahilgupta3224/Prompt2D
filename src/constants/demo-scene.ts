@@ -89,14 +89,14 @@ export const DEMO_SCENE: SceneDefinition = {
       //   name: "move",
       //   params: { destination: { x: 600, y: 300 } },
       // },
+      // {
+      //   type: "action",
+      //   name: "shake",
+      //   params: { intensity: 10, duration: 1000, frequency: 10, axis: "both", decay: true },
+      //   // entityId:"rock"
+      // },
       {
-        type: "action",
-        name: "shake",
-        params: { intensity: 10, duration: 1000, frequency: 10, axis: "both", decay: true },
-        // entityId:"rock"
-      },
-      {
-        type: "action",
+        type: "action", 
         name: "attack",
         params: { targetId: "hero2", weapon: "melee" },
       },
@@ -105,6 +105,11 @@ export const DEMO_SCENE: SceneDefinition = {
       //   name: "jump",
       //   params: { height: 50 },
       // },
+      {
+        type: "action",
+        name: "wait",
+        params: { duration: 500 },
+      },
       {
         type: "action",
         name: "throw",

@@ -1,12 +1,12 @@
 import type { ActionDefinition } from "../../types/Action";
 import type { Entity } from "../../types/Entity";
-import { calculateAngle, angleToDirection } from "../../helpers/common";
+import { calculateAngle, angleToDirection, angleToAttackDirection } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
 import { playAnimation, playAnimationOnce, stopAnimation } from "../../helpers/animationTools";
 
 type AttackParams = {
     target: Entity;
-    weapon: "gun" | "melee";
+    weapon: "melee" | "punch" | "gun" | "thrust" | "spell";
     damage?: number;
     range?: number;
     moveSpeed?: number;
@@ -14,20 +14,20 @@ type AttackParams = {
 
 const MELEE_RANGE = 60;
 const GUN_RANGE = 300;
-const FRAME_DURATION = 100; 
+const FRAME_DURATION = 100;
 
 export const AttackAction: ActionDefinition<AttackParams> = {
     enter: (entity, { weapon, range }, _ctx, s) => {
         s.phase = "approach";
-        s.range = range ?? (weapon === "melee" ? MELEE_RANGE : GUN_RANGE);
+        s.range = range ?? (weapon === "gun" || weapon === "spell" ? GUN_RANGE : MELEE_RANGE);
         s.frameTimer = 0;
         s.hitDealt = false;
         s.previousAnim = entity.currentanim;
         s.previousMode = entity.animMode;
-        entity.state.isMoving = weapon === "melee";
+        entity.state.isMoving = weapon === "melee" || weapon === "punch" || weapon === "thrust";
     },
 
-    update: (entity, { target, weapon, damage = 10, moveSpeed = MOVE_SPEED }, dt, _ctx, s) => {
+    update: (entity, { target, weapon = "melee", damage = 10, moveSpeed = MOVE_SPEED }, dt, _ctx, s) => {
         if (!target) return true;
 
         const dx = target.x - entity.x;
@@ -36,16 +36,17 @@ export const AttackAction: ActionDefinition<AttackParams> = {
         const angle = calculateAngle({ x: entity.x, y: entity.y }, { x: target.x, y: target.y });
 
         if (s.phase === "approach") {
-            if (weapon === "melee" && dist > s.range) {
+            const isRanged = weapon === "gun" || weapon === "spell";
+            if (!isRanged && dist > s.range) {
                 const speed = moveSpeed * dt;
                 entity.x += Math.cos(angle) * speed;
                 entity.y += Math.sin(angle) * speed;
                 playAnimation(entity, angleToDirection(angle));
                 return false;
             }
-
             stopAnimation(entity);
             entity.state.isMoving = false;
+            playAnimationOnce(entity, angleToAttackDirection(angle, weapon));
             s.phase = "strike";
             s.frameTimer = 0;
             return false;
@@ -53,7 +54,6 @@ export const AttackAction: ActionDefinition<AttackParams> = {
 
         if (s.phase === "strike") {
             s.frameTimer += dt * (1000 / 60);
-
             if (!s.hitDealt && s.frameTimer >= FRAME_DURATION * 3) {
                 s.hitDealt = true;
                 if (typeof target.state.hp !== "number") {
@@ -61,10 +61,10 @@ export const AttackAction: ActionDefinition<AttackParams> = {
                 }
                 target.state.hp -= damage;
                 target.state.isHit = true;
-                playAnimationOnce(target, "HIT");
+                playAnimationOnce(target, "HURT");
             }
 
-            if (s.frameTimer >= FRAME_DURATION * 7) {
+            if (s.frameTimer >= FRAME_DURATION * 7) { // Done after 7 frames
                 target.state.isHit = false;
                 return true;
             }

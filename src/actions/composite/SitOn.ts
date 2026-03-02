@@ -1,12 +1,12 @@
 import type { ActionDefinition } from "../../types/Action";
 import { calculateAngle, angleToDirection, reachedDestination } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
-import { playAnimation, playAnimationOnce, freezeFrame} from "../../helpers/animationTools";
+import { playAnimation, playAnimationOnce, freezeFrame } from "../../helpers/animationTools";
 
 type SitOnParams = {
     seat: { x: number; y: number };
     moveSpeed?: number;
-    facing?: "UP" | "DOWN" | "LEFT" | "RIGHT";
+    facing?: "SITUP" | "SITDOWN" | "SITLEFT" | "SITRIGHT";
 };
 
 export const SitOnAction: ActionDefinition<SitOnParams> = {
@@ -15,13 +15,14 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
         if (reachedDestination({ x: entity.x, y: entity.y }, seat, 5)) {
             s.phase = "sitTransition";
             entity.state.isSitting = true;
-            playAnimationOnce(entity, "SIT");
+            const angle0 = calculateAngle({ x: entity.x, y: entity.y }, seat);
+            const sitAnim0 = `SIT${angleToDirection(angle0).replace("MOVE", "")}`;
+            playAnimationOnce(entity, sitAnim0);
             return;
         }
-
         entity.state.isMoving = true;
         const angle = calculateAngle({ x: entity.x, y: entity.y }, seat);
-        playAnimation(entity, angleToDirection(angle));
+        s.sitAnim = `SIT${angleToDirection(angle).replace("MOVE", "")}`;
     },
 
     update: (entity, { seat, moveSpeed = MOVE_SPEED, facing }, dt, _ctx, s) => {
@@ -38,13 +39,10 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
                 entity.y = seat.y;
                 entity.state.isMoving = false;
                 entity.state.isSitting = true;
-
-                if (facing) {
-                    entity.currentanim = facing;
-                }
-
                 s.phase = "sitTransition";
-                playAnimationOnce(entity, "SIT");
+
+                const sitAnim = facing ?? s.sitAnim ?? "SITDOWN";
+                playAnimationOnce(entity, sitAnim);
             }
             return false;
         }

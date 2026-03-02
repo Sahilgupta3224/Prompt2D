@@ -1,5 +1,7 @@
 import type { ActionDefinition } from "../../types/Action";
 import type { Entity } from "../../types/Entity";
+import { angleToDirection, angleToIdleDirection } from "../../helpers/common";
+import { playAnimation, stopAnimation } from "../../helpers/animationTools";
 
 type FollowParams = {
     target: Entity;
@@ -25,12 +27,17 @@ export const FollowAction: ActionDefinition<FollowParams> = {
             const currentDistance = Math.sqrt(dx * dx + dy * dy);
 
             if (currentDistance <= maintainDistance) {
-                return false;
+                const faceAngle = Math.atan2(targetY - entity.y, targetX - entity.x);
+                stopAnimation(entity);
+                entity.currentanim = angleToIdleDirection(faceAngle);
+                return true; //this will stop the character following the target but need to handle this if we want it to follow the target till the end of animation
             }
         }
         const lerpFactor = 1 - Math.pow(smoothing, delta);
+        const moveAngle = Math.atan2(targetY - entity.y, targetX - entity.x);
         entity.x += (targetX - entity.x) * lerpFactor;
         entity.y += (targetY - entity.y) * lerpFactor;
+        playAnimation(entity, angleToDirection(moveAngle));
         return false;
     },
 

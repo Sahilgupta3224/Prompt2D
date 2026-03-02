@@ -1,18 +1,16 @@
 import type { ActionDefinition } from "../../types/Action";
-// type DanceParams = {};
+import { playAnimation, stopAnimation } from "../../helpers/animationTools";
 
 export const DanceAction: ActionDefinition<void> = {
-
     enter: (entity) => {
-        entity.currentanim = "DANCE"
+        playAnimation(entity, "DANCE");
         entity.state.isMoving = true;
     },
-    update: (entity, _, delta) => {
-        return false;
-    },
+
+    update: () => false,
 
     exit: (entity) => {
-        entity.currentanim = "STILL"
-        entity.state.isMoving = false
-    }
+        entity.state.isMoving = false;
+        stopAnimation(entity);
+    },
 };

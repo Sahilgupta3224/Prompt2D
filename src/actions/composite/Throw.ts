@@ -2,6 +2,8 @@
 
 import type { ActionDefinition } from "../../types/Action";
 import type { Entity } from "../../types/Entity";
+import { calculateAngle, angleToAttackDirection } from "../../helpers/common";
+import { playAnimationOnce, freezeFrame, stopAnimation } from "../../helpers/animationTools";
 
 type ThrowParams = {
     object: Entity;
@@ -17,7 +19,10 @@ export const ThrowAction: ActionDefinition<ThrowParams> = {
             return;
         }
         s.aborted = false;
-
+        s.previousAnim = entity.currentanim;
+        s.previousMode = entity.animMode;
+        const throwAngle = calculateAngle({ x: entity.x, y: entity.y }, target);
+        playAnimationOnce(entity, angleToAttackDirection(throwAngle, "thrust"));
         object.parent = null;
         delete object.localOffset;
         delete object.attachmentPoint;
@@ -61,7 +66,7 @@ export const ThrowAction: ActionDefinition<ThrowParams> = {
 
         s.elapsed += dtSeconds;
 
-        
+
         if (s.elapsed >= s.duration) {
             object.x = s.target.x;
             object.y = s.target.y;
@@ -76,6 +81,10 @@ export const ThrowAction: ActionDefinition<ThrowParams> = {
         return false;
     },
 
-    exit: () => {
+    exit: (entity, _p, _ctx, s) => {
+        if (s.previousAnim) entity.currentanim = s.previousAnim;
+        if (s.previousMode) entity.animMode = s.previousMode;
+        else stopAnimation(entity);
     },
+
 };
