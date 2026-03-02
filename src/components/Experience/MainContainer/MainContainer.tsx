@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Animation } from '../../Animation'
-import heroAsset from '../../../assets/hero.png'
+import heroAsset from '../../../assets/character.png'
 import {
   Container,
   Graphics,
