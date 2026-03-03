@@ -97,7 +97,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
         // console.log(e.parent.attachmentConfig)
         const anim = e.parent.currentanim;
         const frame = e.parent.currentFrame || 0;
-        console.log(anim)
+        // console.log(anim)
         const config = e.parent.attachmentConfig[anim === "" ? "UP" : anim]?.[e.attachmentPoint];
         // console.log(config, e)
         if (config) {
@@ -126,14 +126,16 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
       const scene = sceneRef.current;
       if (!scene) return;
       scene.update(dt);
-  
+
       for (const e of scene.registry.getAll()) {
         updateEntityTransform(e);
         const sprite = e.sprite.current;
         if (e && sprite && !e.isObject) {
           const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
-          const { texture: frameTexture, frameIndex, finished } = heroAnimUpdate(e.id, e.currentanim as any, mode);
+          const { texture: frameTexture, frameIndex, finished, vScale, vOffset } = heroAnimUpdate(e.id, e.currentanim as any, mode);
           sprite.texture = frameTexture;
+          sprite.scale.set(e.scale * vScale);
+          sprite.y = vOffset;
           e.currentFrame = frameIndex;
           if (finished) {
             e.animFinished = true;

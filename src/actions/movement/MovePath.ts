@@ -1,7 +1,7 @@
 import type { ActionDefinition } from "../../types/Action";
 import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection} from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
-import { playAnimation, freezeFrame, stopAnimation } from "../../helpers/animationTools";
+import { playAnimation, stopAnimation } from "../../helpers/animationTools";
 
 type MovePathParams = {
     path: Array<{ x: number; y: number }>;

@@ -16,7 +16,7 @@ export const DEMO_SCENE: SceneDefinition = {
     },
     {
       id: "hero2",
-      position: { x: DEFAULT_X_POS + 200, y: DEFAULT_Y_POS },
+      position: { x: DEFAULT_X_POS + 300, y: DEFAULT_Y_POS },
       scale: 2,
       attachments: HERO_ATTACHMENTS,
     },
@@ -44,54 +44,54 @@ export const DEMO_SCENE: SceneDefinition = {
       //   params:{objectId: "rock", targetId:"hero2"},
       //   entityId: "hero1"
       // },
-      // {
-      //   type: "action",
-      //   name: "move",
-      //   params: { destination: { x: 200, y: 200 } },
-      //   entityId: "hero1"
-      // },
+      {
+        type: "action",
+        name: "move",
+        params: { destination: { x: 450, y: 450 } },
+        entityId: "hero1"
+      },
       // {
       //   type: "action",
       //   name: "move",
       //   params: { destination: { x: 300, y: 200 } },
       //   entityId: "hero2"
       // },
-      {
-        type: "action",
-        name: "fade",
-        params: { targetAlpha: 0.5 },
-        // entityId: "hero2"
-      },
-      {
-        type: "action",
-        name: "speak",
-        params: { text: "HIIIIIIIIIIIIIIIII   !!", duration: 2000 },
-        entityId: "hero2"
-      },
+      // {
+      //   type: "action",
+      //   name: "fade",
+      //   params: { targetAlpha: 0.5 },
+      //   // entityId: "hero2"
+      // },
+      // {
+      //   type: "action",
+      //   name: "speak",
+      //   params: { text: "HIIIIIIIIIIIIIIIII   !!", duration: 2000 },
+      //   entityId: "hero2"
+      // },
       // {
       //   type: "action",
       //   name: "wait",
       //   params: { duration: 500 },
       // },
-      {
-        type: "action",
-        name: "emote",
-        params: { emote: "happy", duration: 1000 },
-        entityId: "hero2"
-      },
+      // {
+      //   type: "action",
+      //   name: "emote",
+      //   params: { emote: "happy", duration: 1000 },
+      //   entityId: "hero2"
+      // },
       {
         type: "action",
         name: "applyForce",
-        params: { mode:"push", force:{x:10,y:0}, duration:1000, continuous:false},
+        params: { mode:"push", force:{x:1,y:0}, duration:5000},
         entityId: "hero2"
       },
 
-      {
-        type: "action",
-        name: "knockBack",
-        params: { direction: { x: 1, y: 1 }, strength: 100, duration: 1000, friction: 0.85 },
-        entityId: "hero1"
-      },
+      // {
+      //   type: "action",
+      //   name: "knockBack",
+      //   params: { direction: { x: 1, y: 1 }, strength: 100, duration: 1000, friction: 0.85 },
+      //   entityId: "hero1"
+      // },
       // {
       //   type: "action",
       //   name: "grab",

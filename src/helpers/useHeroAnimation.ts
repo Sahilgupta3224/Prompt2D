@@ -8,7 +8,18 @@ interface AnimState {
   prevAnim: string | null
 }
 
-const getRowByDirection = (direction: Direction | null) => {
+interface RowConfig {
+  row: number
+  frames: number
+  h?: number
+  vScale?: number
+  vOffset?: number
+}
+
+const getRowByDirection = (direction: Direction | null): RowConfig => {
+  const aiScale = 0.75;
+  const aiOffset = 14;
+
   switch (direction) {
     case "SPELLCASTUP": return { row: 0, frames: 7 }
     case "SPELLCASTLEFT": return { row: 1, frames: 7 }
@@ -60,10 +71,10 @@ const getRowByDirection = (direction: Direction | null) => {
     case "PUNCHLEFT": return {row:51,frames:6}
     case "PUNCHDOWN": return {row:52,frames:6}
     case "PUNCHRIGHT": return {row:53,frames:6}
-    case "PULLLEFT": return {row:54,frames:9}
-    case "PULLRIGHT": return {row:55,frames:9}
-    case "PUSHLEFT": return {row:56,frames:9}
-    case "PUSHRIGHT": return {row:57,frames:9}
+    case "PULLLEFT": return { row: 54, frames: 9, vScale: aiScale, vOffset: aiOffset }
+    case "PULLRIGHT": return { row: 55, frames: 9, vScale: aiScale, vOffset: aiOffset }
+    case "PUSHLEFT": return { row: 56, frames: 9, vScale: aiScale, vOffset: aiOffset }
+    case "PUSHRIGHT": return { row: 57, frames: 9, vScale: aiScale, vOffset: aiOffset }
     case "DANCE": return { row: 2, frames: 9 }
     default: return { row: 24, frames: 2 }
   }
@@ -96,7 +107,8 @@ export const useHeroAnimation = ({
     animMode: "loop" | "once" | "static" | "freeze" = "loop"
   ) => {
     const state = getOrCreateState(entityId)
-    const { row, frames } = getRowByDirection(direction)
+    const config = getRowByDirection(direction)
+    const { row, frames, h = frameHeight } = config;
 
     if (state.prevAnim !== direction) {
       state.frame = 0
@@ -127,7 +139,7 @@ export const useHeroAnimation = ({
     } else {
       state.frame = 0
     }
-    
+
     const cacheKey = `${texture.uid}_${row}_${state.frame}`;
     let frameTexture = textureCache.current.get(cacheKey);
 
@@ -138,13 +150,19 @@ export const useHeroAnimation = ({
           state.frame * frameWidth,
           row * frameHeight,
           frameWidth,
-          frameHeight
+          h
         ),
       });
       textureCache.current.set(cacheKey, frameTexture);
     }
 
-    return { texture: frameTexture, frameIndex: state.frame, finished }
+    return {
+      texture: frameTexture,
+      frameIndex: state.frame,
+      finished,
+      vScale: config.vScale ?? 1,
+      vOffset: config.vOffset ?? 0
+    }
   }
 
   return { update }
