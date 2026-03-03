@@ -148,9 +148,9 @@ export const useHeroAnimation = ({
         source: texture.source,
         frame: new Rectangle(
           state.frame * frameWidth,
-          row * frameHeight,
+          (row *frameHeight)+1,
           frameWidth,
-          h
+          h-1
         ),
       });
       textureCache.current.set(cacheKey, frameTexture);
