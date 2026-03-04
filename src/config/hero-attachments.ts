@@ -12,29 +12,16 @@ export const HERO_ATTACHMENTS: Record<string, Record<string, { x: number, y: num
             { x: 40, y: 35 },
         ]
     },
-    JUMP: {
+    JUMPUP: {
         hand: [
             { x: 35, y: 40 },
             { x: 30, y: 35 },
             { x: 25, y: 20 },
             { x: 25, y: 18 },
             { x: 30, y: 25 },
-            { x: 35, y: 35 },
-            { x: 40, y: 40 },
-            { x: 40, y: 38 },
-            { x: 40, y: 35 },
         ]
     },
-    MOVERIGHT: {
-        hand: { x: 40, y: 85 }
-    },
-    MOVELEFT: {
-        hand: { x: 40, y: 85 }
-    },
-    MOVEUP: {
-        hand: { x: 30, y: 85 }
-    },
-    MOVEDOWN: {
-        hand: { x: 30, y: 85 }
+    default: {
+        hand: { x:40, y: 85 }
     }
 };

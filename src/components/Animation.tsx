@@ -10,14 +10,18 @@ import { backgroundAssets } from "../helpers/assets";
 import { generateShapeTexture, type ShapeName } from "../helpers/shapeFactory";
 import { serializeWorldState } from "../llm/worldState";
 import { generateScene } from "../llm/client";
+import type { Config } from "../helpers/anchorScanner";
 extend({ Container, Sprite });
+
+type AttachmentConfig = ReturnType<typeof Config>;
 
 interface IHeroProps {
   herotexture: Texture | null;
   setBackgroundTexture: (texture: Texture) => void;
+  scannedAnchorConfig?: AttachmentConfig | null;
 }
 
-export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => {
+export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConfig }: IHeroProps) => {
   if (!herotexture) return null;
   // const hasFetched = useRef(false);
   const sceneRef = useRef<SceneRunner | null>(null);
@@ -67,6 +71,16 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
     }
     setEntities([...scene.registry.getAll()]);
 
+    if (scannedAnchorConfig && Object.keys(scannedAnchorConfig).length > 0) {
+      for (const entity of scene.registry.getAll()) {
+        if (!entity.isObject && entity.attachmentConfig) {
+          entity.attachmentConfig = {
+            ...entity.attachmentConfig,
+            ...scannedAnchorConfig,
+          };
+        }
+      }
+    }
     const unsubscribe = scene.registry.subscribe(() => {
       setEntities(scene.registry.getAll());
     });
@@ -96,16 +110,25 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
       if (e.attachmentPoint && e.parent.attachmentConfig) {
         // console.log(e.parent.attachmentConfig)
         const anim = e.parent.currentanim;
-        const frame = e.parent.currentFrame || 0;
-        // console.log(anim)
-        const config = e.parent.attachmentConfig[anim === "" ? "UP" : anim]?.[e.attachmentPoint];
         // console.log(config, e)
+        const frame = e.parent.currentFrame || 0;
+        const parentScale = (e.parent.scale ?? 1) * (e.parent.visualScale ?? 1);
+        const config = e.parent.attachmentConfig[anim]?.[e.attachmentPoint]
+          ?? e.parent.attachmentConfig["default"]?.[e.attachmentPoint];
         if (config) {
           if (Array.isArray(config)) {
-            offset = config[frame % config.length];
+            offset = { x: config[frame % config.length].x * parentScale, y: config[frame % config.length].y * parentScale };
           } else {
-            offset = config;
+            offset = { x: config.x * parentScale, y: config.y * parentScale };
           }
+          // Offsets are raw frame pixels → multiply by effective visual scale.
+          // parentScale = entity.scale * vScale so offset always matches rendering.
+          // const rawOffset = Array.isArray(config)
+          //   ? config[frame % config.length]
+          //   : config;
+          // if (rawOffset) {
+          //   offset = { x: rawOffset.x * parentScale, y: rawOffset.y * parentScale };
+          // }
         }
         // console.log(config, offset)
       }
@@ -136,6 +159,7 @@ export const Animation = ({ herotexture, setBackgroundTexture }: IHeroProps) => 
           sprite.texture = frameTexture;
           sprite.scale.set(e.scale * vScale);
           sprite.y = vOffset;
+          (e as any).visualScale = vScale;
           e.currentFrame = frameIndex;
           if (finished) {
             e.animFinished = true;

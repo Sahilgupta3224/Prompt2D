@@ -26,7 +26,7 @@ export const DEMO_SCENE: SceneDefinition = {
       scale: 0.4,
       isObject: true,
       shape: "randomPolygon",
-      color: "#de0404ff"
+      color: "#070707ff"
     },
   ],
   background: "park",
@@ -82,7 +82,7 @@ export const DEMO_SCENE: SceneDefinition = {
       {
         type: "action",
         name: "applyForce",
-        params: { mode:"push", force:{x:1,y:0}, duration:5000},
+        params: { mode:"push", force:{x:-1,y:0}, duration:5000},
         entityId: "hero2"
       },
 

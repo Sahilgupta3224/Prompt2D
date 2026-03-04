@@ -34,4 +34,5 @@ export interface Entity {
     isObject?: boolean;
     shape?: ShapeName;
     color?: string;
+    visualScale?: number;
 }

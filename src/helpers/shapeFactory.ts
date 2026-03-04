@@ -16,6 +16,7 @@ export type ShapeName =
     | "cone"
     | "cylinder"
     | "randomPolygon"
+    | "line"
 
 export interface ShapeOptions {
     shape: ShapeName;
@@ -38,6 +39,11 @@ function drawShape(g: Graphics, shape: ShapeName, size: number): void {
     const half = size / 2;
 
     switch (shape) {
+        case "line":
+            g.moveTo(0, half);
+            g.lineTo(size, half);
+            break;
+
         case "circle":
             g.circle(half, half, half);
             break;
@@ -183,11 +189,18 @@ export function generateShapeTexture(
 
     drawShape(g, options.shape, size);
 
-    g.fill({ color });
+    if (options.shape === "line") {
+        g.stroke({
+            color,
+            width: options.strokeWidth ?? 4
+        });
+    } else {
+        g.fill({ color });
 
-    if (options.strokeColor && options.strokeWidth) {
-        drawShape(g, options.shape, size);
-        g.stroke({ color: options.strokeColor, width: options.strokeWidth });
+        if (options.strokeColor && options.strokeWidth) {
+            drawShape(g, options.shape, size);
+            g.stroke({ color: options.strokeColor, width: options.strokeWidth });
+        }
     }
 
     const texture = renderer.generateTexture(g);
