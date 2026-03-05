@@ -11,3 +11,6 @@ export {SpeakAction} from './Speak'
 export {SpawnAction} from './Spawn'
 export {ThrowAction} from './Throw'
 export {WaitAction} from './Wait'
+export{CrouchAction} from "./crouch"
+export {CrawlAction} from "./crawl"
+export {WanderAction} from "./wander"
