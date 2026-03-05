@@ -1,6 +1,6 @@
 import type { Entity } from "../types/Entity";
 import { useRef, useEffect, useState } from "react";
-import { Container, Sprite, Texture, Ticker, Assets } from "pixi.js";
+import { Container, Sprite, Texture, Ticker, Assets, Graphics } from "pixi.js";
 import { extend, useTick, useApplication } from "@pixi/react";
 import { useHeroAnimation } from "../helpers/useHeroAnimation";
 import { ANIMATION_SPEED } from "../constants/game-world";
@@ -14,7 +14,7 @@ import { HERO_FRAME_SIZE } from "../constants/game-world";
 import type { Config } from "../helpers/anchorScanner";
 import { OutlineFilter, GlowFilter } from 'pixi-filters';
 import { ColorMatrixFilter } from 'pixi.js';
-extend({ Container, Sprite });
+extend({ Container, Sprite, Graphics });
 
 type AttachmentConfig = ReturnType<typeof Config>;
 type FrameOffset = { x: number; y: number } | null;
@@ -29,6 +29,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   if (!herotexture) return null;
   // const hasFetched = useRef(false);
   const sceneRef = useRef<SceneRunner | null>(null);
+  const shadowGfx = useRef<Graphics | null>(null);
   const [entities, setEntities] = useState<Entity[]>([]);
   const { app } = useApplication();
 
@@ -160,6 +161,19 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       if (!scene) return;
       scene.update(dt);
 
+      const g = shadowGfx.current;
+      if (g) {
+        g.clear();
+        for (const e of scene.registry.getAll()) {
+          if (!e.isObject) {
+            const vScale = (e as any).visualScale || 1;
+            const Y = e.y + (30 * (e.scale * vScale));
+            g.ellipse(e.x, Y, 15 * e.scale, 5 * e.scale);
+            g.fill({ color: 0x000000, alpha: 0.2 });
+          }
+        }
+      }
+
       for (const e of scene.registry.getAll()) {
         updateEntityTransform(e);
         const sprite = e.sprite.current;
@@ -215,6 +229,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
 
   return (
     <pixiContainer sortableChildren={true}>
+      <pixiGraphics ref={shadowGfx} zIndex={0} draw={() => { }} />
       {entities.map((e, i) => (
         <pixiContainer key={i} ref={e.container}>
           <pixiSprite
