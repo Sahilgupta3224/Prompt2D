@@ -22,6 +22,6 @@ export const HERO_ATTACHMENTS: Record<string, Record<string, { x: number, y: num
         ]
     },
     default: {
-        hand: { x:40, y: 85 }
+        hand: { x: 40, y: 42 }
     }
 };

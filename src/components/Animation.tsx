@@ -10,7 +10,10 @@ import { backgroundAssets } from "../helpers/assets";
 import { generateShapeTexture, type ShapeName } from "../helpers/shapeFactory";
 import { serializeWorldState } from "../llm/worldState";
 import { generateScene } from "../llm/client";
+import { HERO_FRAME_SIZE } from "../constants/game-world";
 import type { Config } from "../helpers/anchorScanner";
+import { OutlineFilter, GlowFilter } from 'pixi-filters';
+import { ColorMatrixFilter } from 'pixi.js';
 extend({ Container, Sprite });
 
 type AttachmentConfig = ReturnType<typeof Config>;
@@ -47,10 +50,17 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
     // }
     sceneRef.current = scene;
 
-    const hero = scene.registry.get("hero");
+    const hero = scene.registry.get("hero1");
     if (hero) {
       hero.texture = herotexture;
-      hero.currentanim = "RIGHT";
+      hero.currentanim = "IDLEDOWN";
+      if (!hero.attachmentConfig) hero.attachmentConfig = {};
+    }
+    const hero2 = scene.registry.get("hero2");
+    if (hero2) {
+      hero2.texture = herotexture;
+      hero2.currentanim = "IDLEDOWN";
+      if (!hero2.attachmentConfig) hero2.attachmentConfig = {};
     }
 
     const background = scene.getBackground();
@@ -126,7 +136,8 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
           return;
         }
         if (container) container.visible = true;
-        offset = { x: rawOffset.x * parentScale, y: rawOffset.y * parentScale };
+        const half = HERO_FRAME_SIZE / 2;
+        offset = { x: (rawOffset.x - half) * parentScale, y: (rawOffset.y - half) * parentScale };
       } else {
         const container = e.container.current;
         if (container) container.visible = true;
@@ -152,16 +163,47 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       for (const e of scene.registry.getAll()) {
         updateEntityTransform(e);
         const sprite = e.sprite.current;
-        if (e && sprite && !e.isObject) {
-          const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
-          const { texture: frameTexture, frameIndex, finished, vScale, vOffset } = heroAnimUpdate(e.id, e.currentanim as any, mode);
-          sprite.texture = frameTexture;
-          sprite.scale.set(e.scale * vScale);
-          sprite.y = vOffset;
-          (e as any).visualScale = vScale;
-          e.currentFrame = frameIndex;
-          if (finished) {
-            e.animFinished = true;
+        const container = e.container.current;
+        if (container) {
+          if (e.parent) {
+            e.zIndex = e.parent.zIndex + 1;
+          } else {
+            e.zIndex = Math.round(e.y + (e.isObject ? 0 : 32 * (e.scale * (e.visualScale || 1))));
+          }
+          container.zIndex = e.zIndex
+        }
+        if (e && sprite) {
+          const filters = [];
+
+          if (e.state.isSelected) {  //just in case if i have some usecase of this in any primitive
+            filters.push(new OutlineFilter(2, 0x00ff00));
+          }
+          if (e.state.isMagic) {
+            filters.push(new GlowFilter({ distance: 15, outerStrength: 2, color: 0x00ffff }));
+          }
+          if (e.state.isHit) {
+            sprite.tint = 0xff8888;
+          } else if (e.state.hp === 0) {
+            const cm = new ColorMatrixFilter();
+            cm.desaturate();
+            filters.push(cm);
+            sprite.tint = 0x888888;
+          } else {
+            sprite.tint = 0xffffff;
+          }
+          sprite.filters = filters.length > 0 ? filters : null;
+
+          if (!e.isObject) {
+            const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
+            const { texture: frameTexture, frameIndex, finished, vScale, vOffset } = heroAnimUpdate(e.id, e.currentanim as any, mode);
+            sprite.texture = frameTexture;
+            sprite.scale.set(e.scale * vScale);
+            sprite.y = vOffset;
+            (e as any).visualScale = vScale;
+            e.currentFrame = frameIndex;
+            if (finished) {
+              e.animFinished = true;
+            }
           }
         }
       }
@@ -172,19 +214,17 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   });
 
   return (
-    <pixiContainer>
-      {[...entities]
-        .sort((a, b) => a.zIndex - b.zIndex)
-        .map((e, i) => (
-          <pixiContainer key={i} ref={e.container} zIndex={e.zIndex}>
-            <pixiSprite
-              ref={e.sprite}
-              texture={e.texture ?? undefined}
-              scale={e.scale}
-              anchor={e.isObject ? 0.5 : 0}
-            />
-          </pixiContainer>
-        ))}
+    <pixiContainer sortableChildren={true}>
+      {entities.map((e, i) => (
+        <pixiContainer key={i} ref={e.container}>
+          <pixiSprite
+            ref={e.sprite}
+            texture={e.texture ?? undefined}
+            scale={e.scale}
+            anchor={0.5}
+          />
+        </pixiContainer>
+      ))}
     </pixiContainer>
   );
 };

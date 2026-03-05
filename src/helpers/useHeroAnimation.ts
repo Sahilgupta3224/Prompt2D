@@ -11,6 +11,7 @@ interface AnimState {
 interface RowConfig {
   row: number
   frames: number
+  speed?: number
   h?: number
   vScale?: number
   vOffset?: number
@@ -21,10 +22,10 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
   const aiOffset = 14;
 
   switch (direction) {
-    case "SPELLCASTUP": return { row: 0, frames: 7 }
-    case "SPELLCASTLEFT": return { row: 1, frames: 7 }
-    case "SPELLCASTDOWN": return { row: 2, frames: 7 }
-    case "SPELLCASTRIGHT": return { row: 3, frames: 7 }
+    case "SPELLCASTUP": return { row: 0, frames: 7, speed: 0.5 }
+    case "SPELLCASTLEFT": return { row: 1, frames: 7, speed: 0.5 }
+    case "SPELLCASTDOWN": return { row: 2, frames: 7, speed: 0.5 }
+    case "SPELLCASTRIGHT": return { row: 3, frames: 7, speed: 0.5 }
     case "THRUSTUP": return { row: 4, frames: 8 }
     case "THRUSTLEFT": return { row: 5, frames: 8 }
     case "THRUSTDOWN": return { row: 6, frames: 8 }
@@ -39,7 +40,7 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
     case "SLASHRIGHT": return { row: 15, frames: 6 }
     case "SHOOTUP": return { row: 16, frames: 10 }
     case "SHOOTLEFT": return { row: 17, frames: 10 }
-    case "SHOOTDOWN": return { row: 18, frames: 10}
+    case "SHOOTDOWN": return { row: 18, frames: 10 }
     case "SHOOTRIGHT": return { row: 19, frames: 10 }
     case "HURT": return { row: 20, frames: 6 }
     case "CLIMBUP": return { row: 21, frames: 6 }
@@ -67,10 +68,10 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
     case "COMBATIDLELEFT": return { row: 43, frames: 2 }
     case "COMBATIDLEDOWN": return { row: 44, frames: 2 }
     case "COMBATIDLERIGHT": return { row: 45, frames: 2 }
-    case "PUNCHUP": return {row:50,frames:6}
-    case "PUNCHLEFT": return {row:51,frames:6}
-    case "PUNCHDOWN": return {row:52,frames:6}
-    case "PUNCHRIGHT": return {row:53,frames:6}
+    case "PUNCHUP": return { row: 50, frames: 6 }
+    case "PUNCHLEFT": return { row: 51, frames: 6 }
+    case "PUNCHDOWN": return { row: 52, frames: 6 }
+    case "PUNCHRIGHT": return { row: 53, frames: 6 }
     case "PULLLEFT": return { row: 54, frames: 9, vScale: aiScale, vOffset: aiOffset }
     case "PULLRIGHT": return { row: 55, frames: 9, vScale: aiScale, vOffset: aiOffset }
     case "PUSHLEFT": return { row: 56, frames: 9, vScale: aiScale, vOffset: aiOffset }
@@ -108,7 +109,7 @@ export const useHeroAnimation = ({
   ) => {
     const state = getOrCreateState(entityId)
     const config = getRowByDirection(direction)
-    const { row, frames, h = frameHeight } = config;
+    const { row, frames, h = frameHeight, speed } = config;
 
     if (state.prevAnim !== direction) {
       state.frame = 0
@@ -120,7 +121,7 @@ export const useHeroAnimation = ({
 
     if (animMode === "once") {
       if (state.frame < frames - 1) {
-        state.elapsed += animationSpeed
+        state.elapsed += animationSpeed * (speed ?? 1)
         if (state.elapsed >= 1) {
           state.elapsed = 0
           state.frame++
@@ -129,7 +130,7 @@ export const useHeroAnimation = ({
         finished = true
       }
     } else if (animMode === "loop") {
-      state.elapsed += animationSpeed
+      state.elapsed += animationSpeed * (speed ?? 1)
       if (state.elapsed >= 1) {
         state.elapsed = 0
         state.frame = (state.frame + 1) % frames

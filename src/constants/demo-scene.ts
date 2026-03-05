@@ -22,10 +22,10 @@ export const DEMO_SCENE: SceneDefinition = {
     },
     {
       id: "rock",
-      position: { x: 670, y: 50 },
+      position: { x: 500, y: 100 },
       scale: 0.4,
       isObject: true,
-      shape: "randomPolygon",
+      shape: "circle",
       color: "#070707ff"
     },
   ],
@@ -44,12 +44,12 @@ export const DEMO_SCENE: SceneDefinition = {
       //   params:{objectId: "rock", targetId:"hero2"},
       //   entityId: "hero1"
       // },
-      {
-        type: "action",
-        name: "move",
-        params: { destination: { x: 450, y: 450 } },
-        entityId: "hero1"
-      },
+      // {
+      //   type: "action",
+      //   name: "move",
+      //   params: { destination: { x: 450, y: 450 } },
+      //   entityId: "hero1"
+      // },
       // {
       //   type: "action",
       //   name: "move",
@@ -82,7 +82,7 @@ export const DEMO_SCENE: SceneDefinition = {
       {
         type: "action",
         name: "applyForce",
-        params: { mode:"push", force:{x:1,y:0}, duration:5000},
+        params: { mode: "push", force: { x: 1, y: 0 }, duration: 5000 },
         entityId: "hero2"
       },
 
@@ -109,7 +109,7 @@ export const DEMO_SCENE: SceneDefinition = {
       //   // entityId:"rock"
       // },
       {
-        type: "action", 
+        type: "action",
         name: "attack",
         params: { targetId: "hero2", weapon: "melee" },
       },
@@ -133,11 +133,11 @@ export const DEMO_SCENE: SceneDefinition = {
       // //   name: "Fade",
       // //   params: {targetAlpha:0 },
       // // },
-      {
-        type: "action",
-        name: "rotate",
-        params: { angle: 360, duration: 1000, speed: 1 },
-      },
+      // {
+      //   type: "action",
+      //   name: "rotate",
+      //   params: { angle: 360, duration: 1000, speed: 1 },
+      // },
       // {
       //   type: "action",
       //   name: "oscillate",
