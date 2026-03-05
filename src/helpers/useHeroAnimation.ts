@@ -32,7 +32,7 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
     case "MOVEUP": return { row: 8, frames: 9 }
     case "MOVELEFT": return { row: 9, frames: 9 }
     case "MOVEDOWN": return { row: 10, frames: 9 }
-    case "MOVERIGHT": return { row: 0, frames: 7 }
+    case "MOVERIGHT": return { row: 11, frames: 9 }
     case "SLASHUP": return { row: 12, frames: 6 }
     case "SLASHLEFT": return { row: 13, frames: 6 }
     case "SLASHDOWN": return { row: 14, frames: 6 }

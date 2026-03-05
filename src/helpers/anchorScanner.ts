@@ -1,6 +1,6 @@
 export const ANCHOR_COLORS = {
-    hand: [255, 0, 255] as const,   
-    feet: [0, 255, 255] as const,   
+    hand: [255, 0, 255] as const,
+    feet: [0, 255, 255] as const,
 } satisfies Record<string, readonly [number, number, number]>;
 
 export type AnchorPoint = keyof typeof ANCHOR_COLORS;
@@ -58,17 +58,17 @@ export async function scanAnchors(
 
     for (const { name, row, frames } of rows) {
         anchorMap[name] = {};
-
         for (let frame = 0; frame < frames; frame++) {
+            let f = 1
             const cellX = frame * frameWidth;
             const cellY = row * frameHeight;
-
             for (let py = 0; py < frameHeight; py++) {
                 for (let px = 0; px < frameWidth; px++) {
                     const idx = ((cellY + py) * width + (cellX + px)) * 4;
                     if (data[idx + 3] < 128) continue;
                     for (const [anchorName, color] of Object.entries(ANCHOR_COLORS) as [AnchorPoint, readonly [number, number, number]][]) {
                         if (colorsMatch(data, idx, color)) {
+                            f= 0;
                             if (!anchorMap[name][anchorName]) {
                                 anchorMap[name][anchorName] = Array(frames).fill(null);
                             }
@@ -76,26 +76,20 @@ export async function scanAnchors(
                                 x: px,
                                 y: py,
                             };
-                            console.log(
-                                `[anchor] "${anchorName}" in "${name}" frame ${frame}` +
-                                ` → pixel (${px}, ${py}) in 64×64 cell` +
-                                ` [row ${rows.find(r => r.name === name)?.row}, cellX=${frame * frameWidth}]`
-                            );
+                            // console.log(
+                            //     `[anchor] "${anchorName}" in "${name}" frame ${frame}` +
+                            //     ` → pixel (${px}, ${py}) in 64×64 cell` +
+                            //     ` [row ${rows.find(r => r.name === name)?.row}, cellX=${frame * frameWidth}]`
+                            // );
                             pixelsToErase.push(idx);
                         }
                     }
                 }
             }
-        }
-
-        for (const anchorName of Object.keys(anchorMap[name]) as AnchorPoint[]) {
-            const offsets = anchorMap[name][anchorName]!;
-            let last: { x: number; y: number } | null = null;
-            for (let i = 0; i < offsets.length; i++) {
-                if (offsets[i] !== null) last = offsets[i];
-                else if (last !== null) offsets[i] = last;
+            if(f==1){
+                console.log(name," ",row," ", frame)
             }
-        }
+        }   // null frames stay null
     }
 
     for (const idx of pixelsToErase) {
@@ -115,13 +109,15 @@ export async function scanAnchors(
         `found anchors in ${found}, erased ${pixelsToErase.length} pixel(s).`
     );
 
+    console.log(anchorMap)
+
     return { anchorMap, cleanUrl };
 }
 
 export function Config(
     anchorMap: AnchorMap
-): Record<string, Record<string, { x: number; y: number } | { x: number; y: number }[]>> {
-    const config: Record<string, Record<string, { x: number; y: number } | { x: number; y: number }[]>> = {};
+): Record<string, Record<string, { x: number; y: number } | ({ x: number; y: number } | null)[]>> {
+    const config: Record<string, Record<string, { x: number; y: number } | ({ x: number; y: number } | null)[]>> = {};
 
     for (const [animName, points] of Object.entries(anchorMap)) {
         config[animName] = {};
@@ -129,8 +125,9 @@ export function Config(
             const valid = offsets.filter((o): o is { x: number; y: number } => o !== null);
             if (valid.length === 0) continue;
 
-            const allSame = valid.every(o => o.x === valid[0].x && o.y === valid[0].y);
-            config[animName][point] = allSame ? valid[0] : offsets.map(o => o ?? valid[0]);
+            const allNonNull = offsets.every(o => o !== null);
+            const allSame = allNonNull && valid.every(o => o.x === valid[0].x && o.y === valid[0].y);
+            config[animName][point] = allSame ? valid[0] : [...offsets];
         }
     }
 

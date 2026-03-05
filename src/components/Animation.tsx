@@ -14,6 +14,7 @@ import type { Config } from "../helpers/anchorScanner";
 extend({ Container, Sprite });
 
 type AttachmentConfig = ReturnType<typeof Config>;
+type FrameOffset = { x: number; y: number } | null;
 
 interface IHeroProps {
   herotexture: Texture | null;
@@ -115,22 +116,20 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         const parentScale = (e.parent.scale ?? 1) * (e.parent.visualScale ?? 1);
         const config = e.parent.attachmentConfig[anim]?.[e.attachmentPoint]
           ?? e.parent.attachmentConfig["default"]?.[e.attachmentPoint];
-        if (config) {
-          if (Array.isArray(config)) {
-            offset = { x: config[frame % config.length].x * parentScale, y: config[frame % config.length].y * parentScale };
-          } else {
-            offset = { x: config.x * parentScale, y: config.y * parentScale };
-          }
-          // Offsets are raw frame pixels → multiply by effective visual scale.
-          // parentScale = entity.scale * vScale so offset always matches rendering.
-          // const rawOffset = Array.isArray(config)
-          //   ? config[frame % config.length]
-          //   : config;
-          // if (rawOffset) {
-          //   offset = { x: rawOffset.x * parentScale, y: rawOffset.y * parentScale };
-          // }
+        const rawOffset: FrameOffset = config
+          ? (Array.isArray(config) ? (config[frame % config.length] as FrameOffset) : config)
+          : null;
+
+        const container = e.container.current;
+        if (rawOffset === null) {
+          if (container) container.visible = false;
+          return;
         }
-        // console.log(config, offset)
+        if (container) container.visible = true;
+        offset = { x: rawOffset.x * parentScale, y: rawOffset.y * parentScale };
+      } else {
+        const container = e.container.current;
+        if (container) container.visible = true;
       }
       // console.log(offset)
       e.x = e.parent.x + offset.x;
@@ -145,7 +144,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
 
   useTick((ticker: Ticker) => {
     const dt = ticker.deltaTime;
-    try{
+    try {
       const scene = sceneRef.current;
       if (!scene) return;
       scene.update(dt);
@@ -167,7 +166,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         }
       }
     }
-    catch(e){
+    catch (e) {
       console.warn(e)
     }
   });
@@ -182,6 +181,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
               ref={e.sprite}
               texture={e.texture ?? undefined}
               scale={e.scale}
+              anchor={e.isObject ? 0.5 : 0}
             />
           </pixiContainer>
         ))}

@@ -12,7 +12,7 @@ export const SPRITE_ROWS: RowDesc[] = [
     { name: "MOVEUP", row: 8, frames: 9 },
     { name: "MOVELEFT", row: 9, frames: 9 },
     { name: "MOVEDOWN", row: 10, frames: 9 },
-    { name: "MOVERIGHT", row: 0, frames: 7 },
+    { name: "MOVERIGHT", row: 11, frames: 9 },
     { name: "SLASHUP", row: 12, frames: 6 },
     { name: "SLASHLEFT", row: 13, frames: 6 },
     { name: "SLASHDOWN", row: 14, frames: 6 },
@@ -55,7 +55,7 @@ export const SPRITE_ROWS: RowDesc[] = [
     { name: "PULLRIGHT", row: 55, frames: 9 },
     { name: "PUSHLEFT", row: 56, frames: 9 },
     { name: "PUSHRIGHT", row: 57, frames: 9 },
-    { name: "DANCE", row: 2, frames: 9 },
+    { name: "DANCE", row: 2, frames: 7 },
 ];
 
 export const SPRITE_ROW_MAP = new Map(SPRITE_ROWS.map(r => [r.name, r]));

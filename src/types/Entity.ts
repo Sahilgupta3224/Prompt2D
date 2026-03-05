@@ -27,7 +27,7 @@ export interface Entity {
     container: React.RefObject<Container | null>;
     texture?: Texture | null;
     attachmentPoint?: string;
-    attachmentConfig?: Record<string, Record<string, { x: number, y: number } | { x: number, y: number }[]>>;
+    attachmentConfig?: Record<string, Record<string, { x: number, y: number } | ({ x: number, y: number } | null)[]>>;
     currentFrame?: number;
     animMode?: "loop" | "once" | "static" | "freeze";
     animFinished?: boolean;
