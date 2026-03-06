@@ -18,7 +18,7 @@ export const FOOTBALL_SCENE: SceneDefinition = {
       scale: 0.5,
       isObject: true,
       shape: "circle",
-      color: "#ffffff",
+      color: "#0d0c0cff",
     },
 
     {
@@ -27,7 +27,7 @@ export const FOOTBALL_SCENE: SceneDefinition = {
       scale: 1,
       isObject: true,
       shape: "rectangle",
-      color: "#dddddd",
+      color: "#af1111ff",
     },
   ],
   background: "park",
@@ -39,7 +39,7 @@ export const FOOTBALL_SCENE: SceneDefinition = {
         type: "action",
         name: "crouch",
         entityId: "boy",
-        params: { duration: 3000 },
+        params: { duration: 1000 },
       },
       {
         type: "action",

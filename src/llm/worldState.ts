@@ -1,5 +1,17 @@
 import type { EntityRegistry } from "../core/EntityRegistry";
 
+const SKIP_STATE_KEYS = new Set([
+    "__registry__", "__assetType__",
+    "waitElapsed", "waitDuration",
+    "fadeStart", "fadeTarget", "fadeDuration", "fadeStartTime",
+    "rotateStart", "rotateTarget", "rotateDuration", "rotateStartTime",
+    "oscillateCenter", "oscillateAmplitude", "oscillateFrequency",
+    "oscillateAxis", "oscillateDuration", "oscillateStartTime", "oscillatePhase",
+    "shakeCenter", "shakeIntensity", "shakeDuration", "shakeFrequency",
+    "shakeAxis", "shakeStartTime", "shakeLastUpdate",
+    "attackPhase", "attackRange", "attackFrameTimer", "attackFrame", "attackPreviousAnim",
+]);
+
 export function serializeWorldState(registry: EntityRegistry): string {
     const entries = registry.getAllEntries();
 
@@ -17,25 +29,28 @@ export function serializeWorldState(registry: EntityRegistry): string {
         if (entity.scale !== 1) {
             parts.push(`scale ${entity.scale}`);
         }
+
+        if (entity.isObject) {
+            parts.push(`isObject=true`);
+            if (entity.shape) parts.push(`shape="${entity.shape}"`);
+            if (entity.color) parts.push(`color="${entity.color}"`);
+        }
+
         if (entity.currentanim) {
-            parts.push(`facing "${entity.currentanim}"`);
+            parts.push(`anim="${entity.currentanim}"`);
         }
 
         if (entity.parent) {
             const parentId = findEntityId(registry, entity.parent);
-            if (parentId) {
-                parts.push(`attached to ${parentId}`);
-            }
+            if (parentId) parts.push(`attachedTo="${parentId}"`);
         }
 
         if (entity.vx !== 0 || entity.vy !== 0) {
             parts.push(`velocity (${entity.vx.toFixed(1)}, ${entity.vy.toFixed(1)})`);
         }
 
-        const notableState = extractNotableState(entity.state);
-        if (notableState) {
-            parts.push(notableState);
-        }
+        const notable = extractNotableState(entity.state);
+        if (notable) parts.push(notable);
 
         lines.push(`- ${id}: ${parts.join(", ")}`);
     }
@@ -51,44 +66,10 @@ function findEntityId(registry: EntityRegistry, target: any): string | null {
 }
 
 function extractNotableState(state: Record<string, any>): string | null {
-    const SKIP_KEYS = new Set([
-        "__registry__",
-        "__assetType__",
-        "waitElapsed",
-        "waitDuration",
-        "fadeStart",
-        "fadeTarget",
-        "fadeDuration",
-        "fadeStartTime",
-        "rotateStart",
-        "rotateTarget",
-        "rotateDuration",
-        "rotateStartTime",
-        "oscillateCenter",
-        "oscillateAmplitude",
-        "oscillateFrequency",
-        "oscillateAxis",
-        "oscillateDuration",
-        "oscillateStartTime",
-        "oscillatePhase",
-        "shakeCenter",
-        "shakeIntensity",
-        "shakeDuration",
-        "shakeFrequency",
-        "shakeAxis",
-        "shakeStartTime",
-        "shakeLastUpdate",
-        "attackPhase",
-        "attackRange",
-        "attackFrameTimer",
-        "attackFrame",
-        "attackPreviousAnim",
-    ]);
-
     const notable: string[] = [];
 
     for (const [key, value] of Object.entries(state)) {
-        if (SKIP_KEYS.has(key)) continue;
+        if (SKIP_STATE_KEYS.has(key)) continue;
         if (key.startsWith("_")) continue;
         if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
             notable.push(`${key}=${JSON.stringify(value)}`);

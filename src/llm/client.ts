@@ -1,5 +1,6 @@
 import { buildSystemPrompt } from "./systemPrompt";
 import type { SceneDefinition } from "../types/Scene";
+import { GAME_WIDTH, GAME_HEIGHT } from "../constants/game-world";
 
 const DEFAULT_MODEL = "groq/compound";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
@@ -72,6 +73,25 @@ function extractJSON(raw: string): { success: true; data: any } | { success: fal
     }
 }
 
+const VALID_ACTION_NAMES = new Set([
+    "move", "movePath", "wander", "follow", "faceDirection", "look", "crawl",
+    "crouch", "sleep", "sitOn", "dance", "any",
+    "jump", "applyForce", "knockBack",
+    "grab", "pickUp", "throw", "give", "detach",
+    "attack", "speak", "emote",
+    "turnTo", "turnTowards",
+    "fade", "rotate", "spin", "oscillate", "shake",
+    "wait", "spawn", "despawn", "setState",
+]);
+
+function collectActionNodes(node: any): any[] {
+    if (!node || typeof node !== "object") return [];
+    if (node.type === "action") return [node];
+    const children = node.children ? node.children.flatMap(collectActionNodes) : [];
+    const child = node.child ? collectActionNodes(node.child) : [];
+    return [...children, ...child];
+}
+
 function basicValidate(data: any): { valid: true; scene: SceneDefinition } | { valid: false; errors: string[] } {
     const errors: string[] = [];
 
@@ -85,12 +105,50 @@ function basicValidate(data: any): { valid: true; scene: SceneDefinition } | { v
 
     if (!Array.isArray(data.entities) || data.entities.length === 0) {
         errors.push("'entities' must be a non-empty array");
+        return { valid: false, errors };
     }
 
     if (!data.timeline || typeof data.timeline !== "object") {
         errors.push("'timeline' must be an object");
-    } else if (!data.timeline.type) {
-        errors.push("'timeline.type' is required (action | sequence | parallel | loop)");
+        return { valid: false, errors };
+    }
+
+    if (!data.timeline.type) {
+        errors.push("'timeline.type' is required");
+    }
+
+    const entityIds = new Set<string>(data.entities.map((e: any) => e.id).filter(Boolean));
+
+    // Auto-fix and clamp entity fields
+    for (const entity of data.entities) {
+        // If entity has shape but no isObject, auto-assign it
+        if (entity.shape && !entity.isObject) {
+            entity.isObject = true;
+        }
+        // Clamp coordinates within canvas
+        if (typeof entity.position?.x === "number") {
+            entity.position.x = Math.max(0, Math.min(GAME_WIDTH, entity.position.x));
+        }
+        if (typeof entity.position?.y === "number") {
+            entity.position.y = Math.max(0, Math.min(GAME_HEIGHT, entity.position.y));
+        }
+    }
+
+    // Validate all action nodes deeply
+    const allActions = collectActionNodes(data.timeline);
+    for (const action of allActions) {
+        if (action.name && !VALID_ACTION_NAMES.has(action.name)) {
+            errors.push(`Unknown action "${action.name}". Use only valid action names.`);
+        }
+        if (action.entityId && !entityIds.has(action.entityId)) {
+            errors.push(`Action "${action.name}" targets entityId "${action.entityId}" which is not in entities[].`);
+        }
+        const params = action.params ?? {};
+        for (const [key, val] of Object.entries(params)) {
+            if (key.endsWith("Id") && typeof val === "string" && !entityIds.has(val)) {
+                errors.push(`Action "${action.name}" param "${key}"="${val}" references an entity not in entities[].`);
+            }
+        }
     }
 
     if (errors.length > 0) {

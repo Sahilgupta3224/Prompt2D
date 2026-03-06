@@ -87,7 +87,7 @@ export async function scanAnchors(
                 }
             }
             if(f==1){
-                console.log(name," ",row," ", frame)
+                // console.log(name," ",row," ", frame)
             }
         }   // null frames stay null
     }
@@ -104,12 +104,12 @@ export async function scanAnchors(
 
     const found = Object.entries(anchorMap)
         .filter(([, pts]) => Object.keys(pts).length > 0).length;
-    console.info(
-        `[anchorScanner] Scanned ${rows.length} animations — ` +
-        `found anchors in ${found}, erased ${pixelsToErase.length} pixel(s).`
-    );
+    // console.info(
+    //     `[anchorScanner] Scanned ${rows.length} animations — ` +
+    //     `found anchors in ${found}, erased ${pixelsToErase.length} pixel(s).`
+    // );
 
-    console.log(anchorMap)
+    // console.log(anchorMap)
 
     return { anchorMap, cleanUrl };
 }

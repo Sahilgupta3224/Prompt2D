@@ -26,8 +26,15 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         description: "Move entity along a series of waypoints",
         params: [
             { name: "path", type: "{x: number, y: number}[]", required: true, description: "Array of waypoints" },
-            { name: "speed", type: "number", required: false, description: "Movement speed (default: normal)" },
+            { name: "speed", type: "number", required: false, description: "Movement speed multiplier (default: 1)" },
             { name: "loop", type: "boolean", required: false, description: "Loop path forever (default: false)" },
+        ],
+    },
+    {
+        name: "wander",
+        description: "Move entity to a destination with slight random deviation, like a casual stroll",
+        params: [
+            { name: "destination", type: "{x: number, y: number}", required: true, description: "General destination" },
         ],
     },
     {
@@ -50,7 +57,7 @@ export const ACTION_MANIFEST: ActionDoc[] = [
     },
     {
         name: "look",
-        description: "Smoothly rotate to face a target, direction, or angle",
+        description: "Smoothly rotate to face a target entity or angle",
         params: [
             { name: "targetId", type: "string", required: false, description: "Entity ID to look at" },
             { name: "direction", type: "{x: number, y: number}", required: false, description: "Direction vector" },
@@ -58,6 +65,42 @@ export const ACTION_MANIFEST: ActionDoc[] = [
             { name: "instant", type: "boolean", required: false, description: "Snap instantly (default: false)" },
         ],
         notes: "Provide exactly one of: targetId, direction, or angle",
+    },
+    {
+        name: "crawl",
+        description: "Entity moves slowly to destination in a crawling pose",
+        params: [
+            { name: "destination", type: "{x: number, y: number}", required: true, description: "Target position to crawl to" },
+            { name: "duration", type: "number", required: false, description: "Duration in ms (default: 2000)" },
+        ],
+    },
+
+    // ── Poses / Stances ───────────────────────
+    {
+        name: "crouch",
+        description: "Entity crouches down and holds the pose",
+        params: [
+            { name: "duration", type: "number", required: false, description: "How long to stay crouched in ms (default: 1000)" },
+        ],
+    },
+    {
+        name: "sleep",
+        description: "Entity lies down and sleeps (plays sleep animation)",
+        params: [
+            { name: "duration", type: "number", required: true, description: "How long to sleep in ms" },
+        ],
+    },
+    {
+        name: "sitOn",
+        description: "Walk to a seat position and sit down",
+        params: [
+            { name: "seat", type: "{x: number, y: number}", required: true, description: "Seat position" },
+        ],
+    },
+    {
+        name: "dance",
+        description: "Start a looping dance animation (runs forever, use in parallel with a timed action)",
+        params: [],
     },
 
     // ── Physics ───────────────────────────────
@@ -79,15 +122,24 @@ export const ACTION_MANIFEST: ActionDoc[] = [
             { name: "continuous", type: "boolean", required: false, description: "Apply continuously (default: false, one-shot impulse)" },
         ],
     },
+    {
+        name: "knockBack",
+        description: "Push entity away in a direction with decaying velocity",
+        params: [
+            { name: "direction", type: "{x: number, y: number}", required: true, description: "Direction vector to knock back toward" },
+            { name: "strength", type: "number", required: true, description: "Initial knockback speed" },
+            { name: "duration", type: "number", required: false, description: "Max duration in ms (default: 500)" },
+            { name: "friction", type: "number", required: false, description: "Velocity decay per frame 0-1 (default: 0.9)" },
+        ],
+    },
 
     // ── Object Interaction ────────────────────
     {
         name: "grab",
-        description: "Attach object to this entity (instant, no movement)",
+        description: "Attach object to this entity instantly with no movement",
         params: [
             { name: "objectId", type: "string", required: true, description: "Entity ID of object to grab" },
-            { name: "localOffset", type: "{x: number, y: number}", required: false, description: "Offset from entity" },
-            { name: "attachmentPoint", type: "string", required: false, description: "Named attachment point (e.g. 'hand')" },
+            { name: "attachmentPoint", type: "\"hand\"", required: false, description: "Attachment point — must be 'hand'" },
         ],
     },
     {
@@ -95,7 +147,7 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         description: "Walk to an object, then grab it",
         params: [
             { name: "objectId", type: "string", required: true, description: "Entity ID of object" },
-            { name: "attachmentPoint", type: "string", required: false, description: "Named attachment point" },
+            { name: "attachmentPoint", type: "\"hand\"", required: false, description: "Attachment point — must be 'hand'" },
         ],
     },
     {
@@ -104,7 +156,7 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         params: [
             { name: "objectId", type: "string", required: true, description: "Entity ID of object to throw" },
             { name: "target", type: "{x: number, y: number}", required: true, description: "Where to throw it" },
-            { name: "arcHeight", type: "number", required: true, description: "Peak height of throw arc in pixels" },
+            { name: "arcHeight", type: "number", required: true, description: "Peak height of throw arc in pixels (30-150)" },
         ],
     },
     {
@@ -120,6 +172,17 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         description: "Release a held object in place",
         params: [
             { name: "objectId", type: "string", required: true, description: "Entity ID of object to release" },
+        ],
+    },
+
+    // ── Combat ─────────────────────────────────
+    {
+        name: "attack",
+        description: "Approach and attack a target entity",
+        params: [
+            { name: "targetId", type: "string", required: true, description: "Entity ID of target" },
+            { name: "weapon", type: "\"melee\" | \"punch\" | \"gun\" | \"thrust\" | \"spell\"", required: true, description: "Attack type" },
+            { name: "damage", type: "number", required: false, description: "Damage amount (default: 10)" },
         ],
     },
 
@@ -141,17 +204,6 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         ],
     },
 
-    // ── Combat ─────────────────────────────────
-    {
-        name: "attack",
-        description: "Approach and attack a target entity",
-        params: [
-            { name: "targetId", type: "string", required: true, description: "Entity ID of target" },
-            { name: "weapon", type: "\"melee\" | \"gun\"", required: true, description: "Attack type" },
-            { name: "damage", type: "number", required: false, description: "Damage amount (default: 10)" },
-        ],
-    },
-
     // ── Orientation ────────────────────────────
     {
         name: "turnTo",
@@ -164,50 +216,9 @@ export const ACTION_MANIFEST: ActionDoc[] = [
     },
     {
         name: "turnTowards",
-        description: "Instantly face toward another entity or position",
+        description: "Instantly face toward another entity",
         params: [
             { name: "targetId", type: "string", required: true, description: "Entity ID to face toward" },
-        ],
-    },
-    {
-        name: "knockBack",
-        description: "Push entity away in a direction with decaying velocity",
-        params: [
-            { name: "direction", type: "{x: number, y: number}", required: true, description: "Direction vector to knock back toward" },
-            { name: "strength", type: "number", required: true, description: "Initial knockback speed" },
-            { name: "duration", type: "number", required: false, description: "Max duration in ms (default: 500)" },
-            { name: "friction", type: "number", required: false, description: "Velocity decay per frame 0-1 (default: 0.9)" },
-        ],
-    },
-
-    // ── Animation / Pose ──────────────────────
-    {
-        name: "dance",
-        description: "Start a looping dance animation (runs forever, use in parallel with a timed action)",
-        params: [],
-    },
-    {
-        name: "any",
-        description: "Play a named pose or special animation for a duration",
-        params: [
-            { name: "Name", type: "string", required: true, description: "Pose name (e.g. 'CROUCH')" },
-            { name: "time", type: "number", required: false, description: "Duration in ms (omit for infinite)" },
-        ],
-    },
-
-    // ── Timing ─────────────────────────────────
-    {
-        name: "wait",
-        description: "Pause for a duration",
-        params: [
-            { name: "duration", type: "number", required: true, description: "Duration in milliseconds" },
-        ],
-    },
-    {
-        name: "sitOn",
-        description: "Walk to a seat position and sit down",
-        params: [
-            { name: "seat", type: "{x: number, y: number}", required: true, description: "Seat position" },
         ],
     },
 
@@ -230,6 +241,14 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         ],
     },
     {
+        name: "spin",
+        description: "Spin entity continuously for a duration",
+        params: [
+            { name: "duration", type: "number", required: true, description: "How long to spin in ms" },
+            { name: "speed", type: "number", required: false, description: "Rotations per second (default: 1)" },
+        ],
+    },
+    {
         name: "oscillate",
         description: "Make entity oscillate back and forth (wobble/bob)",
         params: [
@@ -241,12 +260,21 @@ export const ACTION_MANIFEST: ActionDoc[] = [
     },
     {
         name: "shake",
-        description: "Shake entity randomly (impact feedback, screen shake effect)",
+        description: "Shake entity randomly (impact feedback)",
         params: [
             { name: "intensity", type: "number", required: true, description: "Shake intensity in pixels" },
             { name: "duration", type: "number", required: false, description: "Duration in ms (omit for infinite)" },
             { name: "frequency", type: "number", required: false, description: "Shakes per second (default: 10)" },
             { name: "axis", type: "\"x\" | \"y\" | \"both\"", required: false, description: "Axis to shake on (default: both)" },
+        ],
+    },
+
+    // ── Timing ─────────────────────────────────
+    {
+        name: "wait",
+        description: "Pause for a duration",
+        params: [
+            { name: "duration", type: "number", required: true, description: "Duration in milliseconds" },
         ],
     },
 
@@ -270,11 +298,10 @@ export const ACTION_MANIFEST: ActionDoc[] = [
     },
     {
         name: "setState",
-        description: "Set arbitrary state values on an entity",
+        description: "Set arbitrary state flags on an entity (advanced — use sparingly)",
         params: [
-            { name: "values", type: "Record<string, any>", required: true, description: "Key-value pairs to set" },
+            { name: "values", type: "Record<string, any>", required: true, description: "Key-value pairs to set on entity.state" },
         ],
-        notes: "Advanced. Rarely needed by the LLM.",
     },
 ];
 
@@ -284,27 +311,33 @@ export const AVAILABLE_BACKGROUNDS = [
 ] as const;
 
 
-const ANIMATION_TOOLS_DOC = `
-## Animation Modes
+const ANIMATION_NAMES_DOC = `
+## Animation Names
 
-Entities support different animation modes that control how their sprite sheet plays:
+Use these EXACT names when specifying animations (e.g. with the \`attack\` action). Do NOT invent names.
 
-- **loop**: Animation frames cycle continuously (default for walking, dancing)
-- **once**: Animation plays once then stops on the last frame (e.g. attack hit)
-- **static**: Shows a single fixed frame (poses like CROUCH, SIT)
-- **freeze**: Pauses on the current frame (hold a mid-action pose)
+**Idle (standing still):**
+IDLEUP, IDLEDOWN, IDLELEFT, IDLERIGHT
 
-Available animation names for characters:
-- "UP", "DOWN", "LEFT", "RIGHT" — directional walk cycles
-- "DANCE" — dance loop
-- "STILL" — idle standing
-- "SIT" — sitting pose  
-- "HIT" — taking damage (plays once)
-- "CROUCH" — crouching pose
+**Walking:**
+MOVEUP, MOVEDOWN, MOVELEFT, MOVERIGHT
 
-The \`any\` action can play named poses.
-The \`faceDirection\` and \`turnTo\` actions change the facing direction.
-Attack actions automatically trigger hit animations on targets.
+**Running:**
+RUNUP, RUNDOWN, RUNLEFT, RUNRIGHT
+
+**Combat:**
+SLASHUP, SLASHDOWN, SLASHLEFT, SLASHRIGHT
+THRUSTUP, THRUSTDOWN, THRUSTLEFT, THRUSTRIGHT
+PUNCHUP, PUNCHDOWN, PUNCHLEFT, PUNCHRIGHT
+SPELLCASTUP, SPELLCASTDOWN, SPELLCASTLEFT, SPELLCASTRIGHT
+SHOOTUP, SHOOTDOWN, SHOOTLEFT, SHOOTRIGHT
+
+**Other:**
+HURT, DANCE, CLIMBUP,
+JUMPUP, JUMPDOWN, JUMPLEFT, JUMPRIGHT
+SITUP, SITDOWN, SITLEFT, SITRIGHT
+PULLLEFT, PULLRIGHT, PUSHLEFT, PUSHRIGHT
+COMBATIDLEUP, COMBATIDLEDOWN, COMBATIDLELEFT, COMBATIDLERIGHT
 `;
 
 export function generateActionCatalog(): string {
@@ -329,17 +362,15 @@ export function generateActionCatalog(): string {
         lines.push("");
     }
 
-    lines.push(ANIMATION_TOOLS_DOC);
+    lines.push(ANIMATION_NAMES_DOC);
 
     lines.push(`## Available Backgrounds\n`);
-    lines.push(`Set the "background" field in SceneDefinition to one of: ${AVAILABLE_BACKGROUNDS.map(b => `"${b}"`).join(", ")}`);
-    lines.push(`Choose the most appropriate background based on the scene description.\n`);
+    lines.push(`Set the "background" field to one of: ${AVAILABLE_BACKGROUNDS.map(b => `"${b}"`).join(", ")}\n`);
 
     lines.push(`## Object Shapes & Colors\n`);
-    lines.push(`When creating object entities (isObject: true), you can set according to the shape of object:`);
-    lines.push(`  - "shape": one of: "circle", "square", "rectangle", "triangle", "diamond", "hexagon", "pentagon", "star", "heart", "ellipse", "capsule", "arrow", "cross", "ring", "semicircle", "cone", "cylinder", "pyramid"`);
-    lines.push(`  - "color": any CSS hex color (e.g. "#ff5500", "#2ecc71"). Default: "#4a90d9"`);
-    lines.push(`Choose shapes and colors that match the scene context.\n`);
+    lines.push(`For object entities (isObject: true), set:`);
+    lines.push(`  - "shape": one of: "circle", "square", "rectangle", "triangle", "diamond", "star", "heart", "ellipse", "capsule", "arrow", "cross", "ring", "cone", "cylinder", "randomPolygon"`);
+    lines.push(`  - "color": any CSS hex color (e.g. "#ff5500"). Default: "#4a90d9"\n`);
 
     return lines.join("\n");
 }
