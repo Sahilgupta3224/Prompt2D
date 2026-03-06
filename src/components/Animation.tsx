@@ -7,6 +7,7 @@ import { ANIMATION_SPEED } from "../constants/game-world";
 import { SceneRunner } from "../core/SceneRunner";
 import { DEMO_SCENE } from "../constants/demo-scene";
 import { FOOTBALL_SCENE } from "../constants/football-scene";
+import { DEMO_SCENE_2 } from "../constants/demo-scene-2";
 import { backgroundAssets } from "../helpers/assets";
 import { generateShapeTexture, type ShapeName } from "../helpers/shapeFactory";
 import { serializeWorldState } from "../llm/worldState";
@@ -42,7 +43,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   });
 
   useEffect(() => {
-    const scene = new SceneRunner(DEMO_SCENE);
+    const scene = new SceneRunner(DEMO_SCENE_2);
 
     // if (!hasFetched.current) {
     //   hasFetched.current = true;
