@@ -23,6 +23,8 @@ import { TurnToAction } from "./movement/index";
 import { TurnTowardsAction } from "./movement/index";
 import { AnyAction } from "./movement/index";
 import { DanceAction } from "./movement/index";
+import { FleeAction } from "./movement/index";
+import { PatrolAction } from "./movement/index";
 import { KnockBackAction } from "./physics/index";
 import { JumpAction } from "./physics/index";
 import { ApplyForceAction } from "./physics/index";
@@ -33,6 +35,8 @@ import { ShakeAction } from "./effects/index";
 import { SpinAction } from "./composite/spin";
 import { SleepAction } from "./composite/sleep";
 import { CrawlAction } from "./composite/crawl";
+import { HealAction } from "./composite/index";
+import { WaveAction } from "./composite/index";
 export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     sleep:SleepAction,
     wander:WanderAction,
@@ -68,4 +72,8 @@ export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     turnTo: TurnToAction,
     turnTowards: TurnTowardsAction,
     knockBack: KnockBackAction,
+    heal: HealAction,
+    wave: WaveAction,
+    flee: FleeAction,
+    patrol: PatrolAction
 };

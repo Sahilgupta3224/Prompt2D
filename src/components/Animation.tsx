@@ -42,7 +42,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   });
 
   useEffect(() => {
-    const scene = new SceneRunner(FOOTBALL_SCENE);
+    const scene = new SceneRunner(DEMO_SCENE);
 
     // if (!hasFetched.current) {
     //   hasFetched.current = true;

@@ -44,10 +44,10 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
     case "SHOOTRIGHT": return { row: 19, frames: 10 }
     case "HURT": return { row: 20, frames: 6 }
     case "CLIMBUP": return { row: 21, frames: 6 }
-    case "IDLEUP": return { row: 22, frames: 2 }
-    case "IDLELEFT": return { row: 23, frames: 2 }
-    case "IDLEDOWN": return { row: 24, frames: 2 }
-    case "IDLERIGHT": return { row: 25, frames: 2 }
+    case "IDLEUP": return { row: 22, frames: 2, speed: 0.2 }
+    case "IDLELEFT": return { row: 23, frames: 2, speed: 0.2 }
+    case "IDLEDOWN": return { row: 24, frames: 2, speed: 0.2 }
+    case "IDLERIGHT": return { row: 25, frames: 2, speed: 0.2 }
     case "JUMPUP": return { row: 26, frames: 5 }
     case "JUMPLEFT": return { row: 27, frames: 5 }
     case "JUMPDOWN": return { row: 28, frames: 5 }
@@ -129,16 +129,27 @@ export const useHeroAnimation = ({
       } else {
         finished = true
       }
-    } else if (animMode === "loop") {
+    }
+    // else if (animMode === "loop") {
+    //   state.elapsed += animationSpeed * (speed ?? 1)
+    //   if (state.elapsed >= 1) {
+    //     state.elapsed = 0
+    //     state.frame = (state.frame + 1) % frames
+    //   }
+    // } 
+    else if (animMode === "freeze") {
+      // Keep current frame
+    } else {
+      var f = 0;
+      f++;
       state.elapsed += animationSpeed * (speed ?? 1)
+      console.log(row)
+      // console.log(f)
       if (state.elapsed >= 1) {
+        f = 0;
         state.elapsed = 0
         state.frame = (state.frame + 1) % frames
       }
-    } else if (animMode === "freeze") {
-      // Keep current frame
-    } else {
-      state.frame = 0
     }
 
     const cacheKey = `${texture.uid}_${row}_${state.frame}`;

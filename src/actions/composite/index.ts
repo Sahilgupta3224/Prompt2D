@@ -14,3 +14,5 @@ export {WaitAction} from './Wait'
 export{CrouchAction} from "./crouch"
 export {CrawlAction} from "./crawl"
 export {WanderAction} from "./wander"
+export {HealAction} from "./Heal"
+export {WaveAction} from "./Wave"

@@ -13,7 +13,9 @@ export function playAnimationOnce(entity: Entity, anim: string) {
 }
 
 export function stopAnimation(entity: Entity) {
+    entity.currentanim = "IDLEDOWN";
     entity.animMode = "static";
+    entity.animFinished = true;
 }
 
 export function freezeFrame(entity: Entity) {
