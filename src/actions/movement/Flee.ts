@@ -1,5 +1,5 @@
 import type { ActionDefinition } from "../../types/Action";
-import { calculateAngle, angleToRunDirection, angleToIdleDirection } from "../../helpers/common";
+import { calculateAngle, angleToRunDirection } from "../../helpers/common";
 import { playAnimation, stopAnimation } from "../../helpers/animationTools";
 import { MOVE_SPEED, GAME_WIDTH, GAME_HEIGHT } from "../../constants/game-world";
 
@@ -39,13 +39,8 @@ export const FleeAction: ActionDefinition<FleeParams> = {
         return false;
     },
 
-    exit: (entity, _p, _ctx, s) => {
+    exit: (entity, _p, _ctx, _s) => {
         entity.state.isMoving = false;
-        if (s.previousAnim) {
-            const angle = 0;
-            entity.currentanim = angleToIdleDirection(angle);
-        }
-        if (s.previousMode) entity.animMode = s.previousMode;
-        else stopAnimation(entity);
+        stopAnimation(entity);
     },
 };

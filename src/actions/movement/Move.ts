@@ -2,7 +2,7 @@ import type { ActionDefinition } from "../../types/Action";
 import { calculateAngle, checkCanMove, handleMovement, moveByAngle, reachedDestination, angleToDirection } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
 type MoveParams = { destination: { x: number; y: number }; };
-import { playAnimation } from "../../helpers/animationTools";
+import { playAnimation, stopAnimation } from "../../helpers/animationTools";
 
 export const MoveAction: ActionDefinition<MoveParams> = {
 
@@ -59,5 +59,6 @@ export const MoveAction: ActionDefinition<MoveParams> = {
   exit: (entity) => {
     entity.state.isMoving = false;
     delete entity.animMode;
+    stopAnimation(entity)
   }
 };

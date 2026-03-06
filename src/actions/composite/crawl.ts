@@ -1,4 +1,5 @@
 import type { ActionDefinition } from "../../types/Action";
+import { stopAnimation } from "../../helpers/animationTools";
 
 interface CrawlParams {
   destination: { x: number; y: number };
@@ -15,7 +16,6 @@ export const CrawlAction: ActionDefinition<CrawlParams> = {
     state.dy = params.destination.y-entity.y;
     state.duration = params.duration??2000;
     entity.state.isMoving=true;
-    entity.scale*=0.9;//lower down coz tilt difficult
   },
 
   update(entity, params, dt, ctx, state) {
@@ -30,7 +30,6 @@ export const CrawlAction: ActionDefinition<CrawlParams> = {
 
   exit(entity) {
     entity.state.isMoving =false;
-    entity.scale/=0.9;
-    entity.currentanim = "idle";
+    stopAnimation(entity);
   }
 };

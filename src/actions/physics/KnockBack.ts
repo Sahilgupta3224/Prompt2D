@@ -39,14 +39,7 @@ export const KnockBackAction: ActionDefinition<KnockBackParams> = {
         return false;
     },
 
-    exit: (entity, _p, _ctx, s) => {
-        if (s.previousAnim) {
-            entity.currentanim = s.previousAnim;
-        }
-        if (s.previousMode) {
-            entity.animMode = s.previousMode;
-        } else {
-            stopAnimation(entity);
-        }
+    exit: (entity, _p, _ctx, _s) => {
+        stopAnimation(entity);
     },
 };

@@ -43,5 +43,6 @@ export const FollowAction: ActionDefinition<FollowParams> = {
 
     exit: (entity) => {
         entity.state.isMoving = false;
+        stopAnimation(entity)
     },
 };

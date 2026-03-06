@@ -1,4 +1,5 @@
 import type { ActionDefinition } from "../../types/Action";
+import { stopAnimation } from "../../helpers/animationTools";
 
 interface CrouchParams {
   duration?: number;
@@ -44,6 +45,6 @@ export const CrouchAction: ActionDefinition<CrouchParams> = {
 
   exit(entity, params, ctx, state) {
     entity.scale = state.originalScale;
-    entity.animMode = "loop";
+    stopAnimation(entity);
   }
 };

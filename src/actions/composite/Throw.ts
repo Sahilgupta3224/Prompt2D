@@ -82,9 +82,9 @@ export const ThrowAction: ActionDefinition<ThrowParams> = {
     },
 
     exit: (entity, _p, _ctx, s) => {
-        if (s.previousAnim) entity.currentanim = s.previousAnim;
-        if (s.previousMode) entity.animMode = s.previousMode;
-        else stopAnimation(entity);
+        // if (s.previousAnim) entity.currentanim = s.previousAnim;
+        // if (s.previousMode) entity.animMode = s.previousMode;
+        stopAnimation(entity);
     },
 
 };

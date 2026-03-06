@@ -143,7 +143,7 @@ export const useHeroAnimation = ({
       var f = 0;
       f++;
       state.elapsed += animationSpeed * (speed ?? 1)
-      console.log(row)
+      // console.log(row)
       // console.log(f)
       if (state.elapsed >= 1) {
         f = 0;

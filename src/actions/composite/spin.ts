@@ -1,4 +1,5 @@
 import type { ActionDefinition } from "../../types/Action";
+import { stopAnimation } from "../../helpers/animationTools";
 
 interface SpinParams {
   duration?: number;
@@ -29,6 +30,6 @@ export const SpinAction: ActionDefinition<SpinParams> = {
     if (entity.container.current) {
       entity.container.current.rotation = 0;
     }
-    entity.currentanim = "idle";
+    stopAnimation(entity)
   }
 };

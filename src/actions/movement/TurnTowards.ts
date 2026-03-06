@@ -1,3 +1,5 @@
+// need to  edit this, will use freezeframe after setting currentanimation
+
 import { angleToDirection, calculateAngle } from "../../helpers/common";
 import type { Entity } from "../../types/Entity";
 import type { ActionDefinition } from "../../types/Action";

@@ -5,7 +5,7 @@ import { angleToJumpDirection } from "../../helpers/common";
 type JumpParams = {
     height: number;
     distance?: number;
-    duration?: number; 
+    duration?: number;
     gravity?: number;
 };
 
@@ -57,13 +57,6 @@ export const JumpAction: ActionDefinition<JumpParams> = {
     exit: (entity, _p, _ctx, s) => {
         entity.y = s.startY ?? entity.y;
         entity.state.isJumping = false;
-        if (s.previousAnim) {
-            entity.currentanim = s.previousAnim;
-        }
-        if (s.previousMode) {
-            entity.animMode = s.previousMode;
-        } else {
-            stopAnimation(entity);
-        }
+        stopAnimation(entity);
     },
 };

@@ -74,14 +74,12 @@ export const HealAction: ActionDefinition<HealParams> = {
         return false;
     },
 
-    exit: (entity, { target }, _ctx, s) => {
+    exit: (entity, { target }, _ctx, _s) => {
         entity.state.isMoving = false;
         if (target) {
             target.state.isMagic = false;
             target.state.isHealing = false;
         }
-        if (s.previousAnim) entity.currentanim = s.previousAnim;
-        if (s.previousMode) entity.animMode = s.previousMode;
-        else stopAnimation(entity);
+        stopAnimation(entity);
     },
 };

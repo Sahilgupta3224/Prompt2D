@@ -75,13 +75,13 @@ export const AttackAction: ActionDefinition<AttackParams> = {
 
     exit: (entity, _p, _ctx, s) => {
         entity.state.isMoving = false;
-        if (s.previousAnim) {
-            entity.currentanim = s.previousAnim;
-        }
-        if (s.previousMode) {
-            entity.animMode = s.previousMode;
-        } else {
-            stopAnimation(entity);
-        }
+        // if (s.previousAnim) {
+        //     entity.currentanim = s.previousAnim;
+        // }
+        // if (s.previousMode) {
+        //     entity.animMode = s.previousMode;
+        // } else {
+        // }
+        stopAnimation(entity); 
     },
 };

@@ -6,7 +6,7 @@ type ApplyForceParams = {
     force: { x: number; y: number };
     duration?: number;
     continuous?: boolean;
-    damping?: number; 
+    damping?: number;
     maxSpeed?: number;
     mode?: "push" | "pull" | "none";
     walkSpeed?: number;
@@ -76,8 +76,6 @@ export const ApplyForceAction: ActionDefinition<ApplyForceParams> = {
     exit: (entity, _p, _ctx, s) => {
         entity.vx = 0;
         entity.vy = 0;
-        if (s.previousAnim) entity.currentanim = s.previousAnim;
-        if (s.previousMode) entity.animMode = s.previousMode;
-        else stopAnimation(entity);
+        stopAnimation(entity);
     },
 };

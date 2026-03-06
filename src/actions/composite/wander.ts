@@ -1,6 +1,7 @@
 import type { ActionDefinition } from "../../types/Action";
 import { calculateAngle,angleToDirection } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
+import { stopAnimation } from "../../helpers/animationTools";
 
 const ARRIVAL_THRESHOLD=5;
 interface WanderParams{
@@ -10,7 +11,7 @@ interface WanderParams{
 }
 
 export const WanderAction:ActionDefinition<WanderParams>={
-    enter(entity,params,ctx,state){
+    enter(entity,params,_ctx,state){
         state.elapsed=0;
         state.startX=entity.x;
         state.startY=entity.y;
@@ -46,6 +47,6 @@ export const WanderAction:ActionDefinition<WanderParams>={
     },
     exit(entity){
        entity.state.isMoving=false;
-       entity.animMode="static";
+       stopAnimation(entity)
     }
 }

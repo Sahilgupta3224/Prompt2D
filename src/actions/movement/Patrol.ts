@@ -83,10 +83,8 @@ export const PatrolAction: ActionDefinition<PatrolParams> = {
         return false;
     },
 
-    exit: (entity, _p, _ctx, s) => {
+    exit: (entity, _p, _ctx, _s) => {
         entity.state.isMoving = false;
-        if (s.previousAnim) entity.currentanim = s.previousAnim;
-        if (s.previousMode) entity.animMode = s.previousMode;
-        else stopAnimation(entity);
+        stopAnimation(entity);
     },
 };

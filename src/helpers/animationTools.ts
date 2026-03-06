@@ -13,7 +13,12 @@ export function playAnimationOnce(entity: Entity, anim: string) {
 }
 
 export function stopAnimation(entity: Entity) {
-    entity.currentanim = "IDLEDOWN";
+    const anim = entity.currentanim;
+    console.log(anim)
+    if (anim.endsWith("UP")) entity.currentanim = "IDLEUP";
+    if (anim.endsWith("LEFT")) entity.currentanim = "IDLELEFT";
+    if (anim.endsWith("DOWN")) entity.currentanim = "IDLEDOWN";
+    if (anim.endsWith("RIGHT")) entity.currentanim = "IDLERIGHT";
     entity.animMode = "static";
     entity.animFinished = true;
 }
