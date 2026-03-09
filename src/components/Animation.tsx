@@ -39,8 +39,8 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
 
   const { update: heroAnimUpdate } = useHeroAnimation({
     texture: herotexture,
-    frameWidth: 128,
-    frameHeight: 128,
+    frameWidth: HERO_FRAME_SIZE,
+    frameHeight: HERO_FRAME_SIZE,
     animationSpeed: ANIMATION_SPEED,
   });
 
