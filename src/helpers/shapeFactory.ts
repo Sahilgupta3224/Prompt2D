@@ -173,6 +173,22 @@ function drawShape(g: Graphics, shape: ShapeName, size: number): void {
     }
 }
 
+function lightenColor(hex: string, amount: number): string {
+    const num = parseInt(hex.replace("#", ""), 16);
+    const r = Math.min(255, ((num >> 16) & 0xff) + Math.floor(amount * 255));
+    const gg = Math.min(255, ((num >> 8) & 0xff) + Math.floor(amount * 255));
+    const b = Math.min(255, (num & 0xff) + Math.floor(amount * 255));
+    return `#${((r << 16) | (gg << 8) | b).toString(16).padStart(6, "0")}`;
+}
+
+function darkenColor(hex: string, amount: number): string {
+    const num = parseInt(hex.replace("#", ""), 16);
+    const r = Math.max(0, ((num >> 16) & 0xff) - Math.floor(amount * 255));
+    const gg = Math.max(0, ((num >> 8) & 0xff) - Math.floor(amount * 255));
+    const b = Math.max(0, (num & 0xff) - Math.floor(amount * 255));
+    return `#${((r << 16) | (gg << 8) | b).toString(16).padStart(6, "0")}`;
+}
+
 export function generateShapeTexture(
     renderer: Renderer,
     options: ShapeOptions
@@ -196,6 +212,11 @@ export function generateShapeTexture(
         });
     } else {
         g.fill({ color });
+        drawShape(g, options.shape, size);
+        g.stroke({ color: darkenColor(color, 0.25), width: 1.5 });
+        const half = size / 2;
+        g.ellipse(half * 0.7, half * 0.5, half * 0.35, half * 0.25);
+        g.fill({ color: lightenColor(color, 0.35), alpha: 0.35 });
 
         if (options.strokeColor && options.strokeWidth) {
             drawShape(g, options.shape, size);

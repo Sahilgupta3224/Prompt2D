@@ -11,13 +11,13 @@ export const DEMO_SCENE: SceneDefinition = {
     {
       id: "hero1",
       position: { x: DEFAULT_X_POS, y: DEFAULT_Y_POS },
-      scale: 2,
+      scale: 1,
       attachments: HERO_ATTACHMENTS,
     },
     {
       id: "hero2",
       position: { x: DEFAULT_X_POS + 300, y: DEFAULT_Y_POS },
-      scale: 2,
+      scale: 1,
       attachments: HERO_ATTACHMENTS,
     },
     {

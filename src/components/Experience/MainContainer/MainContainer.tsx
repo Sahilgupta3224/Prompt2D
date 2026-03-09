@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react"
 import { useState, useEffect } from "react"
 import { Animation } from '../../Animation'
-import heroAsset from '../../../assets/character.png'
+import heroAsset from '../../../assets/character_2x.png'
 import {
   Container,
   Graphics,
@@ -40,7 +40,7 @@ export const MainContainer = ({
     Assets.load(backgroundAsset).then((texture) => {
       setBackgroundTexture(texture as Texture)
     })
-    scanAnchors(heroAsset, 64, 64, SPRITE_ROWS)
+    scanAnchors(heroAsset, 128, 128, SPRITE_ROWS)
       .then(({ anchorMap, cleanUrl }) => {
         const config = Config(anchorMap)
         setAnchorConfig(config)

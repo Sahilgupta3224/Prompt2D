@@ -32,13 +32,15 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   // const hasFetched = useRef(false);
   const sceneRef = useRef<SceneRunner | null>(null);
   const shadowGfx = useRef<Graphics | null>(null);
-  const [entities, setEntities] = useState<Entity[]>([]);
+  const [entities, _setEntities] = useState<Entity[]>([]);
+  const entitiesRef = useRef<Entity[]>([]);
+  const setEntities = (arr: Entity[]) => { entitiesRef.current = arr; _setEntities(arr); };
   const { app } = useApplication();
 
   const { update: heroAnimUpdate } = useHeroAnimation({
     texture: herotexture,
-    frameWidth: 64,
-    frameHeight: 64,
+    frameWidth: 128,
+    frameHeight: 128,
     animationSpeed: ANIMATION_SPEED,
   });
 
@@ -163,6 +165,12 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       if (!scene) return;
       scene.update(dt);
 
+      const registryEntities = scene.registry.getAll();
+      if (entitiesRef.current.length !== registryEntities.length) {
+        setEntities([...registryEntities]);
+        return;
+      }
+
       const g = shadowGfx.current;
       if (g) {
         g.clear();
@@ -190,19 +198,19 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         }
         if (e && sprite) {
           const filters = [];
-
           if (e.state.isSelected) {  //just in case if i have some usecase of this in any primitive
-            filters.push(new OutlineFilter(2, 0x00ff00));
+            if (!e.outlineFilter) e.outlineFilter = new OutlineFilter(2, 0x00ff00);
+            filters.push(e.outlineFilter);
           }
           if (e.state.isMagic) {
-            filters.push(new GlowFilter({ distance: 15, outerStrength: 2, color: 0x00ffff }));
+            if (!e.glowFilter) e.glowFilter = new GlowFilter({ distance: 15, outerStrength: 2, color: 0x00ffff });
+            filters.push(e.glowFilter);
           }
           if (e.state.isHit) {
             sprite.tint = 0xff8888;
           } else if (e.state.hp === 0) {
-            const cm = new ColorMatrixFilter();
-            cm.desaturate();
-            filters.push(cm);
+            if (!e.desatFilter) { e.desatFilter = new ColorMatrixFilter(); e.desatFilter.desaturate(); }
+            filters.push(e.desatFilter);
             sprite.tint = 0x888888;
           } else {
             sprite.tint = 0xffffff;
@@ -232,8 +240,8 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   return (
     <pixiContainer sortableChildren={true}>
       <pixiGraphics ref={shadowGfx} zIndex={0} draw={() => { }} />
-      {entities.map((e, i) => (
-        <pixiContainer key={i} ref={e.container}>
+      {entities.map((e) => (
+        <pixiContainer key={e.id} ref={e.container}>
           <pixiSprite
             ref={e.sprite}
             texture={e.texture ?? undefined}

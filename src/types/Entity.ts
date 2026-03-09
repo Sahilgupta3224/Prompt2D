@@ -35,4 +35,7 @@ export interface Entity {
     shape?: ShapeName;
     color?: string;
     visualScale?: number;
+    outlineFilter?: any;
+    glowFilter?: any;
+    desatFilter?: any;
 }

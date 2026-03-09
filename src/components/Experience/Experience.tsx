@@ -28,6 +28,7 @@ const Experience = () => {
         width={canvasSize.width}
         height={canvasSize.height}
         background="#484a4aff"
+        antialias={true}
       >
         <MainContainer canvasSize={canvasSize} />
       </Application>

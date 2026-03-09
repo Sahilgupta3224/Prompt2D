@@ -6,4 +6,4 @@ export const MOVE_SPEED = 1
 export const ANIMATION_SPEED = 0.1
 export const DEFAULT_X_POS = 370
 export const DEFAULT_Y_POS = 450
-export const HERO_FRAME_SIZE = 64
+export const HERO_FRAME_SIZE = 128

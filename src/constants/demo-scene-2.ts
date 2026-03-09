@@ -17,19 +17,19 @@ export const DEMO_SCENE_2: SceneDefinition = {
         {
             id: "knight",
             position: { x: 200, y: 400 },
-            scale: 2,
+            scale: 1,
             attachments: HERO_ATTACHMENTS,
         },
         {
             id: "mage",
             position: { x: 600, y: 400 },
-            scale: 2,
+            scale: 1,
             attachments: HERO_ATTACHMENTS,
         },
         {
             id: "guard",
             position: { x: 1000, y: 400 },
-            scale: 2,
+            scale: 1,
             attachments: HERO_ATTACHMENTS,
         },
         {
