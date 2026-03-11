@@ -47,8 +47,8 @@ function createEmoteBubble(entity: { container: { current: import("pixi.js").Con
     const emoteContainer = new Container();
     emoteContainer.label = "__emote__";
     emoteContainer.addChild(label);
-    emoteContainer.x = 32;
-    emoteContainer.y = -20;
+    emoteContainer.x = 0;
+    emoteContainer.y = -35;
     emoteContainer.alpha = 1;
 
     container.addChild(emoteContainer);
@@ -76,7 +76,7 @@ export const EmoteAction: ActionDefinition<EmoteParams> = {
         if (container) {
             const el = container.children.find((c) => c.label === "__emote__");
             if (el) {
-                el.y = -20 - Math.sin(progress * Math.PI) * 15;
+                el.y = -35 - Math.sin(progress * Math.PI) * 15;
                 el.alpha = progress > 0.7 ? 1 - (progress - 0.7) / 0.3 : 1;
             }
         }

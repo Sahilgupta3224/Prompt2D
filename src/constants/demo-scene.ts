@@ -82,23 +82,23 @@ export const DEMO_SCENE: SceneDefinition = {
       //   params: { targetAlpha: 0.5 },
       //   // entityId: "hero2"
       // },
-      // {
-      //   type: "action",
-      //   name: "speak",
-      //   params: { text: "HIIIIIIIIIIIIIIIII   !!", duration: 2000 },
-      //   entityId: "hero2"
-      // },
+      {
+        type: "action",
+        name: "speak",
+        params: { text: "HIIIIIIIIIIIIIIIII   !!", duration: 2000 },
+        entityId: "hero2"
+      },
       // {
       //   type: "action",
       //   name: "wait",
       //   params: { duration: 500 },
       // },
-      // {
-      //   type: "action",
-      //   name: "emote",
-      //   params: { emote: "happy", duration: 1000 },
-      //   entityId: "hero2"
-      // },
+      {
+        type: "action",
+        name: "emote",
+        params: { emote: "happy", duration: 1000 },
+        entityId: "hero2"
+      },
       // {
       //   type: "action",
       //   name: "applyForce",

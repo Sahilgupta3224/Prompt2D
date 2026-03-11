@@ -1,7 +1,7 @@
 // bubble not working properly
 
 import type { ActionDefinition } from "../../types/Action";
-import { Text, Graphics, Container } from "pixi.js";
+import { Text, Graphics, Container, Ticker } from "pixi.js";
 
 type SpeakParams = {
     text: string;
@@ -29,45 +29,77 @@ function createSpeechBubble(
 
     removeBubble(entity);
 
-    const label = new Text({
-        text,
-        style: {
-            fontFamily: "Arial",
-            fontSize: 14,
-            fill: 0x000000,
-            wordWrap: true,
-            wordWrapWidth: 150,
-            align: "center",
-        },
-    });
+    const style = {
+        fontFamily: "Outfit, Inter, -apple-system, sans-serif",
+        fontSize: 15,
+        fill: 0x1f2937,
+        wordWrap: true,
+        wordWrapWidth: 180,
+        align: "center" as const,
+        fontWeight: "500" as const,
+        lineHeight: 18,
+    };
+
+    const label = new Text({ text, style });
     label.anchor.set(0.5, 1);
 
-    const padding = 8;
+    const paddingX = 16;
+    const paddingY = 12;
+    const bubbleWidth = label.width + paddingX * 2;
+    const bubbleHeight = label.height + paddingY * 2;
+
     const bg = new Graphics();
     bg.roundRect(
-        -label.width / 2 - padding,
-        -label.height - padding,
-        label.width + padding * 2,
-        label.height + padding * 2,
-        8
+        -bubbleWidth / 2 + 2,
+        -bubbleHeight - paddingY + 2,
+        bubbleWidth,
+        bubbleHeight,
+        14
     );
-    bg.fill({ color: 0xffffff, alpha: 0.95 });
-    bg.stroke({ color: 0x333333, width: 1.5 });
-
-    const tail = new Graphics();
-    tail.moveTo(-6, 0);
-    tail.lineTo(6, 0);
-    tail.lineTo(0, 9);
-    tail.closePath();
-    tail.fill({ color: 0xffffff, alpha: 0.95 });
-    tail.stroke({ color: 0x333333, width: 1 });
-    tail.y = 0;
+    bg.fill({ color: 0x000000, alpha: 0.15 });
+    bg.roundRect(
+        -bubbleWidth / 2,
+        -bubbleHeight - paddingY,
+        bubbleWidth,
+        bubbleHeight,
+        14
+    );
+    bg.fill({ color: 0xffffff, alpha: 0.98 });
+    bg.stroke({ color: 0xe5e7eb, width: 1.5 });
+    const tailY = -paddingY + 0.5;
+    bg.moveTo(-8, tailY);
+    bg.bezierCurveTo(-4, tailY, -2, tailY + 8, 0, tailY + 8);
+    bg.bezierCurveTo(2, tailY + 8, 4, tailY, 8, tailY);
+    bg.closePath();
+    bg.fill({ color: 0xffffff, alpha: 0.98 });
+    bg.stroke({ color: 0xe5e7eb, width: 1.5 });
 
     const bubble = new Container();
     bubble.label = BUBBLE_LABEL;
-    bubble.addChild(bg, label, tail);
-    bubble.x = 32;
-    bubble.y = -10;
+    bubble.addChild(bg, label);
+    label.y = -paddingY * 1.5;
+    bubble.x = 0;
+    bubble.y = -35;
+    bubble.scale.set(0);
+    bubble.alpha = 0;
+
+    let scaleVal = 0;
+    const ticker = (ticker: import("pixi.js").Ticker) => {
+        const dt = ticker.deltaTime;
+        scaleVal += (1 - scaleVal) * 0.2 * dt;
+        bubble.scale.set(scaleVal);
+        bubble.alpha = Math.min(1, scaleVal * 1.5);
+        if (scaleVal > 0.999) {
+            bubble.scale.set(1);
+            bubble.alpha = 1;
+            (bubble as any).__ticker_cleanup?.();
+        }
+    };
+
+    (bubble as any).__ticker_cleanup = () => {
+        Ticker.shared.remove(ticker);
+    };
+    Ticker.shared.add(ticker);
 
     container.addChild(bubble);
     return true;
