@@ -1,22 +1,20 @@
 import type { Entity } from "../types/Entity";
 import { useRef, useEffect, useState } from "react";
-import { Container, Sprite, Texture, Ticker, Assets, Graphics } from "pixi.js";
+import { Container, Sprite, Texture, Ticker, Assets, Graphics, Text, TextStyle } from "pixi.js";
 import { extend, useTick, useApplication } from "@pixi/react";
 import { useHeroAnimation } from "../helpers/useHeroAnimation";
 import { ANIMATION_SPEED } from "../constants/game-world";
 import { SceneRunner } from "../core/SceneRunner";
-import { DEMO_SCENE } from "../constants/demo-scene";
-import { FOOTBALL_SCENE } from "../constants/football-scene";
 import { DEMO_SCENE_2 } from "../constants/demo-scene-2";
 import { backgroundAssets } from "../helpers/assets";
 import { generateShapeTexture, type ShapeName } from "../helpers/shapeFactory";
-import { serializeWorldState } from "../llm/worldState";
-import { generateScene } from "../llm/client";
-import { HERO_FRAME_SIZE } from "../constants/game-world";
+import { HERO_FRAME_SIZE, GAME_WIDTH, GAME_HEIGHT } from "../constants/game-world";
 import type { Config } from "../helpers/anchorScanner";
 import { OutlineFilter, GlowFilter } from 'pixi-filters';
 import { ColorMatrixFilter } from 'pixi.js';
-extend({ Container, Sprite, Graphics });
+import { CharacterAssembler } from "../helpers/CharacterAssembler";
+
+extend({ Container, Sprite, Graphics, Text });
 
 type AttachmentConfig = ReturnType<typeof Config>;
 type FrameOffset = { x: number; y: number } | null;
@@ -29,44 +27,66 @@ interface IHeroProps {
 
 export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConfig }: IHeroProps) => {
   if (!herotexture) return null;
-  // const hasFetched = useRef(false);
+
   const sceneRef = useRef<SceneRunner | null>(null);
   const shadowGfx = useRef<Graphics | null>(null);
   const [entities, _setEntities] = useState<Entity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const entitiesRef = useRef<Entity[]>([]);
   const setEntities = (arr: Entity[]) => { entitiesRef.current = arr; _setEntities(arr); };
   const { app } = useApplication();
 
   const { update: heroAnimUpdate } = useHeroAnimation({
     texture: herotexture,
-    frameWidth: HERO_FRAME_SIZE,
-    frameHeight: HERO_FRAME_SIZE,
     animationSpeed: ANIMATION_SPEED,
   });
 
   useEffect(() => {
     const scene = new SceneRunner(DEMO_SCENE_2);
-
-    // if (!hasFetched.current) {
-    //   hasFetched.current = true;
-    //   generateScene("a man is eating a banana.", serializeWorldState(scene.registry))
-    //     .then(data => console.log("LLM Response:", data))
-    //     .catch(err => console.error("LLM Error:", err));
-    // }
     sceneRef.current = scene;
 
-    const hero = scene.registry.get("hero1");
-    if (hero) {
-      hero.texture = herotexture;
-      hero.currentanim = "IDLEDOWN";
-      if (!hero.attachmentConfig) hero.attachmentConfig = {};
+    const allEntities = scene.registry.getAll();
+    for (const entity of allEntities) {
+      if (!entity.isObject) {
+        entity.texture = herotexture;
+        if (!entity.currentanim) {
+          entity.currentanim = "IDLEDOWN";
+        }
+        if (!entity.attachmentConfig) {
+          entity.attachmentConfig = {};
+        }
+      }
     }
-    const hero2 = scene.registry.get("hero2");
-    if (hero2) {
-      hero2.texture = herotexture;
-      hero2.currentanim = "IDLEDOWN";
-      if (!hero2.attachmentConfig) hero2.attachmentConfig = {};
-    }
+    setEntities([...allEntities]);
+
+    const prepareEntities = async () => {
+      const Entities = allEntities.filter(e => !e.isObject && e.appearance);
+      if (Entities.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      let c = 0;
+      for (const entity of Entities) {
+        CharacterAssembler.assembleFromAppearance(entity.appearance!)
+          .then(tex => {
+            entity.texture = tex;
+            c++;
+            if (c === Entities.length) {
+              setIsLoading(false);
+            }
+            setEntities([...scene.registry.getAll()]);
+          })
+          .catch(e => {
+            console.error(`Failed to assemble character ${entity.id}:`, e);
+            c++;
+            if (c === Entities.length) {
+              setIsLoading(false);
+            }
+          });
+      }
+    };
+    prepareEntities();
 
     const background = scene.getBackground();
     if (background) {
@@ -85,10 +105,9 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         });
       }
     }
-    setEntities([...scene.registry.getAll()]);
 
     if (scannedAnchorConfig && Object.keys(scannedAnchorConfig).length > 0) {
-      for (const entity of scene.registry.getAll()) {
+      for (const entity of allEntities) {
         if (!entity.isObject && entity.attachmentConfig) {
           entity.attachmentConfig = {
             ...entity.attachmentConfig,
@@ -105,28 +124,13 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       unsubscribe();
       scene.destroy();
     };
-  }, [herotexture]);
-
-  // useEffect(() => {
-  //   const hero = sceneRef.current?.registry.get("hero");
-  //   if (hero) {
-  //     hero.texture = herotexture;
-  //   }
-  //   const rock = sceneRef.current?.registry.get("rock");
-  //   if (rock) {
-  //     rock.texture = rocktexture;
-  //   }
-  // }, [herotexture, rocktexture]);
+  }, [herotexture, scannedAnchorConfig, app?.renderer, setBackgroundTexture]);
 
   function updateEntityTransform(e: Entity) {
     if (e.parent) {
       let offset = e.localOffset || { x: 0, y: 0 };
-      // console.log(e.localOffset)
-      // console.log(e.attachmentPoint)
       if (e.attachmentPoint && e.parent.attachmentConfig) {
-        // console.log(e.parent.attachmentConfig)
         const anim = e.parent.currentanim;
-        // console.log(config, e)
         const frame = e.parent.currentFrame || 0;
         const parentScale = (e.parent.scale ?? 1) * (e.parent.visualScale ?? 1);
         const config = e.parent.attachmentConfig[anim]?.[e.attachmentPoint]
@@ -134,7 +138,6 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         const rawOffset: FrameOffset = config
           ? (Array.isArray(config) ? (config[frame % config.length] as FrameOffset) : config)
           : null;
-
         const container = e.container.current;
         if (rawOffset === null) {
           if (container) container.visible = false;
@@ -147,7 +150,6 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         const container = e.container.current;
         if (container) container.visible = true;
       }
-      // console.log(offset)
       e.x = e.parent.x + offset.x;
       e.y = e.parent.y + offset.y;
     }
@@ -174,7 +176,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       const g = shadowGfx.current;
       if (g) {
         g.clear();
-        for (const e of scene.registry.getAll()) {
+        for (const e of registryEntities) {
           if (!e.isObject) {
             const vScale = (e as any).visualScale || 1;
             const Y = e.y + (30 * (e.scale * vScale));
@@ -184,13 +186,13 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         }
       }
 
-      for (const e of scene.registry.getAll()) {
+      for (const e of registryEntities) {
         updateEntityTransform(e);
         const sprite = e.sprite.current;
         const container = e.container.current;
         if (container) {
           if (e.parent) {
-            e.zIndex = e.parent.zIndex + 1;
+            e.zIndex = (e.parent.zIndex || 0) + 1;
           } else {
             e.zIndex = Math.round(e.y + (e.isObject ? 0 : 32 * (e.scale * (e.visualScale || 1))));
           }
@@ -219,7 +221,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
 
           if (!e.isObject) {
             const mode = e.animMode ?? (!!e.state.isMoving || !!e.state.isJumping ? "loop" : "static");
-            const { texture: frameTexture, frameIndex, finished, vScale, vOffset } = heroAnimUpdate(e.id, e.currentanim as any, mode);
+            const { texture: frameTexture, frameIndex, finished, vScale, vOffset } = heroAnimUpdate(e.id, (e.currentanim as any), mode, e.texture || undefined);
             sprite.texture = frameTexture;
             sprite.scale.set(e.scale * vScale);
             sprite.y = vOffset;
@@ -231,17 +233,34 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
           }
         }
       }
-    }
-    catch (e) {
-      console.warn(e)
+    } catch (e) {
+      console.warn("Update error:", e);
     }
   });
+
+  if (isLoading) {
+    return (
+      <pixiContainer>
+        <pixiText
+          text="Assembling characters..."
+          anchor={0.5}
+          x={GAME_WIDTH / 2}
+          y={GAME_HEIGHT / 2}
+          style={new TextStyle({
+            fill: 0xffffff,
+            fontSize: 28,
+            fontWeight: 'bold'
+          })}
+        />
+      </pixiContainer>
+    );
+  }
 
   return (
     <pixiContainer sortableChildren={true}>
       <pixiGraphics ref={shadowGfx} zIndex={0} draw={() => { }} />
       {entities.map((e) => (
-        <pixiContainer key={e.id} ref={e.container}>
+        <pixiContainer key={e.id} ref={e.container} visible={!!e.texture || e.isObject}>
           <pixiSprite
             ref={e.sprite}
             texture={e.texture ?? undefined}

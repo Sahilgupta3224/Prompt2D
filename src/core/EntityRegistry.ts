@@ -60,6 +60,7 @@ export class EntityRegistry {
         isObject?: boolean;
         shape?: ShapeName;
         color?: string;
+        appearance?: any;
     }): Entity {
         const entity: Entity = {
             id: options.id,
@@ -75,6 +76,7 @@ export class EntityRegistry {
             sprite: createRef<Sprite | null>(),
             container: createRef<Container | null>(),
             texture: null,
+            appearance: options.appearance,
             currentanim: "",
             state: {},
             parent: null,
@@ -92,6 +94,7 @@ export class EntityRegistry {
             isObject: def.isObject,
             shape: def.shape,
             color: def.color,
+            appearance: def.appearance
         });
         if (def.attachments) {
             entity.attachmentConfig = def.attachments;

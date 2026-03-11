@@ -38,4 +38,5 @@ export interface Entity {
     outlineFilter?: any;
     glowFilter?: any;
     desatFilter?: any;
+    appearance?: any;
 }
