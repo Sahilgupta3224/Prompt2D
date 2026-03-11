@@ -10,20 +10,40 @@ export const DEMO_SCENE: SceneDefinition = {
   entities: [
     {
       id: "hero1",
-      position: { x: DEFAULT_X_POS, y: DEFAULT_Y_POS },
-      scale: 1,
+      position: { x: DEFAULT_X_POS+500, y: DEFAULT_Y_POS },
+      scale: 2,
       attachments: HERO_ATTACHMENTS,
+      appearance: {
+        hair: "afro/adult",
+        body: "bodies/male",
+        facial: "glasses/sunglasses/adult",
+        head: "heads/human/male",
+        torso: "clothes/longsleeve/longsleeve2_cardigan/male",
+        legs: "cuffed/male",
+        feet: "feet/shoes/basic/male",
+        gloves: "gloves/male",
+      }
     },
     {
       id: "hero2",
-      position: { x: DEFAULT_X_POS + 300, y: DEFAULT_Y_POS },
-      scale: 1,
+      position: { x: DEFAULT_X_POS, y: DEFAULT_Y_POS },
+      scale: 2,
       attachments: HERO_ATTACHMENTS,
+      appearance: {
+        hair: "afro/adult",
+        body: "bodies/male",
+        facial: "glasses/sunglasses/adult",
+        head: "heads/human/male",
+        torso: "clothes/longsleeve/longsleeve2_cardigan/male",
+        legs: "cuffed/male",
+        feet: "feet/shoes/basic/male",
+        gloves: "gloves/male",
+      }
     },
     {
       id: "rock",
       position: { x: 500, y: 100 },
-      scale: 0.4,
+      scale: 0.2,
       isObject: true,
       shape: "circle",
       color: "#070707ff"
@@ -79,12 +99,12 @@ export const DEMO_SCENE: SceneDefinition = {
       //   params: { emote: "happy", duration: 1000 },
       //   entityId: "hero2"
       // },
-      {
-        type: "action",
-        name: "applyForce",
-        params: { mode: "push", force: { x: 1, y: 0 }, duration: 5000 },
-        entityId: "hero2"
-      },
+      // {
+      //   type: "action",
+      //   name: "applyForce",
+      //   params: { mode: "push", force: { x: 1, y: 0 }, duration: 5000 },
+      //   entityId: "hero2"
+      // },
 
       // {
       //   type: "action",

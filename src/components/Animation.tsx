@@ -13,6 +13,7 @@ import type { Config } from "../helpers/anchorScanner";
 import { OutlineFilter, GlowFilter } from 'pixi-filters';
 import { ColorMatrixFilter } from 'pixi.js';
 import { CharacterAssembler } from "../helpers/CharacterAssembler";
+import { buildGloveAttachmentConfig } from "../helpers/gloveAttachmentScanner";
 
 extend({ Container, Sprite, Graphics, Text });
 
@@ -69,20 +70,32 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       let c = 0;
       for (const entity of Entities) {
         CharacterAssembler.assembleFromAppearance(entity.appearance!)
-          .then(tex => {
+          .then(async tex => {
             entity.texture = tex;
-            c++;
-            if (c === Entities.length) {
-              setIsLoading(false);
+            if (entity.appearance?.gloves) {
+              try {
+                const gloveConfig = await buildGloveAttachmentConfig(
+                  entity.appearance.gloves as string
+                );
+                // console.log(gloveConfig)
+                (gloveConfig["MOVELEFT"].hand)[1] = null
+                entity.attachmentConfig = {
+                  ...entity.attachmentConfig,
+                  ...gloveConfig,
+                };
+              } catch (err) {
+                console.warn(`[GloveScanner] Failed for "${entity.id}":`, err);
+              }
             }
+
+            c++;
+            if (c === Entities.length) setIsLoading(false);
             setEntities([...scene.registry.getAll()]);
           })
           .catch(e => {
             console.error(`Failed to assemble character ${entity.id}:`, e);
             c++;
-            if (c === Entities.length) {
-              setIsLoading(false);
-            }
+            if (c === Entities.length) setIsLoading(false);
           });
       }
     };
@@ -106,16 +119,17 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       }
     }
 
-    if (scannedAnchorConfig && Object.keys(scannedAnchorConfig).length > 0) {
-      for (const entity of allEntities) {
-        if (!entity.isObject && entity.attachmentConfig) {
-          entity.attachmentConfig = {
-            ...entity.attachmentConfig,
-            ...scannedAnchorConfig,
-          };
-        }
-      }
-    }
+    // if (scannedAnchorConfig && Object.keys(scannedAnchorConfig).length > 0) {
+    //   for (const entity of allEntities) {
+    //     if (!entity.isObject && entity.attachmentConfig) {
+    //       console.log(entity.attachmentConfig)
+    //       entity.attachmentConfig = {
+    //         ...entity.attachmentConfig,
+    //         ...scannedAnchorConfig,
+    //       };
+    //     }
+    //   }
+    // }
     const unsubscribe = scene.registry.subscribe(() => {
       setEntities(scene.registry.getAll());
     });
@@ -145,7 +159,11 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         }
         if (container) container.visible = true;
         const half = HERO_FRAME_SIZE / 2;
-        offset = { x: (rawOffset.x - half) * parentScale, y: (rawOffset.y - half) * parentScale };
+        const parentVOffset = (e.parent as any).visualOffset ?? 0;
+        offset = {
+          x: (rawOffset.x - half) * parentScale,
+          y: (rawOffset.y - half) * parentScale + parentVOffset,
+        };
       } else {
         const container = e.container.current;
         if (container) container.visible = true;
@@ -226,6 +244,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
             sprite.scale.set(e.scale * vScale);
             sprite.y = vOffset;
             (e as any).visualScale = vScale;
+            (e as any).visualOffset = vOffset;
             e.currentFrame = frameIndex;
             if (finished) {
               e.animFinished = true;

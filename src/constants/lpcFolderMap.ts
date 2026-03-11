@@ -32,6 +32,7 @@ export const LPC_LAYER_ORDER = [
     "torso",
     "neck",
     "arms",
+    "gloves",
     "wrists",
     "bauldron",
     "shoulders",
@@ -44,3 +45,7 @@ export const LPC_LAYER_ORDER = [
     "weapon",
     "tools",
 ];
+
+export const LAYER_CATEGORY_BASE: Partial<Record<string, string>> = {
+    gloves: "arms",
+};

@@ -1,5 +1,5 @@
 import { Texture, Assets } from "pixi.js";
-import { LPC_ACTION_ROW_MAP, LPC_ANIMATION_FOLDERS, LPC_LAYER_ORDER } from "../constants/lpcFolderMap";
+import { LPC_ACTION_ROW_MAP, LPC_ANIMATION_FOLDERS, LPC_LAYER_ORDER, LAYER_CATEGORY_BASE } from "../constants/lpcFolderMap";
 import type { CharacterAppearance, AppearanceCategory } from "../types/CharacterAppearance";
 
 export interface CharacterLayer {
@@ -9,8 +9,6 @@ export interface CharacterLayer {
 
 export class CharacterAssembler {
     private static textureCache: Map<string, Texture> = new Map();
-
-    private static FRAME_SIZE = 64;
     private static SHEET_WIDTH = 832;
     private static SHEET_HEIGHT = 4096;
 
@@ -21,7 +19,8 @@ export class CharacterAssembler {
         if (this.supportCache.has(key)) return this.supportCache.get(key)!;
         const canaries = ["walk", "spellcast", "shoot", "slash"];
         const results = await Promise.all(canaries.map(async (anim) => {
-            const url = `/layers/${cat}/${subPath}/${anim}/variant.png`;
+            const baseFolder = LAYER_CATEGORY_BASE[cat] ?? cat;
+            const url = `/layers/${baseFolder}/${subPath}/${anim}/variant.png`;
             try {
                 const res = await fetch(url, { method: 'HEAD' });
                 return res.ok;
@@ -69,7 +68,8 @@ export class CharacterAssembler {
             }
 
             await Promise.all(LPC_ANIMATION_FOLDERS.map(async (anim) => {
-                let url = `/layers/${cat}/${subPath}/${anim}/variant.png`;
+                const baseFolder = LAYER_CATEGORY_BASE[cat] ?? cat;
+                const url = `/layers/${baseFolder}/${subPath}/${anim}/variant.png`;
 
                 try {
                     const texture = await Assets.load(url);

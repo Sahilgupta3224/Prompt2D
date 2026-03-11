@@ -26,7 +26,8 @@ export const DEMO_SCENE_2: SceneDefinition = {
                 hair: "bangsshort/adult",
                 torso: "clothes/longsleeve/longsleeve2_cardigan/male",
                 legs: "cuffed/male",
-                feet: "feet/shoes/basic/male"
+                feet: "feet/shoes/basic/male",
+                gloves: "gloves/male",
             }
         },
         {
@@ -42,7 +43,8 @@ export const DEMO_SCENE_2: SceneDefinition = {
                 head: "heads/human/male",
                 torso: "clothes/longsleeve/longsleeve2_cardigan/male",
                 legs: "cuffed/male",
-                feet: "feet/shoes/basic/male"
+                feet: "feet/shoes/basic/male",
+                gloves: "gloves/male",
             }
         },
         {
@@ -57,7 +59,8 @@ export const DEMO_SCENE_2: SceneDefinition = {
                 head: "heads/human/male",
                 torso: "clothes/longsleeve/longsleeve2_cardigan/male",
                 legs: "cuffed/male",
-                feet: "feet/shoes/basic/male"
+                feet: "feet/shoes/basic/male",
+                gloves: "gloves/male",
             }
         },
         {
