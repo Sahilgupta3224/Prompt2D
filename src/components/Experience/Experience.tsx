@@ -95,7 +95,8 @@ const Experience = () => {
         onClick={toggleRecording}
         style={{
             position: 'absolute',
-            top: '20px',
+            top: '100px',
+            height: '60px',
             right: '20px',
             padding: '12px 24px',
             backgroundColor: isRecording ? '#dc2626' : '#2563eb',

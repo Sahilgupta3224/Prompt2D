@@ -69,6 +69,10 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
     case "COMBATIDLELEFT": return { row: 43, frames: 2, speed: 0.3 }
     case "COMBATIDLEDOWN": return { row: 44, frames: 2, speed: 0.3 }
     case "COMBATIDLERIGHT": return { row: 45, frames: 2, speed: 0.3 }
+    case "BACKSLASHUP": return { row: 46, frames: 13, speed: 1.8 }
+    case "BACKSLASHLEFT": return { row: 47, frames: 13, speed: 1.8 }
+    case "BACKSLASHDOWN": return { row: 48, frames: 13, speed: 1.8 }
+    case "BACKSLASHRIGHT": return { row: 49, frames: 13, speed: 1.8 }
     case "PUNCHUP": return { row: 50, frames: 6, speed: 1.8 }
     case "PUNCHLEFT": return { row: 51, frames: 6, speed: 1.8 }
     case "PUNCHDOWN": return { row: 52, frames: 6, speed: 1.8 }

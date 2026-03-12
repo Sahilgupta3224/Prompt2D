@@ -17,7 +17,7 @@ export class CharacterAssembler {
     private static async hasAllAnimations(cat: string, subPath: string): Promise<boolean> {
         const key = `${cat}:${subPath}`;
         if (this.supportCache.has(key)) return this.supportCache.get(key)!;
-        const canaries = ["walk", "spellcast", "shoot", "slash"];
+        const canaries = ["walk"];
         const results = await Promise.all(canaries.map(async (anim) => {
             const baseFolder = LAYER_CATEGORY_BASE[cat] ?? cat;
             const url = `/layers/${baseFolder}/${subPath}/${anim}/variant.png`;

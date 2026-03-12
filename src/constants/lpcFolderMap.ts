@@ -12,9 +12,10 @@ export const LPC_ACTION_ROW_MAP: Record<string, number> = {
     "emote": 34,
     "run": 38,
     "combat_idle": 42,
-    "punch": 50,
-    "pull": 54,
-    "push": 56,
+    "backslash": 46,
+    "halfslash": 50,
+    // "pull": 54,
+    // "push": 56,
 };
 
 export const LPC_ANIMATION_FOLDERS = Object.keys(LPC_ACTION_ROW_MAP);
