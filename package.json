@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@pixi/react": "^8.0.5",
+    "@pixi/sound": "^6.0.1",
+    "howler": "^2.2.4",
     "pixi-filters": "^6.1.5",
     "pixi.js": "^8.15.0",
     "react": "^19.2.0",
