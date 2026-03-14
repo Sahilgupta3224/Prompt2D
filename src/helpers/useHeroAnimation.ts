@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import { Texture, Rectangle } from "pixi.js"
 import type { Direction } from "../types/common"
+import { HERO_FRAME_SIZE } from "../constants/game-world"
 
 interface AnimState {
   frame: number
@@ -68,6 +69,10 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
     case "COMBATIDLELEFT": return { row: 43, frames: 2, speed: 0.3 }
     case "COMBATIDLEDOWN": return { row: 44, frames: 2, speed: 0.3 }
     case "COMBATIDLERIGHT": return { row: 45, frames: 2, speed: 0.3 }
+    case "BACKSLASHUP": return { row: 46, frames: 13, speed: 1.8 }
+    case "BACKSLASHLEFT": return { row: 47, frames: 13, speed: 1.8 }
+    case "BACKSLASHDOWN": return { row: 48, frames: 13, speed: 1.8 }
+    case "BACKSLASHRIGHT": return { row: 49, frames: 13, speed: 1.8 }
     case "PUNCHUP": return { row: 50, frames: 6, speed: 1.8 }
     case "PUNCHLEFT": return { row: 51, frames: 6, speed: 1.8 }
     case "PUNCHDOWN": return { row: 52, frames: 6, speed: 1.8 }
@@ -84,13 +89,9 @@ const getRowByDirection = (direction: Direction | null): RowConfig => {
 
 export const useHeroAnimation = ({
   texture,
-  frameWidth,
-  frameHeight,
   animationSpeed,
 }: {
   texture: Texture
-  frameWidth: number
-  frameHeight: number
   animationSpeed: number
 }) => {
   const statesRef = useRef<Map<string, AnimState>>(new Map())
@@ -106,11 +107,14 @@ export const useHeroAnimation = ({
   const update = (
     entityId: string,
     direction: Direction | null,
-    animMode: "loop" | "once" | "static" | "freeze" = "loop"
+    animMode: "loop" | "once" | "static" | "freeze" = "loop",
+    baseTexture?: Texture
   ) => {
+    const activeTexture = baseTexture || texture;
     const state = getOrCreateState(entityId)
     const config = getRowByDirection(direction)
-    const { row, frames, h = frameHeight, speed } = config;
+    
+    const { row, frames, h = HERO_FRAME_SIZE, speed } = config;
 
     if (state.prevAnim !== direction) {
       state.frame = 0
@@ -141,16 +145,16 @@ export const useHeroAnimation = ({
       }
     }
 
-    const cacheKey = `${texture.uid}_${row}_${state.frame}`;
+    const cacheKey = `${activeTexture.uid}_${row}_${state.frame}`;
     let frameTexture = textureCache.current.get(cacheKey);
 
     if (!frameTexture) {
       frameTexture = new Texture({
-        source: texture.source,
+        source: activeTexture.source,
         frame: new Rectangle(
-          state.frame * frameWidth,
-          row * frameHeight,
-          frameWidth,
+          state.frame * HERO_FRAME_SIZE,
+          row * HERO_FRAME_SIZE,
+          HERO_FRAME_SIZE,
           h
         ),
       });

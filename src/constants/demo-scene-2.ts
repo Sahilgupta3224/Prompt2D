@@ -16,21 +16,52 @@ export const DEMO_SCENE_2: SceneDefinition = {
     entities: [
         {
             id: "knight",
-            position: { x: 200, y: 400 },
+            position: { x: 300, y: 400 },
             scale: 2,
             attachments: HERO_ATTACHMENTS,
+            appearance: {
+                body: "bodies/male",
+                facial: "glasses/sunglasses/adult",
+                head: "heads/human/male",
+                hair: "bangsshort/adult",
+                torso: "clothes/longsleeve/longsleeve2_cardigan/male",
+                legs: "cuffed/male",
+                feet: "feet/shoes/basic/male",
+                gloves: "gloves/male",
+            }
         },
         {
             id: "mage",
             position: { x: 600, y: 400 },
             scale: 2,
             attachments: HERO_ATTACHMENTS,
+            appearance: {
+                // eyes: "human/adult/default",
+                hair: "afro/adult",
+                body: "bodies/male",
+                facial: "glasses/sunglasses/adult",
+                head: "heads/human/male",
+                torso: "clothes/longsleeve/longsleeve2_cardigan/male",
+                legs: "cuffed/male",
+                feet: "feet/shoes/basic/male",
+                gloves: "gloves/male",
+            }
         },
         {
             id: "guard",
             position: { x: 1000, y: 400 },
             scale: 2,
             attachments: HERO_ATTACHMENTS,
+            appearance: {
+                hair: "afro/adult",
+                body: "bodies/male",
+                facial: "glasses/sunglasses/adult",
+                head: "heads/human/male",
+                torso: "clothes/longsleeve/longsleeve2_cardigan/male",
+                legs: "cuffed/male",
+                feet: "feet/shoes/basic/male",
+                gloves: "gloves/male",
+            }
         },
         {
             id: "rock",

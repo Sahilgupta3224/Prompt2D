@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react"
 import { useState, useEffect } from "react"
 import { Animation } from '../../Animation'
-import heroAsset from '../../../assets/character.png'
+import heroAsset from '../../../assets/character_2x.png'
 import {
   Container,
   Graphics,
@@ -12,6 +12,7 @@ import {
 import {
   GAME_HEIGHT,
   GAME_WIDTH,
+  HERO_FRAME_SIZE,
 } from '../../../constants/game-world'
 import { extend } from '@pixi/react'
 extend({ Container, Graphics, Sprite, Texture })
@@ -40,7 +41,7 @@ export const MainContainer = ({
     Assets.load(backgroundAsset).then((texture) => {
       setBackgroundTexture(texture as Texture)
     })
-    scanAnchors(heroAsset, 64, 64, SPRITE_ROWS)
+    scanAnchors(heroAsset, HERO_FRAME_SIZE, HERO_FRAME_SIZE, SPRITE_ROWS)
       .then(({ anchorMap, cleanUrl }) => {
         const config = Config(anchorMap)
         setAnchorConfig(config)
@@ -60,7 +61,10 @@ export const MainContainer = ({
         console.log(err)
         setAnchorConfig({})
         Assets.load(heroAsset).then((texture) => {
-          setHeroTexture(texture as Texture)
+          const t = texture as Texture;
+          t.source.scaleMode = 'nearest';
+          t.source.update();
+          setHeroTexture(t);
         })
       })
   }, [])

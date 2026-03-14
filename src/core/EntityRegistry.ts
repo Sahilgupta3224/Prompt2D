@@ -60,6 +60,7 @@ export class EntityRegistry {
         isObject?: boolean;
         shape?: ShapeName;
         color?: string;
+        appearance?: any;
     }): Entity {
         const entity: Entity = {
             id: options.id,
@@ -69,12 +70,13 @@ export class EntityRegistry {
             vy: 0,
             scale: options.scale ?? 1,
             zIndex: options.isObject ? 11 : 10,
-            isObject: options.isObject?? false,
-            shape: options.shape?? 'circle',
+            isObject: options.isObject ?? false,
+            shape: options.shape ?? 'circle',
             color: options.color,
             sprite: createRef<Sprite | null>(),
             container: createRef<Container | null>(),
             texture: null,
+            appearance: options.appearance,
             currentanim: "",
             state: {},
             parent: null,
@@ -92,6 +94,7 @@ export class EntityRegistry {
             isObject: def.isObject,
             shape: def.shape,
             color: def.color,
+            appearance: def.appearance
         });
         if (def.attachments) {
             entity.attachmentConfig = def.attachments;
@@ -104,7 +107,7 @@ export class EntityRegistry {
 
         for (const key of Object.keys(resolved)) {
             if (key.endsWith("Id") && typeof (resolved as any)[key] === "string") {
-                const entityKey = key.slice(0, -2); 
+                const entityKey = key.slice(0, -2);
                 const entityId = (resolved as any)[key] as string;
                 const entity = this.get(entityId);
 

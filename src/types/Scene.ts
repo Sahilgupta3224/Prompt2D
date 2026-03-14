@@ -15,6 +15,7 @@ export interface EntityDefinition {
     color?: string;
     animations?: Record<string, { row: number; frames: number }>;
     attachments?: Record<string, Record<string, { x: number; y: number } | { x: number; y: number }[]>>;
+    appearance?: any;
 }
 
 export interface SceneDefinition {

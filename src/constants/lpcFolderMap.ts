@@ -1,0 +1,52 @@
+export const LPC_ACTION_ROW_MAP: Record<string, number> = {
+    "spellcast": 0,
+    "thrust": 4,
+    "walk": 8,
+    "slash": 12,
+    "shoot": 16,
+    "hurt": 20,
+    "climb": 21,
+    "idle": 22,
+    "jump": 26,
+    "sit": 30,
+    "emote": 34,
+    "run": 38,
+    "combat_idle": 42,
+    "backslash": 46,
+    "halfslash": 50,
+    // "pull": 54,
+    // "push": 56,
+};
+
+export const LPC_ANIMATION_FOLDERS = Object.keys(LPC_ACTION_ROW_MAP);
+
+export const LPC_LAYER_ORDER = [
+    "shadow",
+    "body",
+    "head",
+    "eyes",
+    "beard",
+    "facial",
+    "hair",
+    "legs",
+    "feet",
+    "torso",
+    "neck",
+    "arms",
+    "gloves",
+    "wrists",
+    "bauldron",
+    "shoulders",
+    "belt",
+    "backpack",
+    "quiver",
+    "hat",
+    "cape",
+    "shield",
+    "weapon",
+    "tools",
+];
+
+export const LAYER_CATEGORY_BASE: Partial<Record<string, string>> = {
+    gloves: "arms",
+};
