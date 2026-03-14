@@ -9,6 +9,8 @@ lerna-debug.log*
 .env
 scene_memory_db
 node_modules
+node_modules
+.env
 dist
 dist-ssr
 *.local
