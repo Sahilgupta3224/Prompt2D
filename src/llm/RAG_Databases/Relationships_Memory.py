@@ -17,19 +17,11 @@ driver =GraphDatabase.driver(
 
 llm =ChatGroq(
     model="llama-3.1-8b-instant",
-    temperature=0.4
+    temperature=0.4,
+    response_format={"type": "json_object"} 
 )
 
-tavily_tool=TavilySearchResults(max_results=5)
 
-@tool
-def search_knowledge(query:str):
-    """Search the knowledge graph from internet for relevant information"""
-    return tavily_tool.invoke({"query":query})
-
-tools=[search_knowledge]
-
-llm_with_tools=llm.bind_tools(tools)
 
 def parse_scene(scene_name, scene):
 
@@ -102,7 +94,7 @@ ENABLES
 """
 def generate_graph(context):
     prompt=build_prompt(context)
-    response=llm_with_tools.invoke(prompt)
+    response=llm.invoke(prompt)
     try:
         graph=json.loads(response.content)
     except:
@@ -111,46 +103,32 @@ def generate_graph(context):
         graph=json.loads(repaired)
     return graph
 
-class Node(BaseModel):
-    id: str
-    type: str
 
-class Relationship(BaseModel):
-    from_node: str
-    relation: str
-    to_node: str
-
-class GraphOutput(BaseModel):
-    nodes: List[Node]
-    relationships: List[Relationship]
-
-structured_llm = llm_with_tools.with_structured_output(GraphOutput)
 
 def insert_graph(data):
 
     with driver.session() as session:
-
+        print("inserting data",data)
         for node in data["nodes"]:
 
             session.run(
-                """
-                MERGE (n:Node {type:$type,id:$id})
-                SET n.id=$id,type=$type
-                """,
-                node
+              """
+              MERGE (n:Node {id:$id})
+              SET n.type=$type
+              """,
+              node
             )
 
         for rel in data["relationships"]:
 
             session.run(
-                """
-                MATCH (a {id:$from})
-                MATCH (b {id:$to})
-
-                MERGE (a)-[:RELATION {type:$relation}]->(b)
-                """,
-                rel
-            )
+             f"""
+             MATCH (a {{id:$from}})
+             MATCH (b {{id:$to}})
+             MERGE (a)-[:{rel["relation"]}]->(b)
+            """,
+            {"from": rel["from"], "to": rel["to"]}
+          )
 
 def build_graph_from_scenes(scenes):
 
