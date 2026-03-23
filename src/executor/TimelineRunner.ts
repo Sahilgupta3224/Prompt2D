@@ -93,16 +93,22 @@ export class TimelineRunner {
         const resolvedParams = this.ctx.registry.resolveParams(node.params ?? {});
         const aState = state.actionState;
 
-        if (!aState.started) {
-            actionDef.enter?.(targetEntity, resolvedParams, this.ctx, aState);
-            aState.started = true;
-        }
+        try {
+            if (!aState.started) {
+                actionDef.enter?.(targetEntity, resolvedParams, this.ctx, aState);
+                aState.started = true;
+            }
 
-        const isComplete = actionDef.update(targetEntity, resolvedParams, dt, this.ctx, aState);
+            const isComplete = actionDef.update(targetEntity, resolvedParams, dt, this.ctx, aState);
 
-        if (isComplete) {
-            actionDef.exit?.(targetEntity, resolvedParams, this.ctx, aState);
+            if (isComplete) {
+                actionDef.exit?.(targetEntity, resolvedParams, this.ctx, aState);
+                state.completed = true;
+            }
+        } catch (error) {
+            console.error(`[TimelineRunner] Error executing action '${node.name}' for entity '${targetEntity.id}':`, error);
             state.completed = true;
+            // stop animation play karna h.
         }
     }
 

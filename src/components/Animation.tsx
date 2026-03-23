@@ -43,8 +43,15 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   });
 
   useEffect(() => {
-    const scene = new SceneRunner(DEMO_SCENE_TESTER);
-    sceneRef.current = scene;
+    let scene: SceneRunner;
+    try {
+      scene = new SceneRunner(DEMO_SCENE_TESTER);
+      sceneRef.current = scene;
+    } catch (err) {
+      console.error(err);
+      setIsLoading(false);
+      return;
+    }
 
     const allEntities = scene.registry.getAll();
     for (const entity of allEntities) {
@@ -78,7 +85,9 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
                   entity.appearance.gloves as string
                 );
                 // console.log(gloveConfig)
-                (gloveConfig["MOVELEFT"].hand)[1] = null
+                if (gloveConfig && gloveConfig["MOVELEFT"] && gloveConfig["MOVELEFT"].hand) {
+                  (gloveConfig["MOVELEFT"].hand)[1] = null;
+                }
                 entity.attachmentConfig = {
                   ...entity.attachmentConfig,
                   ...gloveConfig,
