@@ -48,17 +48,20 @@ export const LookAction: ActionDefinition<LookParams> = {
 
         const rotationSpeed = (5 * Math.PI / 180) * delta;
 
+        const sprite = entity.sprite.current;
+
         if (Math.abs(angleDiff) < rotationSpeed) {
             s.currentRotation = s.targetAngle;
+            if (sprite) sprite.rotation = s.currentRotation;
+            return true;
         } else {
             s.currentRotation += Math.sign(angleDiff) * rotationSpeed;
         }
 
-        const sprite = entity.sprite.current;
         if (sprite) {
             sprite.rotation = s.currentRotation;
         }
 
-        return Math.abs(angleDiff) < 0.01;
+        return false;
     },
 };

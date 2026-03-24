@@ -14,6 +14,11 @@ type PickUpParams = {
 
 export const PickUpAction: ActionDefinition<PickUpParams> = {
     enter: (entity, { object }, _ctx, s) => {
+        if (!object) {
+            s.aborted = true;
+            return;
+        }
+
         if (object.parent && object.parent !== entity) {
             delete object.parent.state.heldObjectId;
             object.parent = null;
@@ -29,6 +34,7 @@ export const PickUpAction: ActionDefinition<PickUpParams> = {
     },
 
     update: (entity, { object, localOffset = { x: 0, y: 0 }, attachmentPoint, reachDistance, moveSpeed = MOVE_SPEED }, dt, _ctx, s) => {
+        if (s.aborted) return true;
 
         if (s.phase !== "moving") return false;
 

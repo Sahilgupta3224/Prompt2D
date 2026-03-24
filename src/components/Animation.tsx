@@ -50,7 +50,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
     } catch (err) {
       console.error(err);
       setIsLoading(false);
-      return;
+      return () => {};
     }
 
     const allEntities = scene.registry.getAll();
@@ -131,7 +131,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
         object.texture = generateShapeTexture(app.renderer, {
           shape: (object.shape ?? "circle") as ShapeName,
           color: object.color ?? "#4a90d9",
-          size: 64,
+          size: 96,
         });
       }
     }

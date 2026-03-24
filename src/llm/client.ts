@@ -1,6 +1,6 @@
 import { buildSystemPrompt } from "./systemPrompt";
 import type { SceneDefinition } from "../types/Scene";
-import { GAME_WIDTH, GAME_HEIGHT } from "../constants/game-world";
+import { SceneDefSchema } from "../types/schemas";
 
 const DEFAULT_MODEL = "groq/compound";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
@@ -82,6 +82,7 @@ const VALID_ACTION_NAMES = new Set([
     "turnTo", "turnTowards",
     "fade", "rotate", "spin", "oscillate", "shake",
     "wait", "spawn", "despawn", "setState",
+    "heal", "wave", "flee", "patrol",
 ]);
 
 function collectActionNodes(node: any): any[] {
@@ -93,52 +94,32 @@ function collectActionNodes(node: any): any[] {
 }
 
 function basicValidate(data: any): { valid: true; scene: SceneDefinition } | { valid: false; errors: string[] } {
-    const errors: string[] = [];
-
     if (!data || typeof data !== "object") {
         return { valid: false, errors: ["Response is not an object"] };
     }
-
-    if (!data.id || typeof data.id !== "string") {
-        data.id = "scene_" + Date.now();
+    if (!data.id) data.id = "scene_" + Date.now();
+    for (const entity of data.entities ?? []) {
+        if (entity.shape && !entity.isObject) entity.isObject = true;
     }
 
-    if (!Array.isArray(data.entities) || data.entities.length === 0) {
-        errors.push("'entities' must be a non-empty array");
-        return { valid: false, errors };
+    const parsed = SceneDefSchema.safeParse(data);
+    if (!parsed.success) {
+        return {
+            valid: false,
+            errors: parsed.error.issues.map(i =>
+                `${i.path.map(String).join(".")}: ${i.message}`
+            ),
+        };
     }
 
-    if (!data.timeline || typeof data.timeline !== "object") {
-        errors.push("'timeline' must be an object");
-        return { valid: false, errors };
-    }
+    const scene = parsed.data;
+    const errors: string[] = [];
+    const entityIds = new Set<string>(scene.entities.map((e: any) => e.id));
 
-    if (!data.timeline.type) {
-        errors.push("'timeline.type' is required");
-    }
-
-    const entityIds = new Set<string>(data.entities.map((e: any) => e.id).filter(Boolean));
-
-    // Auto-fix and clamp entity fields
-    for (const entity of data.entities) {
-        // If entity has shape but no isObject, auto-assign it
-        if (entity.shape && !entity.isObject) {
-            entity.isObject = true;
-        }
-        // Clamp coordinates within canvas
-        if (typeof entity.position?.x === "number") {
-            entity.position.x = Math.max(0, Math.min(GAME_WIDTH, entity.position.x));
-        }
-        if (typeof entity.position?.y === "number") {
-            entity.position.y = Math.max(0, Math.min(GAME_HEIGHT, entity.position.y));
-        }
-    }
-
-    // Validate all action nodes deeply
-    const allActions = collectActionNodes(data.timeline);
+    const allActions = collectActionNodes(scene.timeline);
     for (const action of allActions) {
         if (action.name && !VALID_ACTION_NAMES.has(action.name)) {
-            errors.push(`Unknown action "${action.name}". Use only valid action names.`);
+            errors.push(`Unknown action "${action.name}".`);
         }
         if (action.entityId && !entityIds.has(action.entityId)) {
             errors.push(`Action "${action.name}" targets entityId "${action.entityId}" which is not in entities[].`);
@@ -155,7 +136,7 @@ function basicValidate(data: any): { valid: true; scene: SceneDefinition } | { v
         return { valid: false, errors };
     }
 
-    return { valid: true, scene: data as SceneDefinition };
+    return { valid: true, scene: scene as SceneDefinition };
 }
 
 async function callLLM(

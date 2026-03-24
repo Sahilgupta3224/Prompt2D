@@ -14,7 +14,7 @@ type ThrowParams = {
 
 export const ThrowAction: ActionDefinition<ThrowParams> = {
     enter: (entity, { object, target, arcHeight, gravity = 2000 }, _ctx, s) => {
-        if (!object) {
+        if (!object || !target || target.x === undefined || target.y === undefined) {
             s.aborted = true;
             return;
         }

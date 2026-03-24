@@ -11,6 +11,10 @@ type MovePathParams = {
 
 export const MovePathAction: ActionDefinition<MovePathParams> = {
     enter: (entity, { path, speed = MOVE_SPEED, loop = false }, _ctx, s) => {
+        if (!path || path.length === 0) {
+            s.finished = true;
+            return;
+        }
         s.waypoints = [...path];
         s.currentIndex = 0;
         s.speed = speed;
@@ -21,6 +25,8 @@ export const MovePathAction: ActionDefinition<MovePathParams> = {
     },
 
     update: (entity, { speed = MOVE_SPEED }, delta, _ctx, s) => {
+        if (s.finished) return true;
+
         if (s.currentIndex >= s.waypoints.length) {
             if (s.loop) {
                 s.currentIndex = 0;

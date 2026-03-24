@@ -97,6 +97,15 @@ export class TimelineRunner {
             if (!aState.started) {
                 actionDef.enter?.(targetEntity, resolvedParams, this.ctx, aState);
                 aState.started = true;
+                aState.globalElapsed = 0;
+            }
+
+            aState.globalElapsed = (aState.globalElapsed || 0) + (dt * (1000 / 60));
+            if (aState.globalElapsed > 20000) {
+                console.warn(`[TimelineRunner] Action '${node.name}' timed out after 20 seconds.`);
+                actionDef.exit?.(targetEntity, resolvedParams, this.ctx, aState);
+                state.completed = true;
+                return;
             }
 
             const isComplete = actionDef.update(targetEntity, resolvedParams, dt, this.ctx, aState);
@@ -107,8 +116,12 @@ export class TimelineRunner {
             }
         } catch (error) {
             console.error(`[TimelineRunner] Error executing action '${node.name}' for entity '${targetEntity.id}':`, error);
+            try {
+                actionDef.exit?.(targetEntity, resolvedParams, this.ctx, aState);
+            } catch (exitError) {
+                console.error("Error during exit recovery:", exitError);
+            }
             state.completed = true;
-            // stop animation play karna h.
         }
     }
 

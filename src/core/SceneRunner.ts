@@ -83,6 +83,7 @@ export class SceneRunner {
         if (this.completed){
             if(this.soundtrackManager){
                 this.soundtrackManager.destroy();
+                this.soundtrackManager = null as any;
             }
             return true;
         }

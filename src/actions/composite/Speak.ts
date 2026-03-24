@@ -15,6 +15,7 @@ function removeBubble(entity: { container: { current: import("pixi.js").Containe
     if (!container) return;
     const bubble = container.children.find((c) => c.label === BUBBLE_LABEL);
     if (bubble) {
+        (bubble as any).__ticker_cleanup?.();
         container.removeChild(bubble);
         bubble.destroy({ children: true });
     }

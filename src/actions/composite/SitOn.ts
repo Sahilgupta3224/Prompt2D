@@ -11,6 +11,10 @@ type SitOnParams = {
 
 export const SitOnAction: ActionDefinition<SitOnParams> = {
     enter: (entity, { seat }, _ctx, s) => {
+        if (!seat || seat.x === undefined || seat.y === undefined) {
+            s.aborted = true;
+            return;
+        }
         s.phase = "moving";
         if (reachedDestination({ x: entity.x, y: entity.y }, seat, 5)) {
             s.phase = "sitTransition";
@@ -26,6 +30,7 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
     },
 
     update: (entity, { seat, moveSpeed = MOVE_SPEED, facing }, dt, _ctx, s) => {
+        if (s.aborted || !seat) return true;
         if (s.phase === "moving") {
             const angle = calculateAngle({ x: entity.x, y: entity.y }, seat);
             const speed = moveSpeed * dt;

@@ -13,7 +13,7 @@ type GiveParams = {
 
 export const GiveAction: ActionDefinition<GiveParams> = {
     enter: (entity, { object, target }, _ctx, s) => {
-        if (!target) {
+        if (!target || !object) {
             s.aborted = true;
             return;
         }

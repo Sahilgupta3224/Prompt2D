@@ -6,13 +6,22 @@ import { playAnimation, stopAnimation } from "../../helpers/animationTools";
 
 export const MoveAction: ActionDefinition<MoveParams> = {
 
-  enter: (entity, _params, _ctx, s) => {
+  enter: (entity, { destination }, _ctx, s) => {
+    if (!destination || (entity.x === destination.x && entity.y === destination.y)) {
+      s.finished = true;
+      return;
+    }
     s.direction = null;
     s.targetPosition = null;
     s.moveStart = { x: entity.x, y: entity.y };
     entity.state.isMoving = true;
   },
   update: (entity, { destination }, delta, _ctx, s) => {
+    if (s.finished) return true;
+    if (reachedDestination({ x: entity.x, y: entity.y }, destination)) {
+      return true;
+    }
+
     if (!s.direction) {
       const angle = calculateAngle(
         { x: entity.x, y: entity.y },
@@ -49,9 +58,6 @@ export const MoveAction: ActionDefinition<MoveParams> = {
       if (completed) {
         s.targetPosition = null
       }
-    }
-    if (reachedDestination({ x: entity.x, y: entity.y }, destination)) {
-      return true;
     }
     return false;
   },
