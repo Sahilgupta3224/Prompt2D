@@ -1,6 +1,7 @@
 import { buildSystemPrompt } from "./systemPrompt";
 import type { SceneDefinition } from "../types/Scene";
 import { SceneDefSchema } from "../types/schemas";
+import { DEMO_SCENE } from "../constants/demo-scene";
 
 const DEFAULT_MODEL = "groq/compound";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
@@ -36,6 +37,7 @@ interface GroqResponse {
 export interface LLMResult {
     success: true;
     scene: SceneDefinition;
+    isFallback?: boolean;
 }
 
 export interface LLMError {
@@ -211,9 +213,11 @@ export async function generateScene(
 
         return { success: true, scene: validated.scene };
     } catch (error) {
+        console.error(`LLM request failed: ${(error as Error).message}`);
         return {
-            success: false,
-            error: `LLM request failed: ${(error as Error).message}`,
+            success: true,
+            scene: DEMO_SCENE,
+            isFallback: true
         };
     }
 }
@@ -237,28 +241,20 @@ async function retrySelfCorrection(
         const retryParsed = extractJSON(retryRaw);
 
         if (!retryParsed.success) {
-            return {
-                success: false,
-                error: `Failed after retry. Parse error: ${retryParsed.error}`,
-                raw: retryRaw,
-            };
+            console.error(`Failed after retry. Parse error: ${retryParsed.error}`);
+            return { success: true, scene: DEMO_SCENE, isFallback: true };
         }
 
         const retryValidated = basicValidate(retryParsed.data);
 
         if (!retryValidated.valid) {
-            return {
-                success: false,
-                error: `Failed after retry. Validation errors:\n${retryValidated.errors.join("\n")}`,
-                raw: retryRaw,
-            };
+            console.error(`Failed after retry. Validation errors:\n${retryValidated.errors.join("\n")}`);
+            return { success: true, scene: DEMO_SCENE, isFallback: true };
         }
 
         return { success: true, scene: retryValidated.scene };
     } catch (error) {
-        return {
-            success: false,
-            error: `Retry failed: ${(error as Error).message}`,
-        };
+        console.error(`Retry failed: ${(error as Error).message}`);
+        return { success: true, scene: DEMO_SCENE, isFallback: true };
     }
 }
