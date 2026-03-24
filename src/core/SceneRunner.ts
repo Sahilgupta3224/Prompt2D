@@ -1,8 +1,9 @@
-import type { SceneDefinition, EntityDefinition } from "../types/Scene";
+import type { SceneDefinition, EntityDefinition, SoundtrackName } from "../types/Scene";
 import type { Entity } from "../types/Entity";
 import { EntityRegistry } from "./EntityRegistry";
 import { TimelineRunner } from "../executor/TimelineRunner";
 import type { BackgroundName } from "../helpers/assets";
+import { SoundtrackManager } from "../helpers/SoundtrackManager";
 
 const MIN_SPAWN_DISTANCE = 20;
 const NUDGE_AMOUNT = 25;
@@ -47,7 +48,9 @@ export class SceneRunner {
     private runner: TimelineRunner;
     private primaryEntity: Entity;
     private completed = false;
-    private backgroundTexture? : BackgroundName;
+    private backgroundTexture?: BackgroundName;
+    private soundtrackManager: SoundtrackManager;
+    private chosenTrack: SoundtrackName;
 
     constructor(scene: SceneDefinition, registry?: EntityRegistry) {
         this.registry = registry ?? new EntityRegistry();
@@ -65,19 +68,31 @@ export class SceneRunner {
         this.primaryEntity = primary;
         this.runner = new TimelineRunner(scene.timeline, this.primaryEntity, this.registry);
         (window as any).__pixi_engine = this;  //need to remove later ( essential )
+        this.soundtrackManager = new SoundtrackManager();
+        this.chosenTrack = scene.soundtrack!;
     }
 
     update(dt: number): boolean {
-        if (this.completed) return true;
+        if (this.completed){
+            if(this.soundtrackManager){
+                this.soundtrackManager.destroy();
+            }
+            return true;
+        }
         this.completed = this.runner.update(dt);
         return this.completed;
+    }
+
+    startAudio(): void {
+        // console.log("music started")
+        this.soundtrackManager.play(this.chosenTrack);
     }
 
     isCompleted(): boolean {
         return this.completed;
     }
 
-    getBackground(): BackgroundName | undefined{
+    getBackground(): BackgroundName | undefined {
         return this.backgroundTexture;
     }
 
@@ -94,6 +109,7 @@ export class SceneRunner {
     }
 
     destroy(): void {
+        this.soundtrackManager.destroy();
         for (const [id] of this.registry.getAllEntries()) {
             const entity = this.registry.get(id);
             if (entity) {

@@ -3,6 +3,7 @@ import type { SceneDefinition } from "../types/Scene";
 export const DEMO_SCENE_TESTER: SceneDefinition = {
   id: "tester",
   name: "Action Primitive Mastery Test",
+  soundtrack: "dance",
   entities: [
     {
       id: "tester_hero",

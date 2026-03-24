@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react"
+import { Howler } from "howler"
 import { Application, extend } from "@pixi/react"
 import { Assets, Container, Texture } from "pixi.js"
 import { MainContainer } from "./MainContainer/MainContainer"
@@ -36,7 +37,14 @@ const Experience = () => {
       if (!canvas) return
 
       try {
-        const stream = (canvas as any).captureStream(60)
+        const videoStream = (canvas as any).captureStream(60)
+        const audioContext = Howler.ctx as AudioContext
+        const audioDestination = audioContext.createMediaStreamDestination()
+        Howler.masterGain.connect(audioDestination)
+        const audioTrack = audioDestination.stream.getAudioTracks()[0]
+        const combinedStream = audioTrack
+          ? new MediaStream([...videoStream.getVideoTracks(), audioTrack])
+          : videoStream
         const mimeTypes = ['video/webm;codecs=vp9', 'video/webm', 'video/mp4']
         let selectedMimeType = ''
         for (const type of mimeTypes) {
@@ -46,7 +54,7 @@ const Experience = () => {
            }
         }
 
-        const mediaRecorder = new MediaRecorder(stream, selectedMimeType ? { mimeType: selectedMimeType } : undefined)
+        const mediaRecorder = new MediaRecorder(combinedStream, selectedMimeType ? { mimeType: selectedMimeType } : undefined)
         mediaRecorderRef.current = mediaRecorder
         chunksRef.current = []
 

@@ -26,7 +26,7 @@ export interface ShapeOptions {
     strokeWidth?: number;
 }
 
-const DEFAULT_SIZE = 64;
+const DEFAULT_SIZE = 96;
 const DEFAULT_COLOR = "#4a90d9";
 
 const textureCache = new Map<string, Texture>();
@@ -199,7 +199,8 @@ export function generateShapeTexture(
     if (cached) return cached;
 
     const size = options.size ?? DEFAULT_SIZE;
-    const color = options.color ?? DEFAULT_COLOR;
+    const baseColor = options.color ?? DEFAULT_COLOR;
+    const half = size / 2;
 
     const g = new Graphics();
 
@@ -207,17 +208,29 @@ export function generateShapeTexture(
 
     if (options.shape === "line") {
         g.stroke({
-            color,
-            width: options.strokeWidth ?? 4
+            color: baseColor,
+            width: options.strokeWidth ?? 4,
         });
     } else {
-        g.fill({ color });
         drawShape(g, options.shape, size);
-        g.stroke({ color: darkenColor(color, 0.25), width: 1.5 });
-        const half = size / 2;
-        g.ellipse(half * 0.7, half * 0.5, half * 0.35, half * 0.25);
-        g.fill({ color: lightenColor(color, 0.35), alpha: 0.35 });
-
+        g.fill({ color: baseColor });
+        const strokeColor = darkenColor(baseColor, 0.28);
+        const isDetailedShape = options.shape === "star" || options.shape === "heart" || options.shape === "cross";
+        const strokeWidth = isDetailedShape ? 2.5 : 1.5;
+        drawShape(g, options.shape, size);
+        g.stroke({ color: strokeColor, width: strokeWidth });
+        const highlightCenterX = half * 0.65;
+        const highlightCenterY = half * 0.45;
+        const highlightRadiusX = half * 0.4;
+        const highlightRadiusY = half * 0.28;
+        g.ellipse(highlightCenterX, highlightCenterY, highlightRadiusX, highlightRadiusY);
+        g.fill({ color: lightenColor(baseColor, 0.42), alpha: 0.55 });
+        const shadowCenterX = half;
+        const shadowCenterY = size * 0.82;
+        const shadowRadiusX = half * 0.55;
+        const shadowRadiusY = half * 0.18;
+        g.ellipse(shadowCenterX, shadowCenterY, shadowRadiusX, shadowRadiusY);
+        g.fill({ color: darkenColor(baseColor, 0.38), alpha: 0.35 });
         if (options.strokeColor && options.strokeWidth) {
             drawShape(g, options.shape, size);
             g.stroke({ color: options.strokeColor, width: options.strokeWidth });

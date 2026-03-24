@@ -7,6 +7,7 @@ import { HERO_ATTACHMENTS } from "../config/hero-attachments";
 export const DEMO_SCENE: SceneDefinition = {
   id: "demo",
   name: "Demo Scene",
+  soundtrack: "battle",
   entities: [
     {
       id: "hero1",

@@ -5,7 +5,7 @@ import { extend, useTick, useApplication } from "@pixi/react";
 import { useHeroAnimation } from "../helpers/useHeroAnimation";
 import { ANIMATION_SPEED } from "../constants/game-world";
 import { SceneRunner } from "../core/SceneRunner";
-import { DEMO_SCENE_TESTER } from "../constants/demo-scene-tester";
+import { DEMO_SCENE} from "../constants/demo-scene";
 import { backgroundAssets } from "../helpers/assets";
 import { generateShapeTexture, type ShapeName } from "../helpers/shapeFactory";
 import { HERO_FRAME_SIZE, GAME_WIDTH, GAME_HEIGHT } from "../constants/game-world";
@@ -45,7 +45,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
   useEffect(() => {
     let scene: SceneRunner;
     try {
-      scene = new SceneRunner(DEMO_SCENE_TESTER);
+      scene = new SceneRunner(DEMO_SCENE);
       sceneRef.current = scene;
     } catch (err) {
       console.error(err);
@@ -71,6 +71,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       const Entities = allEntities.filter(e => !e.isObject && e.appearance);
       if (Entities.length === 0) {
         setIsLoading(false);
+        scene.startAudio();
         return;
       }
 
@@ -98,13 +99,20 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
             }
 
             c++;
-            if (c === Entities.length) setIsLoading(false);
+            if (c === Entities.length) {
+              setIsLoading(false);
+              console.log("assembled")
+              scene.startAudio();
+            }
             setEntities([...scene.registry.getAll()]);
           })
           .catch(e => {
             console.error(`Failed to assemble character ${entity.id}:`, e);
             c++;
-            if (c === Entities.length) setIsLoading(false);
+            if (c === Entities.length) {
+              setIsLoading(false);
+              scene.startAudio();
+            }
           });
       }
     };
@@ -128,17 +136,6 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       }
     }
 
-    // if (scannedAnchorConfig && Object.keys(scannedAnchorConfig).length > 0) {
-    //   for (const entity of allEntities) {
-    //     if (!entity.isObject && entity.attachmentConfig) {
-    //       console.log(entity.attachmentConfig)
-    //       entity.attachmentConfig = {
-    //         ...entity.attachmentConfig,
-    //         ...scannedAnchorConfig,
-    //       };
-    //     }
-    //   }
-    // }
     const unsubscribe = scene.registry.subscribe(() => {
       setEntities(scene.registry.getAll());
     });

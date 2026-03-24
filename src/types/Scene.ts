@@ -18,10 +18,19 @@ export interface EntityDefinition {
     appearance?: any;
 }
 
+export type SoundtrackName =
+    | "battle"
+    | "dance"
+    | "calm"
+    | "soft"
+    | "mystical"
+    | "energetic";
+
 export interface SceneDefinition {
     id: string;
     name?: string;
     background?: BackgroundName;
+    soundtrack?: SoundtrackName;
     entities: EntityDefinition[];
     timeline: TimelineNode;
 }
