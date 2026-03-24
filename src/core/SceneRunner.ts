@@ -4,6 +4,7 @@ import { EntityRegistry } from "./EntityRegistry";
 import { TimelineRunner } from "../executor/TimelineRunner";
 import type { BackgroundName } from "../helpers/assets";
 import { SoundtrackManager } from "../helpers/SoundtrackManager";
+import { SceneDefSchema } from "../types/schemas";
 
 const MIN_SPAWN_DISTANCE = 20;
 const NUDGE_AMOUNT = 25;
@@ -53,6 +54,12 @@ export class SceneRunner {
     private chosenTrack: SoundtrackName;
 
     constructor(scene: SceneDefinition, registry?: EntityRegistry) {
+        const validated = SceneDefSchema.safeParse(scene);
+        if (!validated.success) {
+            console.error("[SceneRunner] Invalid scene:", validated.error.issues);
+            throw new Error("Invalid SceneDefinition");
+        }
+
         this.registry = registry ?? new EntityRegistry();
 
         const safeEntities = resolvePositionConflicts(scene.entities);
@@ -69,7 +76,7 @@ export class SceneRunner {
         this.runner = new TimelineRunner(scene.timeline, this.primaryEntity, this.registry);
         (window as any).__pixi_engine = this;  //need to remove later ( essential )
         this.soundtrackManager = new SoundtrackManager();
-        this.chosenTrack = scene.soundtrack!;
+        this.chosenTrack = scene.soundtrack ?? "calm";
     }
 
     update(dt: number): boolean {
