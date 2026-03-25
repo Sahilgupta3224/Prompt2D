@@ -1,5 +1,5 @@
 import type { ActionDefinition } from "../../types/Action";
-import { calculateAngle, angleToDirection, reachedDestination } from "../../helpers/common";
+import { calculateAngle, angleToDirection, reachedDestination, handleMovement } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
 import { playAnimation, playAnimationOnce, freezeFrame } from "../../helpers/animationTools";
 
@@ -10,7 +10,7 @@ type SitOnParams = {
 };
 
 export const SitOnAction: ActionDefinition<SitOnParams> = {
-    enter: (entity, { seat }, _ctx, s) => {
+    enter: (entity, { seat, facing }, _ctx, s) => {
         if (!seat || seat.x === undefined || seat.y === undefined) {
             s.aborted = true;
             return;
@@ -20,26 +20,32 @@ export const SitOnAction: ActionDefinition<SitOnParams> = {
             s.phase = "sitTransition";
             entity.state.isSitting = true;
             const angle0 = calculateAngle({ x: entity.x, y: entity.y }, seat);
-            const sitAnim0 = `SIT${angleToDirection(angle0).replace("MOVE", "")}`;
+            const sitAnim0 = facing ?? `SIT${angleToDirection(angle0).replace("MOVE", "")}`;
             playAnimationOnce(entity, sitAnim0);
             return;
         }
         entity.state.isMoving = true;
         const angle = calculateAngle({ x: entity.x, y: entity.y }, seat);
-        s.sitAnim = `SIT${angleToDirection(angle).replace("MOVE", "")}`;
+        s.sitAnim = facing ?? `SIT${angleToDirection(angle).replace("MOVE", "")}`;
     },
 
     update: (entity, { seat, moveSpeed = MOVE_SPEED, facing }, dt, _ctx, s) => {
         if (s.aborted || !seat) return true;
         if (s.phase === "moving") {
             const angle = calculateAngle({ x: entity.x, y: entity.y }, seat);
-            const speed = moveSpeed * dt;
-
-            entity.x += Math.cos(angle) * speed;
-            entity.y += Math.sin(angle) * speed;
             playAnimation(entity, angleToDirection(angle));
 
-            if (reachedDestination({ x: entity.x, y: entity.y }, seat, 5)) {
+            const { position, completed } = handleMovement(
+                { x: entity.x, y: entity.y },
+                seat,
+                moveSpeed,
+                dt
+            );
+
+            entity.x = position.x;
+            entity.y = position.y;
+
+            if (completed || reachedDestination({ x: entity.x, y: entity.y }, seat, 5)) {
                 entity.x = seat.x;
                 entity.y = seat.y;
                 entity.state.isMoving = false;

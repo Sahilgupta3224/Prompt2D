@@ -5,7 +5,6 @@ import { extend, useTick, useApplication } from "@pixi/react";
 import { useHeroAnimation } from "../helpers/useHeroAnimation";
 import { ANIMATION_SPEED } from "../constants/game-world";
 import { SceneRunner } from "../core/SceneRunner";
-import { DEMO_SCENE} from "../constants/demo-scene";
 import { backgroundAssets } from "../helpers/assets";
 import { generateShapeTexture, type ShapeName } from "../helpers/shapeFactory";
 import { HERO_FRAME_SIZE, GAME_WIDTH, GAME_HEIGHT } from "../constants/game-world";
@@ -14,6 +13,7 @@ import { OutlineFilter, GlowFilter } from 'pixi-filters';
 import { ColorMatrixFilter } from 'pixi.js';
 import { CharacterAssembler } from "../helpers/CharacterAssembler";
 import { buildGloveAttachmentConfig } from "../helpers/gloveAttachmentScanner";
+import type { SceneDefinition } from "../types/Scene";
 
 extend({ Container, Sprite, Graphics, Text });
 
@@ -24,9 +24,10 @@ interface IHeroProps {
   herotexture: Texture | null;
   setBackgroundTexture: (texture: Texture) => void;
   scannedAnchorConfig?: AttachmentConfig | null;
+  sceneDef: SceneDefinition;
 }
 
-export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConfig }: IHeroProps) => {
+export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConfig, sceneDef }: IHeroProps) => {
   if (!herotexture) return null;
 
   const sceneRef = useRef<SceneRunner | null>(null);
@@ -44,8 +45,11 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
 
   useEffect(() => {
     let scene: SceneRunner;
+    setIsLoading(true);
+    setEntities([]);
+
     try {
-      scene = new SceneRunner(DEMO_SCENE);
+      scene = new SceneRunner(sceneDef);
       sceneRef.current = scene;
     } catch (err) {
       console.error(err);
@@ -144,7 +148,7 @@ export const Animation = ({ herotexture, setBackgroundTexture, scannedAnchorConf
       unsubscribe();
       scene.destroy();
     };
-  }, [herotexture, scannedAnchorConfig, app?.renderer, setBackgroundTexture]);
+  }, [herotexture, scannedAnchorConfig, app?.renderer, setBackgroundTexture, sceneDef]);
 
   function updateEntityTransform(e: Entity) {
     if (e.parent) {

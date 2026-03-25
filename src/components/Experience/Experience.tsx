@@ -5,6 +5,8 @@ import { Assets, Container, Texture } from "pixi.js"
 import { MainContainer } from "./MainContainer/MainContainer"
 import { calculateCanvasSize } from "../../helpers/common"
 import backgroundAsset from '../../assets/space-stars.jpg'
+import { generateScene } from "../../llm/client"
+import { DEMO_SCENE_TESTER } from "../../constants/demo-scene-tester"
 
 extend({ Container })
 
@@ -12,6 +14,10 @@ const Experience = () => {
   const [canvasSize, setCanvasSize] = useState(calculateCanvasSize())
   const [bgTexture, setBgTexture] = useState<Texture | null>(null)
   const [isRecording, setIsRecording] = useState(false)
+  const [currentScene, setCurrentScene] = useState<any>(DEMO_SCENE_TESTER)
+  const [prompt, setPrompt] = useState("")
+  const [isGenerating, setIsGenerating] = useState(false)
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
 
@@ -88,6 +94,26 @@ const Experience = () => {
     }
   }
 
+  const handleGenerate = async () => {
+    if (!prompt.trim() || isGenerating) return;
+    setIsGenerating(true);
+    
+    try {
+      const response = await generateScene(prompt);
+      console.log(response)
+      if (response.success) {
+        setCurrentScene(response.scene);
+      } else {
+        setCurrentScene(DEMO_SCENE_TESTER);
+      }
+    } catch (e) {
+      console.error(e);
+      setCurrentScene(DEMO_SCENE_TESTER);
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <Application
@@ -96,8 +122,73 @@ const Experience = () => {
         background="#484a4aff"
         antialias={true}
       >
-        <MainContainer canvasSize={canvasSize} />
+        <MainContainer canvasSize={canvasSize} sceneDef={currentScene} />
       </Application>
+      
+      <div style={{
+          position: 'absolute',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          right: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          gap: '10px',
+          zIndex: 1000,
+          width: '350px',
+      }}>
+        <div style={{
+            display: 'flex',
+            width: '100%',
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            padding: '8px',
+            borderRadius: '12px',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            boxSizing: 'border-box'
+        }}>
+            <input 
+                type="text" 
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Enter prompt..."
+                onKeyDown={(e) => { if (e.key === 'Enter') handleGenerate() }}
+                style={{
+                    flex: 1,
+                    minWidth: 0,
+                    height: '36px',
+                    padding: '0 12px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    fontSize: '14px',
+                    fontFamily: 'Outfit, Inter, sans-serif',
+                    outline: 'none',
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    boxSizing: 'border-box'
+                }}
+            />
+            <button 
+                onClick={handleGenerate}
+                disabled={isGenerating || !prompt.trim()}
+                style={{
+                    marginLeft: '8px',
+                    height: '36px',
+                    padding: '0 16px',
+                    backgroundColor: isGenerating ? '#9ca3af' : '#10b981',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    cursor: isGenerating ? 'not-allowed' : 'pointer',
+                    transition: 'background-color 0.2s',
+                    boxSizing: 'border-box'
+                }}
+            >
+                {isGenerating ? "Wait..." : "Play"}
+            </button>
+        </div>
+      </div>
       
       <button 
         onClick={toggleRecording}

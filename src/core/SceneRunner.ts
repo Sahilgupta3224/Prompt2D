@@ -117,7 +117,10 @@ export class SceneRunner {
     }
 
     destroy(): void {
-        this.soundtrackManager.destroy();
+        if (this.soundtrackManager) {
+            this.soundtrackManager.destroy();
+            this.soundtrackManager = null as any;
+        }
         for (const [id] of this.registry.getAllEntries()) {
             const entity = this.registry.get(id);
             if (entity) {

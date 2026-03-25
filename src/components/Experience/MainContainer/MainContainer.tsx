@@ -25,12 +25,14 @@ import type { Config as AnchorConfigFn } from '../../../helpers/anchorScanner'
 type AttachmentConfig = ReturnType<typeof AnchorConfigFn>
 
 interface IMainContainerProps {
-  canvasSize: { width: number; height: number }
+  canvasSize: { width: number; height: number };
+  sceneDef: any;
 }
 
 
 export const MainContainer = ({
   canvasSize,
+  sceneDef,
   children
 }: PropsWithChildren<IMainContainerProps>) => {
   const [backgroundTexture, setBackgroundTexture] = useState<Texture | null>(null)
@@ -82,6 +84,7 @@ export const MainContainer = ({
         herotexture={heroTexture}
         setBackgroundTexture={setBackgroundTexture}
         scannedAnchorConfig={anchorConfig}
+        sceneDef={sceneDef}
       />
     </pixiContainer>
   )
