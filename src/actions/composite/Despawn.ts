@@ -1,18 +1,21 @@
 //also handled reverse attatchment in this, need to do this in all primitives
 
+// despawn action tabhi run chahiye jab entity par kisi aur type ka action na ho rha ho
+// can lock user if currently in action
 import type { ActionDefinition } from "../../types/Action";
+import type { Entity } from "../../types/Entity";
 
 type DespawnParams = {
-    entityId: string;
+    entity: Entity;
 };
 
 export const DespawnAction: ActionDefinition<DespawnParams> = {
-    enter: (_entity, { entityId }, ctx) => {
-        if (!entityId || typeof entityId !== "string") {
+    enter: (_entity, { entity }, ctx) => {
+        if (!entity) {
             return;
         }
 
-        const target = ctx.registry.get(entityId);
+        const target = ctx.registry.get(entity.id);
         if (!target) {
             return;
         }
@@ -41,7 +44,7 @@ export const DespawnAction: ActionDefinition<DespawnParams> = {
             container.destroy({ children: true });
         }
 
-        ctx.registry.remove(entityId);
+        ctx.registry.remove(entity.id);
     },
 
     update: () => true,

@@ -19,6 +19,7 @@ export function stopAnimation(entity: Entity) {
     if (anim.endsWith("LEFT")) entity.currentanim = "IDLELEFT";
     if (anim.endsWith("DOWN")) entity.currentanim = "IDLEDOWN";
     if (anim.endsWith("RIGHT")) entity.currentanim = "IDLERIGHT";
+    else entity.currentanim = "IDLEDOWN";
     entity.animMode = "static";
     entity.animFinished = true;
 }

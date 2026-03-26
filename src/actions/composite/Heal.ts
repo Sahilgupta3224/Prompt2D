@@ -2,9 +2,10 @@ import type { ActionDefinition } from "../../types/Action";
 import { calculateAngle, angleToAttackDirection, angleToDirection } from "../../helpers/common";
 import { playAnimationOnce, stopAnimation } from "../../helpers/animationTools";
 import { MOVE_SPEED } from "../../constants/game-world";
+import type { Entity } from "../../types/Entity";
 
 type HealParams = {
-    target: import("../../types/Entity").Entity;
+    target: Entity
     amount?: number;
     duration?: number;
     range?: number;
@@ -80,6 +81,7 @@ export const HealAction: ActionDefinition<HealParams> = {
             target.state.isMagic = false;
             target.state.isHealing = false;
         }
+        stopAnimation(target)
         stopAnimation(entity);
     },
 };

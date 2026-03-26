@@ -17,7 +17,10 @@ const GUN_RANGE = 300;
 const FRAME_DURATION = 100;
 
 export const AttackAction: ActionDefinition<AttackParams> = {
-    enter: (entity, { weapon, range }, _ctx, s) => {
+    enter: (entity, { target, weapon, range }, _ctx, s) => {
+        if(!entity || !target){
+            return;
+        }
         s.phase = "approach";
         s.range = range ?? (weapon === "gun" || weapon === "spell" ? GUN_RANGE : MELEE_RANGE);
         s.frameTimer = 0;
@@ -28,7 +31,7 @@ export const AttackAction: ActionDefinition<AttackParams> = {
     },
 
     update: (entity, { target, weapon = "melee", damage = 10, moveSpeed = MOVE_SPEED }, dt, _ctx, s) => {
-        if (!target) return true;
+        if (!target || !entity) return true;
 
         const dx = target.x - entity.x;
         const dy = target.y - entity.y;
@@ -73,7 +76,7 @@ export const AttackAction: ActionDefinition<AttackParams> = {
         return false;
     },
 
-    exit: (entity, _p, _ctx, s) => {
+    exit: (entity, _p, _ctx, _s) => {
         entity.state.isMoving = false;
         // if (s.previousAnim) {
         //     entity.currentanim = s.previousAnim;

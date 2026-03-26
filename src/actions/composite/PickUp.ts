@@ -2,7 +2,7 @@ import type { ActionDefinition } from "../../types/Action";
 import type { Entity } from "../../types/Entity";
 import { calculateAngle, angleToDirection, reachedDestination } from "../../helpers/common";
 import { MOVE_SPEED } from "../../constants/game-world";
-import { playAnimation, stopAnimation, freezeFrame } from "../../helpers/animationTools";
+import { playAnimation, stopAnimation } from "../../helpers/animationTools";
 
 type PickUpParams = {
     object: Entity;
@@ -14,7 +14,7 @@ type PickUpParams = {
 
 export const PickUpAction: ActionDefinition<PickUpParams> = {
     enter: (entity, { object }, _ctx, s) => {
-        if (!object) {
+        if (!object || !entity) {
             s.aborted = true;
             return;
         }

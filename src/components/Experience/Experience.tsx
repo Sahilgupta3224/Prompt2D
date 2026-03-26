@@ -6,7 +6,7 @@ import { MainContainer } from "./MainContainer/MainContainer"
 import { calculateCanvasSize } from "../../helpers/common"
 import backgroundAsset from '../../assets/space-stars.jpg'
 import { generateScene } from "../../llm/client"
-import { DEMO_SCENE_TESTER } from "../../constants/demo-scene-tester"
+import { DEMO_SCENE } from "../../constants/demo-scene"
 
 extend({ Container })
 
@@ -14,7 +14,7 @@ const Experience = () => {
   const [canvasSize, setCanvasSize] = useState(calculateCanvasSize())
   const [bgTexture, setBgTexture] = useState<Texture | null>(null)
   const [isRecording, setIsRecording] = useState(false)
-  const [currentScene, setCurrentScene] = useState<any>(DEMO_SCENE_TESTER)
+  const [currentScene, setCurrentScene] = useState<any>(DEMO_SCENE)
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -104,11 +104,11 @@ const Experience = () => {
       if (response.success) {
         setCurrentScene(response.scene);
       } else {
-        setCurrentScene(DEMO_SCENE_TESTER);
+        setCurrentScene(DEMO_SCENE);
       }
     } catch (e) {
       console.error(e);
-      setCurrentScene(DEMO_SCENE_TESTER);
+      setCurrentScene(DEMO_SCENE);
     } finally {
       setIsGenerating(false);
     }

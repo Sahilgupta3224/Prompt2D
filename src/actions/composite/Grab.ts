@@ -8,7 +8,7 @@ type GrabParams = {
 };
 
 export const GrabAction: ActionDefinition<GrabParams> = {
-  enter: (entity, { object, localOffset = { x: 0, y: 0 }, attachmentPoint }) => {
+  enter: (entity, { object, localOffset = { x: 0, y: 0 }, attachmentPoint }, ctx) => {
     if (!object) {
       return;
     }
@@ -20,6 +20,12 @@ export const GrabAction: ActionDefinition<GrabParams> = {
 
     if (entity.state.heldObjectId && entity.state.heldObjectId !== object.id) {
       // dusre object ki state se bhi hatana h entity ko
+      const prevObject = ctx.registry.get(entity.state.heldObjectId);
+      if (prevObject) {
+        delete prevObject.parent;
+        delete prevObject.localOffset;
+        delete prevObject.attachmentPoint;
+      }
     }
 
     object.parent = entity;

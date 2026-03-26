@@ -56,9 +56,38 @@ export const DEMO_SCENE: SceneDefinition = {
     children: [
       {
         type: "action",
-        name: "grab",
-        params: { objectId: "rock", attachmentPoint: "hand" },
+        name: "wait",
+        params: { duration: 5000 },
       },
+      // {
+      //   type: "action",
+      //   name: "throw",
+      //   params: { objectId: "rock", target: { x: 500, y: 300 }, arcHeight: 50 },
+      // },
+      // {
+      //   type: "action",
+      //   name: "grab",
+      //   params: { objectId: "rock", attachmentPoint: "hand" },
+      // },
+
+      // {
+      //   type: "action",
+      //   name: "give",
+      //   params: { objectId: "rock", targetId: "hero2", reachDistance: 100, moveSpeed: 1 },
+      //   entityId: "hero1"
+      // },
+      // {
+      //   type: "action",
+      //   name: "despawn",
+      //   params: { entityId: "hero1" },
+      // },
+
+      // {
+      //   type: "action",
+      //   name:"crawl",
+      //   params:{destination: { x: 100, y: 100 } },
+      //   entityId: "hero1"
+      // },
       // {
       //   type: "action",
       //   name:"give",
@@ -131,8 +160,29 @@ export const DEMO_SCENE: SceneDefinition = {
       // },
       {
         type: "action",
+        name: "sitOn",
+        params: {seat:{x:300, y:300}},
+        entityId: "hero2"
+      },
+      {
+        type: "action",
+        name: "wave",
+        params: { targetId: "hero2"},
+      },
+      {
+        type: "action",
+        name: "wander",
+        params: { destination:{x:700,y:500}},
+      },
+      {
+        type: "action",
         name: "attack",
         params: { targetId: "hero2", weapon: "melee" },
+      },
+      {
+        type:"action",
+        name:"heal",
+        params:{targetId: "hero2"}
       },
       // {
       //   type: "action",

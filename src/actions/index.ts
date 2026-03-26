@@ -40,9 +40,9 @@ import { WaveAction } from "./composite/index";
 export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     sleep:SleepAction,
     wander:WanderAction,
-    crouch:CrouchAction,
+    crouch:CrouchAction,  //bad
     spin:SpinAction,
-    crawl:CrawlAction,
+    crawl:CrawlAction,  // bad
     move: MoveAction,
     grab: GrabAction,
     throw: ThrowAction,
