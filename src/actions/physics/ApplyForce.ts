@@ -1,9 +1,9 @@
 import type { ActionDefinition } from "../../types/Action";
-import { playAnimation, stopAnimation } from "../../helpers/animationTools";
+import { playAnimation, stopAnimation, playAnimationReverse } from "../../helpers/animationTools";
 import { MOVE_SPEED } from "../../constants/game-world";
 
 type ApplyForceParams = {
-    force: { x: number; y: number };
+    force?: { x: number; y: number };
     duration?: number;
     continuous?: boolean;
     damping?: number;
@@ -13,7 +13,10 @@ type ApplyForceParams = {
 };
 
 export const ApplyForceAction: ActionDefinition<ApplyForceParams> = {
-    enter: (entity, { force, continuous = false, damping = 0.85, mode = "none", walkSpeed = MOVE_SPEED }, _ctx, s) => {
+    enter: (entity, { force = { x: -10, y: 0 }, continuous = false, damping = 0.85, mode = "none", walkSpeed = MOVE_SPEED }, _ctx, s) => {
+        if (!entity) {
+            return;
+        }
         s.elapsed = 0;
         s.previousAnim = entity.currentanim;
         s.previousMode = entity.animMode;
@@ -24,8 +27,13 @@ export const ApplyForceAction: ActionDefinition<ApplyForceParams> = {
             s.walkDirY = len > 0 ? force.y / len : 0;
             s.walkSpeed = Math.max(0, walkSpeed);
             s.mode = mode;
-            const side = s.walkDirX < 0 ? "LEFT" : "RIGHT";
-            playAnimation(entity, mode === "pull" ? `PULL${side}` : `PUSH${side}`);
+            const moveSide = s.walkDirX < 0 ? "LEFT" : "RIGHT";
+            const faceSide = mode === "pull" ? (moveSide === "LEFT" ? "RIGHT" : "LEFT") : moveSide;
+            if (mode === "pull") {
+                playAnimationReverse(entity, `THRUST${faceSide}`);
+            } else {
+                playAnimation(entity, `THRUST${faceSide}`);
+            }
         } else {
             s.mode = "none";
             s.damping = Math.max(0, Math.min(1, damping));
@@ -38,7 +46,8 @@ export const ApplyForceAction: ActionDefinition<ApplyForceParams> = {
         }
     },
 
-    update: (entity, { force, duration, continuous = false, maxSpeed }, dt, _ctx, s) => {
+    update: (entity, { force = { x: 10, y: 10 }, duration, continuous = false, maxSpeed }, dt, _ctx, s) => {
+        if (!entity) return true;
         const dtSeconds = dt / 60;
         s.elapsed += dt * (1000 / 60);
 
@@ -73,7 +82,10 @@ export const ApplyForceAction: ActionDefinition<ApplyForceParams> = {
         return false;
     },
 
-    exit: (entity, _p, _ctx, s) => {
+    exit: (entity, _p, _ctx, _s) => {
+        if (!entity) {
+            return;
+        }
         entity.vx = 0;
         entity.vy = 0;
         stopAnimation(entity);

@@ -1,7 +1,7 @@
 import type { ActionDefinition } from "../../types/Action";
 
 type OscillateParams = {
-    amplitude: number;
+    amplitude?: number;
     amplitudeY?: number;
     frequency?: number;
     axis?: "x" | "y" | "both";
@@ -9,7 +9,10 @@ type OscillateParams = {
 };
 
 export const OscillateAction: ActionDefinition<OscillateParams> = {
-    enter: (entity, { amplitude, amplitudeY, frequency = 1, axis = "both", duration }, _ctx, s) => {
+    enter: (entity, { amplitude = 1, amplitudeY, frequency = 1, axis = "both", duration }, _ctx, s) => {
+        if(!entity){
+            return;
+        }
         s.ampX = amplitude;
         s.ampY = amplitudeY ?? amplitude;
         s.frequency = frequency;
@@ -23,6 +26,9 @@ export const OscillateAction: ActionDefinition<OscillateParams> = {
     },
 
     update: (entity, { frequency = 1, axis = "both", duration }, dt, _ctx, s) => {
+        if(!entity){
+            return true;
+        }
         const dtSeconds = dt / 60;
         s.elapsed += dtSeconds * 1000;
 
@@ -47,6 +53,9 @@ export const OscillateAction: ActionDefinition<OscillateParams> = {
     },
 
     exit: (entity, _params, _ctx, _s) => {
+        if(!entity){
+            return;
+        }
         entity.localOffset = { x: 0, y: 0 };
     },
 };

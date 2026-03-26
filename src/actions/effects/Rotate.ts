@@ -20,6 +20,9 @@ function applyEasing(p: number, easing: RotateParams["easing"]): number {
 
 export const RotateAction: ActionDefinition<RotateParams> = {
     enter: (entity, { angle, duration = 0, loop = false, speed = 90 }, _ctx, s) => {
+        if(!entity){
+            return;
+        }
         const sprite = entity.sprite.current;
         const startRad = sprite ? sprite.rotation : 0;
         const targetRad = angle * (Math.PI / 180);
@@ -37,6 +40,9 @@ export const RotateAction: ActionDefinition<RotateParams> = {
     },
 
     update: (entity, { easing = "linear", loop = false }, dt, _ctx, s) => {
+        if(!entity){
+            return true;
+        }
         const sprite = entity.sprite.current;
         if (!sprite) return true;
 
@@ -57,6 +63,9 @@ export const RotateAction: ActionDefinition<RotateParams> = {
     },
 
     exit: (entity, { loop = false }, _ctx, s) => {
+        if(!entity){
+            return;
+        }
         if (!loop) {
             const sprite = entity.sprite.current;
             if (sprite && s.targetAngle !== undefined) {

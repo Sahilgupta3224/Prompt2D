@@ -7,6 +7,7 @@ interface AnimState {
   frame: number
   elapsed: number
   prevAnim: string | null
+  prevMode: string | null
 }
 
 interface RowConfig {
@@ -99,7 +100,7 @@ export const useHeroAnimation = ({
 
   const getOrCreateState = (entityId: string): AnimState => {
     if (!statesRef.current.has(entityId)) {
-      statesRef.current.set(entityId, { frame: 0, elapsed: 0, prevAnim: null })
+      statesRef.current.set(entityId, { frame: 0, elapsed: 0, prevAnim: null, prevMode: null })
     }
     return statesRef.current.get(entityId)!
   }
@@ -107,7 +108,7 @@ export const useHeroAnimation = ({
   const update = (
     entityId: string,
     direction: Direction | null,
-    animMode: "loop" | "once" | "static" | "freeze" = "loop",
+    animMode: "loop" | "once" | "static" | "freeze" | "reverse" = "loop",
     baseTexture?: Texture
   ) => {
     const activeTexture = baseTexture || texture;
@@ -116,10 +117,11 @@ export const useHeroAnimation = ({
     
     const { row, frames, h = HERO_FRAME_SIZE, speed } = config;
 
-    if (state.prevAnim !== direction) {
-      state.frame = 0
+    if (state.prevAnim !== direction || state.prevMode !== animMode) {
+      state.frame = animMode === "reverse" ? frames - 1 : 0
       state.elapsed = 0
       state.prevAnim = direction
+      state.prevMode = animMode
     }
 
     let finished = false
@@ -137,7 +139,15 @@ export const useHeroAnimation = ({
     } 
     else if (animMode === "freeze") {
       // Keep current frame
-    } else {
+    }
+    else if (animMode === "reverse") {
+      state.elapsed += animationSpeed * (speed ?? 1)
+      if (state.elapsed >= 1) {
+        state.elapsed = 0
+        state.frame = (state.frame - 1 + frames) % frames
+      }
+    } 
+    else {
       state.elapsed += animationSpeed * (speed ?? 1)
       if (state.elapsed >= 1) {
         state.elapsed = 0

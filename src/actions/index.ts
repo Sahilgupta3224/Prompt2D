@@ -71,7 +71,7 @@ export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     dance: DanceAction,
     turnTo: TurnToAction,
     turnTowards: TurnTowardsAction,
-    knockBack: KnockBackAction,
+    knockBack: KnockBackAction,  //bad
     heal: HealAction,
     wave: WaveAction,
     flee: FleeAction,

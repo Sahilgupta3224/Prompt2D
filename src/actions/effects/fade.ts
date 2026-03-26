@@ -19,6 +19,9 @@ function applyEasing(p: number, easing: FadeParams["easing"]): number {
 
 export const FadeAction: ActionDefinition<FadeParams> = {
     enter: (entity, { targetAlpha, duration = 1000 }, _ctx, s) => {
+        if(!entity){
+            return;
+        }
         const sprite = entity.sprite.current;
         s.targetAlpha = Math.max(0, Math.min(1, targetAlpha));
         s.startAlpha = sprite ? sprite.alpha : 1;
@@ -30,7 +33,7 @@ export const FadeAction: ActionDefinition<FadeParams> = {
     },
 
     update: (entity, { easing = "linear", freezeOnComplete = false }, dt, _ctx, s) => {
-        if (s.duration === 0) {
+        if (s.duration === 0 || !entity) {
             if (freezeOnComplete) freezeFrame(entity);
             return true;
         }
@@ -50,6 +53,9 @@ export const FadeAction: ActionDefinition<FadeParams> = {
     },
 
     exit: (entity, _params, _ctx, s) => {
+        if(!entity){
+            return;
+        }
         const sprite = entity.sprite.current;
         if (sprite && s.targetAlpha !== undefined) {
             sprite.alpha = s.targetAlpha;

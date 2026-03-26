@@ -59,6 +59,22 @@ export const DEMO_SCENE: SceneDefinition = {
         name: "wait",
         params: { duration: 5000 },
       },
+      {
+        type: "action",
+        name: "jump",
+        params: { height: 100, duration: 1000 },
+      },
+      // {
+      //   type: "action",
+      //   name: "applyForce",
+      //   params: { mode:"pull"},
+      // },
+      // {
+      //   type: "action",
+      //   name: "knockBack",
+      //   params: { direction: { x: 1, y: 1 }, strength: 100, duration: 1000, friction: 0.85 },
+      //   entityId: "hero1"
+      // },
       // {
       //   type: "action",
       //   name: "throw",

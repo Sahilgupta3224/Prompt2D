@@ -3,14 +3,15 @@ import { playAnimationOnce, stopAnimation } from "../../helpers/animationTools";
 import { angleToJumpDirection } from "../../helpers/common";
 
 type JumpParams = {
-    height: number;
+    height?: number;
     distance?: number;
     duration?: number;
     gravity?: number;
 };
 
 export const JumpAction: ActionDefinition<JumpParams> = {
-    enter: (entity, { height, distance = 0, duration = 600, gravity = 1 }, _ctx, s) => {
+    enter: (entity, { height = 100, distance = 0, duration = 600, gravity = 1 }, _ctx, s) => {
+        if(!entity)return;
         s.height = Math.max(1, height);
         s.distance = distance;
         s.duration = Math.max(100, duration);
@@ -28,6 +29,7 @@ export const JumpAction: ActionDefinition<JumpParams> = {
     },
 
     update: (entity, _, dt, _ctx, s) => {
+        if(!entity)return true;
         s.elapsed += dt * (1000 / 60);
         const progress = Math.min(s.elapsed / s.duration, 1);
         if (s.distance !== 0) {
@@ -55,6 +57,7 @@ export const JumpAction: ActionDefinition<JumpParams> = {
     },
 
     exit: (entity, _p, _ctx, s) => {
+        if(!entity)return;
         entity.y = s.startY ?? entity.y;
         entity.state.isJumping = false;
         stopAnimation(entity);

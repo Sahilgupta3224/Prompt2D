@@ -10,29 +10,45 @@ type KnockBackParams = {
 
 export const KnockBackAction: ActionDefinition<KnockBackParams> = {
     enter: (entity, { direction, strength, duration = 500, friction = 0.85 }, _ctx, s) => {
+        if (!entity || !direction) {
+            s.aborted = true;
+            return;
+        }
+
+        s.aborted = false;
         const len = Math.hypot(direction.x, direction.y);
         const nx = len > 0 ? direction.x / len : 0;
-        const ny = len > 0 ? direction.y / len : -1;
+        const ny = len > 0 ? direction.y / len : 0;
+
         s.vx = nx * Math.max(0, strength);
         s.vy = ny * Math.max(0, strength);
+
         s.friction = Math.max(0, Math.min(1, friction));
         s.duration = Math.max(0, duration);
         s.elapsed = 0;
+        
         s.previousAnim = entity.currentanim;
         s.previousMode = entity.animMode;
+        
         playAnimationOnce(entity, "HURT");
     },
 
     update: (entity, _, dt, _ctx, s) => {
-        const dtSeconds = dt / 60;
+        if (s.aborted) return true;
+        if (!entity) return true;
+
         s.elapsed += dt * (1000 / 60);
-        entity.x += s.vx * dtSeconds;
-        entity.y += s.vy * dtSeconds;
-        const friction = Math.pow(s.friction, dtSeconds);
-        s.vx *= friction;
-        s.vy *= friction;
+
+        entity.x += s.vx * dt;
+        entity.y += s.vy * dt;
+
+        const frameFriction = Math.pow(s.friction, dt);
+        s.vx *= frameFriction;
+        s.vy *= frameFriction;
+
         const speed = Math.hypot(s.vx, s.vy);
-        if (s.elapsed >= s.duration || speed < 0.5) {
+        
+        if (s.elapsed >= s.duration || speed < 0.2) {
             return true;
         }
 
@@ -40,6 +56,7 @@ export const KnockBackAction: ActionDefinition<KnockBackParams> = {
     },
 
     exit: (entity, _p, _ctx, _s) => {
+        if (!entity) return;
         stopAnimation(entity);
     },
 };

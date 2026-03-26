@@ -10,6 +10,7 @@ type ShakeParams = {
 
 export const ShakeAction: ActionDefinition<ShakeParams> = {
     enter: (entity, { intensity, duration, frequency = 10, axis = "both", decay = false }, _ctx, s) => {
+        if(!entity)return;
         s.intensity = intensity;
         s.duration = duration;
         s.frequency = frequency;
@@ -23,6 +24,7 @@ export const ShakeAction: ActionDefinition<ShakeParams> = {
     },
 
     update: (entity, { frequency = 10, axis = "both", duration, decay = false }, dt, _ctx, s) => {
+        if(!entity)return true;
         const dtMs = dt * (1000 / 60); 
         s.elapsed += dtMs;
         s.timeSinceLastShake += dtMs;
@@ -57,6 +59,9 @@ export const ShakeAction: ActionDefinition<ShakeParams> = {
     },
 
     exit: (entity, _params, _ctx, _s) => {
+        if(!entity){
+            return;
+        }
         entity.localOffset = { x: 0, y: 0 };
     },
 };

@@ -29,7 +29,7 @@ export interface Entity {
     attachmentPoint?: string;
     attachmentConfig?: Record<string, Record<string, { x: number, y: number } | ({ x: number, y: number } | null)[]>>;
     currentFrame?: number;
-    animMode?: "loop" | "once" | "static" | "freeze";
+    animMode?: "loop" | "once" | "static" | "freeze" | "reverse";
     animFinished?: boolean;
     isObject?: boolean;
     shape?: ShapeName;

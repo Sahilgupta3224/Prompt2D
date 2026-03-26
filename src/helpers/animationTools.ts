@@ -12,9 +12,14 @@ export function playAnimationOnce(entity: Entity, anim: string) {
     entity.animFinished = false;
 }
 
+export function playAnimationReverse(entity: Entity, anim: string) {
+    entity.currentanim = anim;
+    entity.animMode = "reverse";
+    entity.animFinished = false;
+}
+
 export function stopAnimation(entity: Entity) {
     const anim = entity.currentanim;
-    console.log(anim)
     if (anim.endsWith("UP")) entity.currentanim = "IDLEUP";
     if (anim.endsWith("LEFT")) entity.currentanim = "IDLELEFT";
     if (anim.endsWith("DOWN")) entity.currentanim = "IDLEDOWN";
