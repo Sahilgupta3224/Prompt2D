@@ -60,7 +60,7 @@ export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     movePath: MovePathAction,
     follow: FollowAction,
     look: LookAction,
-    faceDirection: FaceDirectionAction,
+    faceDirection: FaceDirectionAction,  //bad
     jump: JumpAction,
     applyForce: ApplyForceAction,
     fade: FadeAction,

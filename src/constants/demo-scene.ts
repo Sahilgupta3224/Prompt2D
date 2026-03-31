@@ -64,6 +64,12 @@ export const DEMO_SCENE: SceneDefinition = {
         name: "jump",
         params: { height: 100, duration: 1000 },
       },
+      {
+        type: "action",
+        name: "flee",
+        params: {target:"hero2"},
+        entityId: "hero1"
+      },
       // {
       //   type: "action",
       //   name: "applyForce",

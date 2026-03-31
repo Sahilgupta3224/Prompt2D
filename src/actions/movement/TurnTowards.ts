@@ -1,18 +1,45 @@
 // need to  edit this, will use freezeframe after setting currentanimation
 
-import { angleToDirection, calculateAngle } from "../../helpers/common";
+import { angleToIdleDirection, calculateAngle } from "../../helpers/common";
 import type { Entity } from "../../types/Entity";
 import type { ActionDefinition } from "../../types/Action";
 
-type TurnTowardParams = { target: Entity | { x: number; y: number } };
+type TurnTowardParams = { 
+    target?: Entity | { x: number; y: number }; 
+    targetId?: string;
+};
+
 export const TurnTowardsAction: ActionDefinition<TurnTowardParams> = {
-  enter: (entity, { target }) => {
-    if (!target) return;
-    const tx =  target.x;
-    const ty = target.y;
+  enter: (entity, params, ctx) => {
+    if (!entity || !params) return;
+
+    const { target, targetId } = params;
+    let resolvedTarget: { x: number; y: number } | undefined;
+    if (typeof target === 'object' && target !== null && 'x' in target && 'y' in target) {
+        resolvedTarget = target;
+    } else if (typeof target === 'string') {
+        resolvedTarget = ctx.registry.get(target);
+    } else if (targetId) {
+        resolvedTarget = ctx.registry.get(targetId);
+    }
+    if (!resolvedTarget) return;
+    const tx = resolvedTarget.x;
+    const ty = resolvedTarget.y;
+    if (isNaN(tx) || isNaN(ty) || isNaN(entity.x) || isNaN(entity.y)) {
+        return;
+    }
     const angle = calculateAngle({ x: entity.x, y: entity.y }, { x: tx, y: ty });
-    entity.currentanim = angleToDirection(angle);
+    entity.currentanim = angleToIdleDirection(angle);
+    entity.animMode = "static";
+    entity.state.isMoving = false;
   },
+
   update: () => true,
-  exit: () => {},
+
+  exit: (entity) => {
+    if (!entity) return;
+    if (entity.animMode === "static") {
+        entity.animFinished = true;
+    }
+  },
 };
