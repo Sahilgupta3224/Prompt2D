@@ -1,48 +1,17 @@
 import type { ActionDefinition } from "../types/Action";
-import { WanderAction } from "./composite/wander";
-import { CrouchAction } from "./composite/crouch";
-import { GrabAction } from "./composite/index";
-import { ThrowAction } from "./composite/index";
-import { PickUpAction } from "./composite/index";
-import { GiveAction } from "./composite/index";
-import { DetachAction } from "./composite/index";
-import { SetStateAction } from "./composite/index";
-import { SitOnAction } from "./composite/index";
-import { WaitAction } from "./composite/index";
-import { SpeakAction } from "./composite/index";
-import { EmoteAction } from "./composite/index";
-import { SpawnAction } from "./composite/index";
-import { DespawnAction } from "./composite/index";
-import { AttackAction } from "./composite/index";
-import { MovePathAction } from "./movement/index";
-import { FollowAction } from "./movement/index";
-import { LookAction } from "./movement/index";
-import { FaceDirectionAction } from "./movement/index";
-import { MoveAction } from "./movement/index";
-import { TurnToAction } from "./movement/index";
-import { TurnTowardsAction } from "./movement/index";
-import { AnyAction } from "./movement/index";
-import { DanceAction } from "./movement/index";
-import { FleeAction } from "./movement/index";
-import { PatrolAction } from "./movement/index";
-import { KnockBackAction } from "./physics/index";
-import { JumpAction } from "./physics/index";
-import { ApplyForceAction } from "./physics/index";
-import { FadeAction } from "./effects/index";
-import { RotateAction } from "./effects/index";
-import { OscillateAction } from "./effects/index";
-import { ShakeAction } from "./effects/index";
-import { SpinAction } from "./composite/spin";
-import { SleepAction } from "./composite/sleep";
-import { CrawlAction } from "./composite/crawl";
-import { HealAction } from "./composite/index";
-import { WaveAction } from "./composite/index";
+import { CrawlAction, CrouchAction, SitOnAction, SleepAction } from "./body/index";
+import { EmoteAction, FadeAction, OscillateAction, RotateAction, ShakeAction, SpeakAction } from "./effects/index";
+import { AttackAction, DetachAction, GiveAction, GrabAction, HealAction, PickUpAction, ThrowAction, WaveAction } from "./interaction/index";
+import { AnyAction, DanceAction, FaceDirectionAction, FleeAction, FollowAction, LookAction, MoveAction, MovePathAction, PatrolAction, TurnToAction, TurnTowardsAction, WanderAction } from "./movement/index";
+import { ApplyForceAction, JumpAction, KnockBackAction, SpinAction } from "./physics/index";
+import { DespawnAction, SetStateAction, SpawnAction, WaitAction } from "./scene/index";
+
 export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
-    sleep:SleepAction,
-    wander:WanderAction,
-    crouch:CrouchAction,  //bad
-    spin:SpinAction,
-    crawl:CrawlAction,  // bad
+    sleep: SleepAction,
+    wander: WanderAction,
+    crouch: CrouchAction,  //bad
+    spin: SpinAction,
+    crawl: CrawlAction,  // bad
     move: MoveAction,
     grab: GrabAction,
     throw: ThrowAction,
@@ -67,7 +36,7 @@ export const ACTION_REGISTRY: Record<string, ActionDefinition<any>> = {
     rotate: RotateAction,
     oscillate: OscillateAction,
     shake: ShakeAction,
-    any: AnyAction,
+    any: AnyAction,  //bad
     dance: DanceAction,
     turnTo: TurnToAction,
     turnTowards: TurnTowardsAction,

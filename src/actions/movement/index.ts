@@ -1,12 +1,12 @@
-export { MovePathAction } from "./MovePath";
+export { AnyAction } from './Any'
+export { DanceAction } from "./Dance";
+export { FaceDirectionAction } from "./FaceDirection";
+export { FleeAction } from './Flee'
 export { FollowAction } from "./Follow";
 export { LookAction } from "./Look";
-export { DanceAction } from "./Dance";
 export { MoveAction } from "./Move";
-export { FaceDirectionAction } from "./FaceDirection";
-export {AnyAction} from './Any'
-export {KnockBackAction} from '../physics/KnockBack'
-export {TurnToAction} from './TurnTo'
-export {TurnTowardsAction} from './TurnTowards'
-export {FleeAction} from './Flee'
-export {PatrolAction} from './Patrol'
+export { MovePathAction } from "./MovePath";
+export { PatrolAction } from './Patrol'
+export { TurnToAction } from './TurnTo'
+export { TurnTowardsAction } from './TurnTowards'
+export { WanderAction } from './Wander'
