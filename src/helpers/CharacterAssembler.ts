@@ -86,7 +86,7 @@ export class CharacterAssembler {
                         );
                     }
                 } catch (e) {
-                    console.log(e)
+                    // console.log(e)
                 }
             }));
         }

@@ -54,13 +54,81 @@ export const TimelineNodeSchema: z.ZodType<any> = z.lazy(() =>
     ])
 );
 
-export const SceneDefSchema = z.object({
-    id:         z.string().min(1),
-    name:       z.string().optional(),
-    background: BackgroundSchema.optional(),
-    soundtrack: SoundtrackSchema.optional(),
-    entities:   z.array(EntityDefSchema).min(1),
-    timeline:   TimelineNodeSchema,
+export const VALID_ACTION_NAMES = new Set([
+  "move", "movePath", "wander", "follow", "faceDirection", "look", "crawl",
+  "crouch", "sleep", "sitOn", "dance", "any",
+  "jump", "applyForce", "knockBack",
+  "grab", "pickUp", "throw", "give", "detach",
+  "attack", "speak", "emote",
+  "turnTo", "turnTowards",
+  "fade", "rotate", "spin", "oscillate", "shake",
+  "wait", "spawn", "despawn", "setState",
+  "heal", "wave", "flee", "patrol",
+]);
+
+export const SceneDefSchema = z.preprocess((val: any) => {
+  if (!val || typeof val !== 'object') return val;
+  
+  const data = { ...val };
+  if (!data.id) data.id = `scene_${Date.now()}`;
+  
+  if (Array.isArray(data.entities)) {
+    data.entities = data.entities.map((e: any) => {
+      if (e.shape && !e.isObject) return { ...e, isObject: true };
+      return e;
+    });
+  }
+  
+  return data;
+}, z.object({
+  id: z.string().min(1),
+  name: z.string().optional(),
+  background: BackgroundSchema.optional(),
+  soundtrack: SoundtrackSchema.optional(),
+  entities: z.array(EntityDefSchema).min(1),
+  timeline: TimelineNodeSchema,
+})).superRefine((data, ctx) => {
+  const entityIds = new Set(data.entities.map(e => e.id));
+  
+  const checkNode = (node: any, path: (string | number)[]) => {
+    if (!node || typeof node !== 'object') return;
+    
+    if (node.type === 'action') {
+      if (!VALID_ACTION_NAMES.has(node.name)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Unknown action: ${node.name}`,
+          path: [...path, 'name'],
+        });
+      }
+      
+      if (node.entityId && !entityIds.has(node.entityId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Action "${node.name}" targets unknown entity: ${node.entityId}`,
+          path: [...path, 'entityId'],
+        });
+      }
+      
+      if (node.params && typeof node.params === 'object') {
+        Object.entries(node.params).forEach(([key, val]) => {
+          if (key.endsWith('Id') && typeof val === 'string' && !entityIds.has(val)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Param "${key}" references unknown entity: ${val}`,
+              path: [...path, 'params', key],
+            });
+          }
+        });
+      }
+    } else if (node.children) {
+      node.children.forEach((child: any, i: number) => checkNode(child, [...path, 'children', i]));
+    } else if (node.child) {
+      checkNode(node.child, [...path, 'child']);
+    }
+  };
+  
+  checkNode(data.timeline, ['timeline']);
 });
 
 export type ValidatedSceneDef  = z.infer<typeof SceneDefSchema>;

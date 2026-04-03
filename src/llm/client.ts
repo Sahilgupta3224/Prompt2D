@@ -1,43 +1,23 @@
-import { buildSystemPrompt } from "./systemPrompt";
+import { buildCompactSystemPrompt } from "./systemPrompt";
 import type { SceneDefinition } from "../types/Scene";
 import { SceneDefSchema } from "../types/schemas";
 import { DEMO_SCENE } from "../constants/demo-scene";
 
-const DEFAULT_MODEL = "groq/compound";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+const DEFAULT_MODEL = "llama-3.1-8b-instant";
 
-function getConfig() {
-    const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
-    const model = (import.meta.env.VITE_LLM_MODEL as string) || DEFAULT_MODEL;
-
-    if (!apiKey) {
-        throw new Error(
-            "Missing VITE_GROQ_API_KEY. Add it to your .env file:\nVITE_GROQ_API_KEY=your_key_here\n\nGet a free key at https://console.groq.com"
-        );
-    }
-
-    return { apiKey, model };
-}
-
-interface ChatMessage {
-    role: "system" | "user" | "assistant";
-    content: string;
-}
-
-interface GroqResponse {
-    choices?: {
-        message?: {
-            content?: string;
-        };
-        finish_reason?: string;
-    }[];
-    error?: { message: string; type: string; code: string };
-}
+export type GenerationStatus =
+    | "idle"  
+    | "generating"
+    | "success"
+    | "fallback"
+    | "error";
 
 export interface LLMResult {
     success: true;
     scene: SceneDefinition;
-    isFallback?: boolean;
+    isFallback: boolean;
+    message?: string;
 }
 
 export interface LLMError {
@@ -48,6 +28,31 @@ export interface LLMError {
 
 export type LLMResponse = LLMResult | LLMError;
 
+interface ChatMessage {
+    role: "system" | "user" | "assistant";
+    content: string;
+}
+
+interface GroqResponse {
+    choices?: {
+        message?: { content?: string };
+        finish_reason?: string;
+    }[];
+    error?: { message: string; type: string; code: string };
+}
+
+function getConfig() {
+    const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
+    const model = (import.meta.env.VITE_LLM_MODEL as string) || DEFAULT_MODEL;
+
+    if (!apiKey) {
+        throw new Error(
+            "Missing VITE_GROQ_API_KEY. Add it to your .env file:\nVITE_GROQ_API_KEY=your_key_here"
+        );
+    }
+
+    return { apiKey, model };
+}
 
 function extractJSON(raw: string): { success: true; data: any } | { success: false; error: string } {
     let cleaned = raw.trim();
@@ -70,80 +75,12 @@ function extractJSON(raw: string): { success: true; data: any } | { success: fal
     } catch (e) {
         return {
             success: false,
-            error: `JSON parse error: ${(e as Error).message}. Raw response starts with: "${raw.slice(0, 200)}"`,
+            error: `JSON parse error: ${(e as Error).message}. Raw starts with: "${raw.slice(0, 200)}"`,
         };
     }
 }
 
-const VALID_ACTION_NAMES = new Set([
-    "move", "movePath", "wander", "follow", "faceDirection", "look", "crawl",
-    "crouch", "sleep", "sitOn", "dance", "any",
-    "jump", "applyForce", "knockBack",
-    "grab", "pickUp", "throw", "give", "detach",
-    "attack", "speak", "emote",
-    "turnTo", "turnTowards",
-    "fade", "rotate", "spin", "oscillate", "shake",
-    "wait", "spawn", "despawn", "setState",
-    "heal", "wave", "flee", "patrol",
-]);
-
-function collectActionNodes(node: any): any[] {
-    if (!node || typeof node !== "object") return [];
-    if (node.type === "action") return [node];
-    const children = node.children ? node.children.flatMap(collectActionNodes) : [];
-    const child = node.child ? collectActionNodes(node.child) : [];
-    return [...children, ...child];
-}
-
-function basicValidate(data: any): { valid: true; scene: SceneDefinition } | { valid: false; errors: string[] } {
-    if (!data || typeof data !== "object") {
-        return { valid: false, errors: ["Response is not an object"] };
-    }
-    if (!data.id) data.id = "scene_" + Date.now();
-    for (const entity of data.entities ?? []) {
-        if (entity.shape && !entity.isObject) entity.isObject = true;
-    }
-
-    const parsed = SceneDefSchema.safeParse(data);
-    if (!parsed.success) {
-        return {
-            valid: false,
-            errors: parsed.error.issues.map(i =>
-                `${i.path.map(String).join(".")}: ${i.message}`
-            ),
-        };
-    }
-
-    const scene = parsed.data;
-    const errors: string[] = [];
-    const entityIds = new Set<string>(scene.entities.map((e: any) => e.id));
-
-    const allActions = collectActionNodes(scene.timeline);
-    for (const action of allActions) {
-        if (action.name && !VALID_ACTION_NAMES.has(action.name)) {
-            errors.push(`Unknown action "${action.name}".`);
-        }
-        if (action.entityId && !entityIds.has(action.entityId)) {
-            errors.push(`Action "${action.name}" targets entityId "${action.entityId}" which is not in entities[].`);
-        }
-        const params = action.params ?? {};
-        for (const [key, val] of Object.entries(params)) {
-            if (key.endsWith("Id") && typeof val === "string" && !entityIds.has(val)) {
-                errors.push(`Action "${action.name}" param "${key}"="${val}" references an entity not in entities[].`);
-            }
-        }
-    }
-
-    if (errors.length > 0) {
-        return { valid: false, errors };
-    }
-
-    return { valid: true, scene: scene as SceneDefinition };
-}
-
-async function callLLM(
-    messages: ChatMessage[]
-): Promise<string> {
+async function callLLM(messages: ChatMessage[]): Promise<string> {
     const { apiKey, model } = getConfig();
 
     const body = {
@@ -182,11 +119,11 @@ async function callLLM(
     return text;
 }
 
-export async function generateScene(
+async function directGroqGenerate(
     prompt: string,
     worldState?: string
 ): Promise<LLMResponse> {
-    const systemPrompt = buildSystemPrompt(worldState);
+    const systemPrompt = buildCompactSystemPrompt(worldState);
 
     const messages: ChatMessage[] = [
         { role: "system", content: systemPrompt },
@@ -201,23 +138,24 @@ export async function generateScene(
             return await retrySelfCorrection(messages, rawResponse, parsed.error);
         }
 
-        const validated = basicValidate(parsed.data);
+        const validated = SceneDefSchema.safeParse(parsed.data);
 
-        if (!validated.valid) {
+        if (!validated.success) {
             return await retrySelfCorrection(
                 messages,
                 rawResponse,
-                `Validation errors:\n${validated.errors.map((e) => `- ${e}`).join("\n")}`
+                `Validation errors:\n${validated.error.issues.map((i) => `- ${i.path.join('.')}: ${i.message}`).join("\n")}`
             );
         }
 
-        return { success: true, scene: validated.scene };
+        return { success: true, scene: validated.data as SceneDefinition, isFallback: false };
     } catch (error) {
-        console.error(`LLM request failed: ${(error as Error).message}`);
+        console.error(`[Client] Direct LLM request failed: ${(error as Error).message}`);
         return {
             success: true,
             scene: DEMO_SCENE,
-            isFallback: true
+            isFallback: true,
+            message: `Direct fallback: ${(error as Error).message}`,
         };
     }
 }
@@ -241,20 +179,47 @@ async function retrySelfCorrection(
         const retryParsed = extractJSON(retryRaw);
 
         if (!retryParsed.success) {
-            console.error(`Failed after retry. Parse error: ${retryParsed.error}`);
+            console.error(`[Client] Retry parse failed: ${retryParsed.error}`);
             return { success: true, scene: DEMO_SCENE, isFallback: true };
         }
 
-        const retryValidated = basicValidate(retryParsed.data);
+        const retryValidated = SceneDefSchema.safeParse(retryParsed.data);
 
-        if (!retryValidated.valid) {
-            console.error(`Failed after retry. Validation errors:\n${retryValidated.errors.join("\n")}`);
+        if (!retryValidated.success) {
+            console.error(`[Client] Retry validation failed:`, retryValidated.error.format());
             return { success: true, scene: DEMO_SCENE, isFallback: true };
         }
 
-        return { success: true, scene: retryValidated.scene };
+        return { success: true, scene: retryValidated.data as SceneDefinition, isFallback: false };
     } catch (error) {
-        console.error(`Retry failed: ${(error as Error).message}`);
+        console.error(`[Client] Retry failed: ${(error as Error).message}`);
         return { success: true, scene: DEMO_SCENE, isFallback: true };
     }
+}
+
+export async function generateScene(
+    prompt: string,
+    worldState?: string
+): Promise<LLMResult> {
+    if (!(prompt.trim())) {
+        return {
+            success: true,
+            scene: DEMO_SCENE,
+            isFallback: true,
+            message: "Empty prompt",
+        };
+    }
+    try {
+        const directResponse = await directGroqGenerate(prompt.trim(), worldState);
+        if (directResponse.success) {
+            return directResponse as LLMResult;
+        }
+    } catch (e) {
+        console.error("[Client] Direct call also failed:", e);
+    }
+    return {
+        success: true,
+        scene: DEMO_SCENE,
+        isFallback: true,
+    };
 }

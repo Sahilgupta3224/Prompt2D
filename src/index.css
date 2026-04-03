@@ -1,7 +1,38 @@
-*,
-#root{
-  height:100%;
-  padding:0;
-  margin:0;
-  overflow:hidden;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Outfit', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: #0f0f14;
+}
+
+/* Placeholder text styling */
+input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+}
+
+/* Smooth focus transitions */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+/* Button hover effects */
+button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
 }

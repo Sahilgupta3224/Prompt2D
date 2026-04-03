@@ -278,6 +278,50 @@ export const ACTION_MANIFEST: ActionDoc[] = [
         ],
     },
 
+    // ── Social ─────────────────────────────────
+    {
+        name: "wave",
+        description: "Wave at another entity (greeting gesture using slash animation)",
+        params: [
+            { name: "targetId", type: "string", required: false, description: "Entity ID to wave at (determines facing direction)" },
+            { name: "direction", type: "\"UP\" | \"DOWN\" | \"LEFT\" | \"RIGHT\"", required: false, description: "Manual direction if no target" },
+            { name: "waves", type: "number", required: false, description: "Number of wave cycles (default: 3, max: 20)" },
+        ],
+        notes: "Provide targetId OR direction. If neither given, waves downward.",
+    },
+    {
+        name: "heal",
+        description: "Walk to a target entity and cast a healing spell on them",
+        params: [
+            { name: "targetId", type: "string", required: true, description: "Entity ID of the target to heal" },
+            { name: "amount", type: "number", required: false, description: "HP to restore (default: 30)" },
+            { name: "duration", type: "number", required: false, description: "Cast duration in ms (default: 1200)" },
+            { name: "range", type: "number", required: false, description: "How close to get before casting (default: 80)" },
+        ],
+        notes: "Approaches the target, plays spell animation, applies glow effect during heal",
+    },
+    {
+        name: "flee",
+        description: "Run away from a target entity at high speed",
+        params: [
+            { name: "targetId", type: "string", required: true, description: "Entity ID to flee from" },
+            { name: "speed", type: "number", required: false, description: "Flee speed multiplier (default: 1.5x move speed)" },
+            { name: "duration", type: "number", required: false, description: "How long to flee in ms (default: 3000, max: 10000)" },
+        ],
+        notes: "Entity runs in the opposite direction from target. Stays within canvas bounds.",
+    },
+    {
+        name: "patrol",
+        description: "Walk back and forth between two points",
+        params: [
+            { name: "pointA", type: "{x: number, y: number}", required: true, description: "First patrol point" },
+            { name: "pointB", type: "{x: number, y: number}", required: true, description: "Second patrol point" },
+            { name: "speed", type: "number", required: false, description: "Walk speed (default: 1)" },
+            { name: "laps", type: "number", required: false, description: "Number of round trips (default: 2, -1 for infinite)" },
+            { name: "pauseAtEnds", type: "number", required: false, description: "Pause duration at each end in ms (default: 300)" },
+        ],
+    },
+
     // ── Scene Management ──────────────────────
     {
         name: "spawn",
