@@ -10,7 +10,9 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langgraph.graph import StateGraph, END
 import re
-
+from fastapi import FastAPI
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 def clean_llm_json(raw: str):
     raw = re.sub(r"```json|```", "", raw)
     return raw.strip()
@@ -275,36 +277,36 @@ def retrieve_common_sequence_Knowledge(state: SceneState):
 def planner_agent(state: SceneState):
 
     prompt = f"""
-You are a scene planning AI for a 2D animation engine.
+      You are a scene planning AI for a 2D animation engine.
 
-IMPORTANT:
-- Generate ONLY PHYSICAL, VISUAL actions.
-- DO NOT generate abstract or NLP actions like:
-  (extract, identify, tokenize, process, analyze)
+      IMPORTANT:
+      - Generate ONLY PHYSICAL, VISUAL actions.
+      - DO NOT generate abstract or NLP actions like:
+       (extract, identify, tokenize, process, analyze)
 
-Allowed actions examples:
-- walk, run, jump, kick, throw, sit, stand, play, smile
+       Allowed actions examples:
+      - walk, run, jump, kick, throw, sit, stand, play, smile
 
-Goal:
-Convert user intent into a visual animation timeline.
+      Goal:
+      Convert user intent into a visual animation timeline.
 
-Return JSON:
-{{
-  "timeline": {{
-    "type": "sequence",
-    "children": []
-  }}
-}}
-
-Example:
-User: "A girl playing football in park"
-
-Output:
-{{
-  "timeline": {{
-    "type": "sequence",
-    "children": [
+      Return JSON:
       {{
+       "timeline": {{
+         "type": "sequence",
+         "children": []
+      }}
+    }}
+
+    Example:
+        User: "A girl playing football in park"
+
+    Output:
+    {{
+      "timeline": {{
+       "type": "sequence",
+       "children": [
+       {{
         "type": "action",
         "name": "run",
         "params": {{}},
@@ -316,13 +318,13 @@ Output:
         "params": {{}},
         "entityId": "girl_1"
       }}
-    ]
-  }}
-}}
+      ]
+     }}
+    }}
 
-USER INTENT:
-{state['intent']}
-"""
+    USER INTENT:
+    {state['intent']}
+    """
 
     response = llm.invoke(prompt)
 
@@ -337,61 +339,62 @@ USER INTENT:
 def scene_builder_agent(state: SceneState):
 
     prompt = f"""
-You are building a 2D animation scene.
+      You are building a 2D animation scene.
 
-STRICT RULES:
-- Entities must represent real-world objects/characters
-- Actions must be physical and visible
-- Timeline must describe animation, not logic
+      STRICT RULES:
+      - Entities must represent real-world objects/characters
+      - Actions must be physical and visible
+      - Timeline must describe animation, not logic
 
-Entities must match intent.
+        Entities must match intent.
 
-Example:
-Input: "A girl playing football in park"
+        Example:
+        Input: "A girl playing football in park"
 
-Output:
-{{
-  "id": "scene_1",
-  "name": "girl playing football",
-  "background": "park",
-  "entities": [
-    {{
-      "id": "girl_1",
-      "type": "character",
-      "position": {{ "x": 0, "y": 0 }}
-    }},
-    {{
-      "id": "ball_1",
-      "type": "object",
-      "position": {{ "x": 1, "y": 0 }}
-    }}
-  ],
-  "timeline": {{
-    "type": "sequence",
-    "children": [
-      {{
-        "type": "action",
-        "name": "run",
-        "params": {{}},
-        "entityId": "girl_1"
-      }},
-      {{
-        "type": "action",
-        "name": "kick",
-        "params": {{}},
-        "entityId": "girl_1"
+        Output:
+        {{
+          "id": "scene_1",
+          "name": "girl playing football",
+          "background": "park",
+          "entities": [
+          {{
+            "id": "girl_1",
+            "type": "character",
+            "position": {{ "x": 0, "y": 0 }}
+          }},
+          {{
+            "id": "ball_1",
+            "type": "object",
+            "position": {{ "x": 1, "y": 0 }}
+          }}
+        ],
+        "timeline": {{
+            "type": "sequence",
+            "children": [
+          {{
+            "type": "action",
+            "name": "run",
+            "params": {{}},
+            "entityId": "girl_1"
+          }},
+          {{
+           "type": "action",
+           "name": "kick",
+           "params": {{}},
+           "entityId": "girl_1"
+          }}
+        ]
       }}
-    ]
-  }}
-}}
+    }}
 
+    Important Note : Return ONLY the scene JSON. DO NOT include any explanations or extra text.
 
-INTENT:
-{state['intent']}
+    INTENT:
+    {state['intent']}
 
-PLAN:
-{state['plan']}
-"""
+    PLAN:
+    {state['plan']}
+    """
     response = llm.invoke(prompt)
 
     try:
@@ -438,8 +441,20 @@ workflow.add_edge("timeline_runner", END)
 
 app = workflow.compile()
 
-if __name__ == "__main__":
+app_api= FastAPI()
+app_api.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+class PromptRequest(BaseModel):
+    prompt: str
 
+@app_api.post("/generate_scene")
+def generate_scene_api(req: PromptRequest):
     result = app.invoke({
-        "prompt": "A girl playing football happily in park"
+        "prompt": req.prompt
     })
+    return result["final_scene"]

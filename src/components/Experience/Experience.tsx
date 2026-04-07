@@ -250,7 +250,7 @@ const Experience = () => {
 
     const handleGenerate = async () => {
         if (!prompt.trim() || status === "generating") return
-
+        console.log("generating",prompt)
         setStatus("generating")
         setStatusMessage("Generating scene...")
 
@@ -298,7 +298,7 @@ const Experience = () => {
             default: return "▶ Play"
         }
     }
-
+   
     const getStatusIcon = (): string => {
         switch (status) {
             case "generating": return "⏳"
