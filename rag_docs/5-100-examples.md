@@ -1,44 +1,37 @@
 # Comprehensive Scene Examples (1-100)
 
-When generating scenes, structure the JSON as shown in the examples. Note the usage of `parallel` nodes for simultaneous visual actions and `sequence` nodes for chronological flow. Also observe how `wait` is used as a buffer.
-
-## Reminders
-- Never use non-physical verbs like `inspect` or `think`.
-- To pick up an object, you MUST use `grab` and target a valid `isObject: true` ID.
-- To throw an object, it MUST currently be held by the `entityId` firing the `throw` action.
-- Add small `wait` steps between movement paths and other physical actions.
-
+Important patterns: parallel arrays for simultaneous effects, sequence arrays for chronological behavior, and explicit wait buffering.
 
 ## Example 1: A knight walks over and picks up a apple.
 ```json
 {
   "id": "scene_1",
-  "background": "forest",
+  "background": "desert",
   "entities": [
     {
       "id": "knight1",
       "position": {
-        "x": 302,
-        "y": 414
+        "x": 342,
+        "y": 459
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2/female",
-        "legs": "cuffed/thin"
+        "torso": "clothes/shortsleeve/shortsleeve/female",
+        "legs": "hose/thin"
       }
     },
     {
       "id": "apple1",
       "position": {
-        "x": 525,
-        "y": 422
+        "x": 563,
+        "y": 459
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "square",
-      "color": "#e9c46aff"
+      "shape": "cylinder",
+      "color": "#e63946ff"
     }
   ],
   "timeline": {
@@ -50,8 +43,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "entityId": "knight1",
         "params": {
           "destination": {
-            "x": 505,
-            "y": 422
+            "x": 543,
+            "y": 459
           }
         }
       },
@@ -69,52 +62,52 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 2: A hero throws a coin at a knight.
+## Example 2: A friend throws a coin at a knight.
 ```json
 {
   "id": "scene_2",
-  "background": "park",
+  "background": "forest",
   "entities": [
     {
-      "id": "hero1",
+      "id": "friend1",
       "position": {
-        "x": 277,
+        "x": 326,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/skeleton",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/female",
-        "legs": "shorts/short_shorts/thin",
-        "hair": "shorthawk/adult",
-        "facial": "glasses/shades/adult",
+        "head": "heads/goblin/adult",
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
+        "legs": "pants/thin",
+        "hair": "swoop/adult",
+        "facial": "glasses/nerd/adult",
         "weapon": "magic/wand/female"
       }
     },
     {
       "id": "knight1",
       "position": {
-        "x": 759,
+        "x": 809,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_vneck/female"
+        "torso": "clothes/shortsleeve/shortsleeve_polo/female"
       }
     },
     {
       "id": "coin1",
       "position": {
-        "x": 306,
+        "x": 326,
         "y": 450
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "star",
-      "color": "#4ecdc4ff"
+      "shape": "rectangle",
+      "color": "#ab83a1ff"
     }
   ],
   "timeline": {
@@ -123,7 +116,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "hero1",
+        "entityId": "friend1",
         "params": {
           "objectId": "coin1"
         }
@@ -138,7 +131,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "turnTowards",
-        "entityId": "hero1",
+        "entityId": "friend1",
         "params": {
           "targetId": "knight1"
         }
@@ -146,14 +139,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "throw",
-        "entityId": "hero1",
+        "entityId": "friend1",
         "params": {
           "objectId": "coin1",
           "target": {
             "x": 860,
             "y": 400
           },
-          "arcHeight": 58
+          "arcHeight": 46
         }
       },
       {
@@ -165,7 +158,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "x": 1,
             "y": 0
           },
-          "strength": 73
+          "strength": 69
         }
       }
     ]
@@ -177,7 +170,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_3",
-  "background": "city",
+  "background": "desert",
   "entities": [
     {
       "id": "guard1",
@@ -189,9 +182,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "armour/legion/male",
-        "legs": "leggings/male",
-        "hair": "flat_top_fade/adult",
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
+        "legs": "leggings2/male",
+        "hair": "unkempt/adult",
         "beards": "beard"
       }
     },
@@ -205,10 +198,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/sleeveless/sleeveless1/female",
-        "legs": "shorts/shorts/thin",
-        "hair": "plain/adult",
-        "feet": "shoes/revised/thin"
+        "torso": "clothes/sleeveless/sleeveless2/female",
+        "legs": "pants2/thin",
+        "hair": "flat_top_fade/adult",
+        "feet": "boots/rimmed/thin"
       }
     }
   ],
@@ -273,7 +266,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "emote",
             "entityId": "guard1",
             "params": {
-              "emote": "laugh",
+              "emote": "love",
               "duration": 2000
             }
           }
@@ -284,43 +277,43 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 4: An attack happens: king strikes rogue, who flees.
+## Example 4: An attack happens: orc_chief strikes peasant, who flees.
 ```json
 {
   "id": "scene_4",
   "soundtrack": "battle",
-  "background": "mountain",
+  "background": "desert",
   "entities": [
     {
-      "id": "king1",
+      "id": "orc_chief1",
       "position": {
         "x": 400,
-        "y": 380
+        "y": 350
       },
       "scale": 2.5,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/child",
-        "torso": "aprons/suspenders/female",
-        "legs": "formal_striped/thin",
-        "feet": "boots/basic/thin",
+        "torso": "armour/legion/female",
+        "legs": "hose/thin",
+        "feet": "shoes/basic/thin",
         "arms": "gloves/female"
       }
     },
     {
-      "id": "rogue1",
+      "id": "peasant1",
       "position": {
         "x": 620,
-        "y": 410
+        "y": 405
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve2/male",
-        "legs": "leggings/male",
-        "hair": "afro/adult",
-        "feet": "sandals/male"
+        "torso": "clothes/longsleeve/longsleeve2_cardigan/male",
+        "legs": "formal/male",
+        "hair": "unkempt/adult",
+        "feet": "boots/basic/male"
       }
     }
   ],
@@ -330,7 +323,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "move",
-        "entityId": "king1",
+        "entityId": "orc_chief1",
         "params": {
           "destination": {
             "x": 560,
@@ -341,9 +334,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "king1",
+        "entityId": "orc_chief1",
         "params": {
-          "targetId": "rogue1",
+          "targetId": "peasant1",
           "weapon": "punch"
         }
       },
@@ -353,7 +346,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "rogue1",
+            "entityId": "peasant1",
             "params": {
               "direction": {
                 "x": 1,
@@ -365,7 +358,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "rogue1",
+            "entityId": "peasant1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -376,9 +369,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "rogue1",
+        "entityId": "peasant1",
         "params": {
-          "targetId": "king1",
+          "targetId": "orc_chief1",
           "duration": 2000,
           "speed": 1.5
         }
@@ -388,15 +381,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 5: cleric casts a healing spell on the injured rogue.
+## Example 5: mage casts a healing spell on the injured rogue.
 ```json
 {
   "id": "scene_5",
   "soundtrack": "mystical",
-  "background": "desert",
+  "background": "mountain",
   "entities": [
     {
-      "id": "cleric1",
+      "id": "mage1",
       "position": {
         "x": 300,
         "y": 400
@@ -405,9 +398,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "formal_striped/thin",
-        "feet": "sandals/thin"
+        "torso": "clothes/longsleeve/longsleeve2/female",
+        "legs": "pantaloons/thin",
+        "feet": "boots/revised/thin"
       }
     },
     {
@@ -420,8 +413,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
-        "hair": "mop/adult"
+        "torso": "aprons/overalls/female",
+        "hair": "loose/adult"
       }
     }
   ],
@@ -431,10 +424,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "heal",
-        "entityId": "cleric1",
+        "entityId": "mage1",
         "params": {
           "targetId": "rogue1",
-          "amount": 48,
+          "amount": 59,
           "duration": 1500
         }
       },
@@ -474,15 +467,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 6: A rogue crawls to a location and falls asleep.
+## Example 6: A scout crawls to a location and falls asleep.
 ```json
 {
   "id": "scene_6",
   "soundtrack": "calm",
-  "background": "beach",
+  "background": "forest",
   "entities": [
     {
-      "id": "rogue1",
+      "id": "scout1",
       "position": {
         "x": 200,
         "y": 300
@@ -491,9 +484,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_polo/female",
-        "legs": "formal_striped/thin",
-        "feet": "slippers/thin"
+        "torso": "aprons/suspenders/female",
+        "legs": "cuffed/thin",
+        "feet": "shoes/ghillies/thin"
       }
     }
   ],
@@ -503,7 +496,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "rogue1",
+        "entityId": "scout1",
         "params": {
           "duration": 1000
         }
@@ -511,11 +504,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "rogue1",
+        "entityId": "scout1",
         "params": {
           "destination": {
-            "x": 493,
-            "y": 418
+            "x": 407,
+            "y": 396
           }
         }
       },
@@ -529,7 +522,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "sleep",
-        "entityId": "rogue1",
+        "entityId": "scout1",
         "params": {
           "duration": 5000
         }
@@ -555,12 +548,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/wolf/female",
-        "torso": "clothes/sleeveless/sleeveless1/female",
-        "legs": "pantaloons/thin",
-        "hair": "balding/adult",
-        "feet": "boots/fold/thin",
+        "torso": "clothes/sleeveless/sleeveless2_vneck/female",
+        "legs": "leggings/thin",
+        "hair": "bob/adult",
+        "feet": "shoes/basic/thin",
         "weapon": "magic/wand/female",
-        "neck": "tie/necktie/male"
+        "neck": "tie/necktie/female"
       }
     }
   ],
@@ -572,8 +565,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "jump",
         "entityId": "peasant1",
         "params": {
-          "height": 92,
-          "distance": 48
+          "height": 79,
+          "distance": 56
         }
       },
       {
@@ -593,7 +586,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "y": 450
           },
           "pointB": {
-            "x": 768,
+            "x": 750,
             "y": 450
           },
           "laps": 2,
@@ -619,12 +612,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "spawn",
         "params": {
           "entityId": "magic_obj",
-          "x": 544,
-          "y": 301,
+          "x": 503,
+          "y": 395,
           "scale": 0.5,
           "isObject": true,
-          "shape": "star",
-          "color": "#fd79a8ff"
+          "shape": "heart",
+          "color": "#00b894ff"
         }
       },
       {
@@ -642,7 +635,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "rotate",
             "entityId": "magic_obj",
             "params": {
-              "angle": 451,
+              "angle": 787,
               "duration": 2000
             }
           },
@@ -678,14 +671,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 9: king gives a potion to rogue.
+## Example 9: guard gives a potion to rogue.
 ```json
 {
   "id": "scene_9",
-  "background": "desert",
+  "background": "beach",
   "entities": [
     {
-      "id": "king1",
+      "id": "guard1",
       "position": {
         "x": 300,
         "y": 450
@@ -693,11 +686,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/lizard/male",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/male",
-        "legs": "hose/male",
-        "hair": "curly_short/adult",
-        "feet": "sandals/male"
+        "head": "heads/lizard/female",
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
+        "legs": "fur/male",
+        "hair": "twists_fade/adult",
+        "feet": "shoes/basic/male"
       }
     },
     {
@@ -710,9 +703,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "formal_striped/thin",
-        "feet": "boots/fold/thin"
+        "torso": "armour/plate/female",
+        "legs": "shorts/short_shorts/thin",
+        "feet": "boots/basic/thin"
       }
     },
     {
@@ -724,7 +717,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 0.4,
       "isObject": true,
       "shape": "capsule",
-      "color": "#264653ff"
+      "color": "#e9c46aff"
     }
   ],
   "timeline": {
@@ -733,7 +726,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "king1",
+        "entityId": "guard1",
         "params": {
           "objectId": "potion1"
         }
@@ -748,7 +741,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "give",
-        "entityId": "king1",
+        "entityId": "guard1",
         "params": {
           "objectId": "potion1",
           "targetId": "rogue1",
@@ -775,25 +768,25 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 10: mage wanders randomly and then speaks.
+## Example 10: rogue wanders randomly and then speaks.
 ```json
 {
   "id": "scene_10",
-  "background": "beach",
+  "background": "city",
   "entities": [
     {
-      "id": "mage1",
+      "id": "rogue1",
       "position": {
-        "x": 733,
-        "y": 397
+        "x": 515,
+        "y": 335
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "aprons/overalls/female",
+        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
         "legs": "pantaloons/thin",
-        "feet": "slippers/thin",
+        "feet": "shoes/revised/thin",
         "arms": "gloves/female"
       }
     }
@@ -804,7 +797,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "wander",
-        "entityId": "mage1",
+        "entityId": "rogue1",
         "params": {
           "area": {
             "x": 400,
@@ -825,17 +818,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "faceDirection",
-        "entityId": "mage1",
+        "entityId": "rogue1",
         "params": {
-          "direction": "LEFT"
+          "direction": "RIGHT"
         }
       },
       {
         "type": "action",
         "name": "speak",
-        "entityId": "mage1",
+        "entityId": "rogue1",
         "params": {
-          "text": "This place is strange.",
+          "text": "Time to rest.",
           "duration": 1500
         }
       }
@@ -844,15 +837,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 11: guard chases thief across the area.
+## Example 11: warrior chases goblin across the area.
 ```json
 {
   "id": "scene_11",
   "soundtrack": "battle",
-  "background": "beach",
+  "background": "city",
   "entities": [
     {
-      "id": "guard1",
+      "id": "warrior1",
       "position": {
         "x": 200,
         "y": 420
@@ -861,14 +854,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2/female",
-        "legs": "leggings2/thin",
-        "hair": "dreadlocks_short/adult",
+        "torso": "armour/plate/female",
+        "legs": "formal_striped/thin",
+        "hair": "longhawk/adult",
         "weapon": "magic/wand/female"
       }
     },
     {
-      "id": "thief1",
+      "id": "goblin1",
       "position": {
         "x": 500,
         "y": 420
@@ -877,10 +870,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve/female",
-        "legs": "leggings2/thin",
-        "hair": "shorthawk/adult",
-        "feet": "boots/fold/thin"
+        "torso": "aprons/suspenders/female",
+        "legs": "shorts/short_shorts/thin",
+        "hair": "twists_straight/adult",
+        "feet": "slippers/thin"
       }
     }
   ],
@@ -890,7 +883,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "guard1",
+        "entityId": "warrior1",
         "params": {
           "text": "Stop right there!",
           "duration": 1500
@@ -899,9 +892,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "follow",
-        "entityId": "guard1",
+        "entityId": "warrior1",
         "params": {
-          "targetId": "thief1",
+          "targetId": "goblin1",
           "duration": 2000,
           "speed": 1.8
         }
@@ -909,9 +902,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "thief1",
+        "entityId": "goblin1",
         "params": {
-          "targetId": "guard1",
+          "targetId": "warrior1",
           "duration": 2500,
           "speed": 2
         }
@@ -926,7 +919,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "guard1",
+        "entityId": "warrior1",
         "params": {
           "emote": "angry",
           "duration": 1500
@@ -937,7 +930,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 12: warrior and troll engage in a dramatic duel.
+## Example 12: knight and orc engage in a dramatic duel.
 ```json
 {
   "id": "scene_12",
@@ -945,7 +938,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "desert",
   "entities": [
     {
-      "id": "warrior1",
+      "id": "knight1",
       "position": {
         "x": 300,
         "y": 400
@@ -954,13 +947,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female",
-        "legs": "pants2/thin",
-        "feet": "shoes/basic/thin"
+        "torso": "clothes/shortsleeve/tshirt_scoop/female",
+        "legs": "formal_striped/thin",
+        "feet": "sandals/thin"
       }
     },
     {
-      "id": "troll1",
+      "id": "orc1",
       "position": {
         "x": 700,
         "y": 400
@@ -968,10 +961,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2.2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/goblin/adult",
-        "torso": "clothes/longsleeve/longsleeve2_vneck/female",
-        "legs": "shorts/shorts/thin",
-        "hair": "loose/adult",
+        "head": "heads/troll/adult",
+        "torso": "clothes/sleeveless/sleeveless2_vneck/female",
+        "legs": "shorts/short_shorts/thin",
+        "hair": "pixie/adult",
         "feet": "shoes/revised/thin"
       }
     }
@@ -985,7 +978,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "warrior1",
+            "entityId": "knight1",
             "params": {
               "destination": {
                 "x": 480,
@@ -996,7 +989,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "troll1",
+            "entityId": "orc1",
             "params": {
               "destination": {
                 "x": 550,
@@ -1009,9 +1002,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "warrior1",
+        "entityId": "knight1",
         "params": {
-          "targetId": "troll1",
+          "targetId": "orc1",
           "weapon": "punch"
         }
       },
@@ -1025,9 +1018,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "troll1",
+        "entityId": "orc1",
         "params": {
-          "targetId": "warrior1",
+          "targetId": "knight1",
           "weapon": "punch"
         }
       },
@@ -1037,7 +1030,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "warrior1",
+            "entityId": "knight1",
             "params": {
               "direction": {
                 "x": -1,
@@ -1049,7 +1042,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "troll1",
+            "entityId": "orc1",
             "params": {
               "direction": {
                 "x": 1,
@@ -1066,7 +1059,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "warrior1",
+            "entityId": "knight1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -1075,7 +1068,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "troll1",
+            "entityId": "orc1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -1088,15 +1081,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 13: friend, rogue, and guard have a dance party.
+## Example 13: hero, mage, and peasant have a dance party.
 ```json
 {
   "id": "scene_13",
   "soundtrack": "dance",
-  "background": "park",
+  "background": "beach",
   "entities": [
     {
-      "id": "friend1",
+      "id": "hero1",
       "position": {
         "x": 300,
         "y": 450
@@ -1105,14 +1098,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt/female",
-        "hair": "twists_fade/adult",
-        "feet": "boots/rimmed/thin",
+        "torso": "clothes/shortsleeve/tshirt_scoop/female",
+        "hair": "buzzcut/adult",
+        "feet": "slippers/thin",
         "arms": "gloves/female"
       }
     },
     {
-      "id": "rogue1",
+      "id": "mage1",
       "position": {
         "x": 500,
         "y": 450
@@ -1121,17 +1114,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/wolf/female",
-        "torso": "clothes/longsleeve/longsleeve2_vneck/male",
-        "legs": "pants2/male",
-        "hair": "longhawk/adult",
-        "hat": "magic/celestial/adult",
-        "facial": "monocle/left/adult",
-        "beards": "mustache",
+        "torso": "clothes/longsleeve/longsleeve2/male",
+        "legs": "pantaloons/male",
+        "hair": "twists_straight/adult",
+        "hat": "magic/wizard/buckle/adult",
+        "facial": "glasses/shades/adult",
+        "beards": "beard",
         "arms": "gloves/male"
       }
     },
     {
-      "id": "guard1",
+      "id": "peasant1",
       "position": {
         "x": 700,
         "y": 450
@@ -1140,9 +1133,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/female",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
-        "legs": "fur/thin",
-        "hair": "half_up/adult"
+        "torso": "aprons/overalls/female",
+        "legs": "shorts/short_shorts/thin",
+        "hair": "messy1/adult"
       }
     }
   ],
@@ -1155,7 +1148,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "speak",
-            "entityId": "friend1",
+            "entityId": "hero1",
             "params": {
               "text": "Let's dance!",
               "duration": 1500
@@ -1164,7 +1157,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "rogue1",
+            "entityId": "mage1",
             "params": {
               "emote": "love",
               "duration": 1500
@@ -1185,7 +1178,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "friend1",
+            "entityId": "hero1",
             "params": {
               "duration": 3000
             }
@@ -1193,7 +1186,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "rogue1",
+            "entityId": "mage1",
             "params": {
               "duration": 3000
             }
@@ -1201,7 +1194,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "guard1",
+            "entityId": "peasant1",
             "params": {
               "duration": 3000
             }
@@ -1213,14 +1206,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 14: rogue sneaks up and steals a gem from peasant.
+## Example 14: villain sneaks up and steals a key from mage.
 ```json
 {
   "id": "scene_14",
-  "background": "park",
+  "background": "city",
   "entities": [
     {
-      "id": "rogue1",
+      "id": "villain1",
       "position": {
         "x": 800,
         "y": 430
@@ -1229,16 +1222,16 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt/male",
-        "legs": "shorts/short_shorts/male",
-        "hair": "jewfro/adult",
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
+        "legs": "hose/male",
+        "hair": "curly_long/adult",
         "feet": "slippers/male",
-        "facial": "glasses/secretary/adult",
-        "neck": "tie/bowtie/adult"
+        "facial": "masks/plain",
+        "neck": "tie/bowtie2/adult"
       }
     },
     {
-      "id": "peasant1",
+      "id": "mage1",
       "position": {
         "x": 400,
         "y": 430
@@ -1247,21 +1240,21 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve/male",
-        "legs": "cuffed/male",
-        "feet": "shoes/revised/male"
+        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
+        "legs": "pantaloons/male",
+        "feet": "slippers/male"
       }
     },
     {
-      "id": "gem1",
+      "id": "key1",
       "position": {
         "x": 380,
         "y": 450
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "star",
-      "color": "#f4a261ff"
+      "shape": "rectangle",
+      "color": "#023e8aff"
     }
   ],
   "timeline": {
@@ -1270,7 +1263,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "rogue1",
+        "entityId": "villain1",
         "params": {
           "duration": 800
         }
@@ -1278,7 +1271,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "rogue1",
+        "entityId": "villain1",
         "params": {
           "destination": {
             "x": 420,
@@ -1289,9 +1282,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "rogue1",
+        "entityId": "villain1",
         "params": {
-          "objectId": "gem1",
+          "objectId": "key1",
           "attachmentPoint": "hand"
         }
       },
@@ -1305,9 +1298,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "rogue1",
+        "entityId": "villain1",
         "params": {
-          "targetId": "peasant1",
+          "targetId": "mage1",
           "duration": 2000,
           "speed": 2
         }
@@ -1315,7 +1308,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "peasant1",
+        "entityId": "mage1",
         "params": {
           "emote": "surprise",
           "duration": 1500
@@ -1331,7 +1324,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 {
   "id": "scene_15",
   "soundtrack": "calm",
-  "background": "mountain",
+  "background": "forest",
   "entities": [
     {
       "id": "friend1",
@@ -1343,8 +1336,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve2_vneck/male",
-        "legs": "pants/male",
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
+        "legs": "leggings/male",
         "feet": "boots/basic/male"
       }
     },
@@ -1358,10 +1351,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_vneck/male",
-        "hair": "shorthawk/adult",
-        "feet": "boots/rimmed/male",
-        "hat": "pirate/bandana/adult"
+        "torso": "clothes/shortsleeve/shortsleeve/male",
+        "hair": "long_messy/adult",
+        "feet": "sandals/male",
+        "hat": "pirate/tricorne/basic/adult"
       }
     },
     {
@@ -1373,11 +1366,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/lizard/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "formal_striped/thin",
-        "hair": "page/adult",
-        "feet": "shoes/basic/thin"
+        "head": "heads/lizard/male",
+        "torso": "clothes/sleeveless/sleeveless1/female",
+        "legs": "cuffed/thin",
+        "hair": "pigtails/adult",
+        "feet": "boots/fold/thin"
       }
     }
   ],
@@ -1466,7 +1459,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 16: rogue and friend race to the finish line.
+## Example 16: hero and friend race to the finish line.
 ```json
 {
   "id": "scene_16",
@@ -1474,7 +1467,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "park",
   "entities": [
     {
-      "id": "rogue1",
+      "id": "hero1",
       "position": {
         "x": 150,
         "y": 380
@@ -1483,10 +1476,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/lizard/female",
-        "torso": "clothes/shortsleeve/tshirt/male",
-        "legs": "leggings/male",
-        "hair": "jewfro/adult",
-        "feet": "boots/fold/male"
+        "torso": "aprons/suspenders/male",
+        "legs": "formal/male",
+        "hair": "curly_short/adult",
+        "feet": "slippers/male"
       }
     },
     {
@@ -1499,8 +1492,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_vneck/male",
-        "legs": "hose/male"
+        "torso": "clothes/shortsleeve/tshirt/male",
+        "legs": "leggings2/male"
       }
     }
   ],
@@ -1510,7 +1503,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "rogue1",
+        "entityId": "hero1",
         "params": {
           "text": "Ready... Go!",
           "duration": 1200
@@ -1529,7 +1522,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "rogue1",
+            "entityId": "hero1",
             "params": {
               "destination": {
                 "x": 850,
@@ -1555,7 +1548,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "rogue1",
+        "entityId": "hero1",
         "params": {
           "emote": "laugh",
           "duration": 1500
@@ -1575,14 +1568,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 17: mage juggles objects by picking up and throwing them.
+## Example 17: knight juggles objects by picking up and throwing them.
 ```json
 {
   "id": "scene_17",
-  "background": "desert",
+  "background": "mountain",
   "entities": [
     {
-      "id": "mage1",
+      "id": "knight1",
       "position": {
         "x": 500,
         "y": 420
@@ -1591,11 +1584,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "aprons/overalls/male",
-        "legs": "cuffed/male",
-        "hair": "curly_long/adult",
+        "torso": "clothes/sleeveless/sleeveless2_vneck/male",
+        "legs": "pants/male",
+        "hair": "mop/adult",
         "feet": "boots/fold/male",
-        "neck": "tie/necktie/female"
+        "neck": "tie/bowtie/adult"
       }
     },
     {
@@ -1606,8 +1599,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "heart",
-      "color": "#95e1d3ff"
+      "shape": "rectangle",
+      "color": "#f38181ff"
     },
     {
       "id": "ball_b",
@@ -1617,7 +1610,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "capsule",
+      "shape": "triangle",
       "color": "#457b9dff"
     }
   ],
@@ -1627,7 +1620,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "mage1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_a",
           "attachmentPoint": "hand"
@@ -1636,7 +1629,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "throw",
-        "entityId": "mage1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_a",
           "target": {
@@ -1656,7 +1649,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "mage1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_b",
           "attachmentPoint": "hand"
@@ -1665,7 +1658,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "throw",
-        "entityId": "mage1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_b",
           "target": {
@@ -1678,7 +1671,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "mage1",
+        "entityId": "knight1",
         "params": {
           "emote": "laugh",
           "duration": 1500
@@ -1689,15 +1682,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 18: villain ambushes guard from behind.
+## Example 18: goblin ambushes peasant from behind.
 ```json
 {
   "id": "scene_18",
   "soundtrack": "battle",
-  "background": "mountain",
+  "background": "forest",
   "entities": [
     {
-      "id": "villain1",
+      "id": "goblin1",
       "position": {
         "x": 800,
         "y": 400
@@ -1706,15 +1699,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/sleeveless/sleeveless1/female",
-        "legs": "shorts/shorts/thin",
-        "hair": "dreadlocks_long/adult",
-        "feet": "boots/revised/thin",
-        "facial": "glasses/glasses/adult"
+        "torso": "clothes/sleeveless/sleeveless2/female",
+        "legs": "pants2/thin",
+        "hair": "swoop/adult",
+        "feet": "boots/basic/thin",
+        "facial": "glasses/round/adult"
       }
     },
     {
-      "id": "guard1",
+      "id": "peasant1",
       "position": {
         "x": 400,
         "y": 400
@@ -1722,11 +1715,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/child",
-        "torso": "aprons/suspenders/male",
-        "legs": "pantaloons/male",
-        "hair": "twists_straight/adult",
-        "feet": "boots/revised/male"
+        "head": "heads/orc/female",
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
+        "legs": "shorts/shorts/male",
+        "hair": "bob/adult",
+        "feet": "shoes/ghillies/male"
       }
     }
   ],
@@ -1736,7 +1729,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "faceDirection",
-        "entityId": "guard1",
+        "entityId": "peasant1",
         "params": {
           "direction": "LEFT"
         }
@@ -1744,7 +1737,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "move",
-        "entityId": "villain1",
+        "entityId": "goblin1",
         "params": {
           "destination": {
             "x": 470,
@@ -1755,9 +1748,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "villain1",
+        "entityId": "goblin1",
         "params": {
-          "targetId": "guard1",
+          "targetId": "peasant1",
           "weapon": "punch"
         }
       },
@@ -1767,7 +1760,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "guard1",
+            "entityId": "peasant1",
             "params": {
               "direction": {
                 "x": -1,
@@ -1779,7 +1772,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "guard1",
+            "entityId": "peasant1",
             "params": {
               "emote": "surprise",
               "duration": 1500
@@ -1790,7 +1783,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "villain1",
+        "entityId": "goblin1",
         "params": {
           "text": "Surprise!",
           "duration": 1200
@@ -1801,7 +1794,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 19: warrior escorts cleric safely across the battlefield.
+## Example 19: knight escorts cleric safely across the battlefield.
 ```json
 {
   "id": "scene_19",
@@ -1809,7 +1802,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "park",
   "entities": [
     {
-      "id": "warrior1",
+      "id": "knight1",
       "position": {
         "x": 200,
         "y": 430
@@ -1818,7 +1811,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female"
+        "torso": "clothes/longsleeve/longsleeve2_vneck/female"
       }
     },
     {
@@ -1831,9 +1824,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "legs": "shorts/shorts/male",
-        "hair": "ponytail/adult/fg"
+        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
+        "legs": "leggings2/male",
+        "hair": "long/adult"
       }
     }
   ],
@@ -1843,7 +1836,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "warrior1",
+        "entityId": "knight1",
         "params": {
           "text": "Stay close.",
           "duration": 1500
@@ -1862,7 +1855,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "warrior1",
+            "entityId": "knight1",
             "params": {
               "destination": {
                 "x": 750,
@@ -1875,7 +1868,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "follow",
             "entityId": "cleric1",
             "params": {
-              "targetId": "warrior1",
+              "targetId": "knight1",
               "duration": 4000,
               "speed": 1
             }
@@ -1885,7 +1878,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "warrior1",
+        "entityId": "knight1",
         "params": {
           "text": "We're safe now.",
           "duration": 1500
@@ -1905,7 +1898,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 20: knight and guard rest around a campfire.
+## Example 20: knight and friend rest around a campfire.
 ```json
 {
   "id": "scene_20",
@@ -1921,15 +1914,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/male",
-        "torso": "clothes/sleeveless/sleeveless1/female",
-        "legs": "leggings2/thin",
-        "hair": "natural/adult",
-        "hat": "helmet/flattop/male"
+        "head": "heads/orc/child",
+        "torso": "aprons/overalls/female",
+        "legs": "hose/thin",
+        "hair": "pixie/adult",
+        "hat": "holiday/christmas/adult"
       }
     },
     {
-      "id": "guard1",
+      "id": "friend1",
       "position": {
         "x": 620,
         "y": 450
@@ -1938,8 +1931,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt_vneck/female",
-        "legs": "pantaloons/thin",
+        "torso": "clothes/longsleeve/longsleeve/female",
+        "legs": "leggings2/thin",
         "weapon": "magic/wand/female"
       }
     },
@@ -1951,8 +1944,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.6,
       "isObject": true,
-      "shape": "circle",
-      "color": "#d62828ff"
+      "shape": "star",
+      "color": "#fd79a8ff"
     }
   ],
   "timeline": {
@@ -1966,13 +1959,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "turnTowards",
             "entityId": "knight1",
             "params": {
-              "targetId": "guard1"
+              "targetId": "friend1"
             }
           },
           {
             "type": "action",
             "name": "turnTowards",
-            "entityId": "guard1",
+            "entityId": "friend1",
             "params": {
               "targetId": "knight1"
             }
@@ -1998,7 +1991,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "guard1",
+        "entityId": "friend1",
         "params": {
           "text": "Yeah, let's rest here.",
           "duration": 2000
@@ -2019,7 +2012,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "guard1",
+            "entityId": "friend1",
             "params": {
               "emote": "zzz",
               "duration": 2500
@@ -2041,27 +2034,27 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
     {
       "id": "knight1",
       "position": {
-        "x": 275,
-        "y": 409
+        "x": 297,
+        "y": 430
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
         "torso": "clothes/longsleeve/longsleeve2_vneck/female",
-        "legs": "formal_striped/thin"
+        "legs": "leggings/thin"
       }
     },
     {
       "id": "apple1",
       "position": {
-        "x": 448,
-        "y": 436
+        "x": 578,
+        "y": 465
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "circle",
-      "color": "#264653ff"
+      "shape": "square",
+      "color": "#023e8aff"
     }
   ],
   "timeline": {
@@ -2073,8 +2066,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "entityId": "knight1",
         "params": {
           "destination": {
-            "x": 428,
-            "y": 436
+            "x": 558,
+            "y": 465
           }
         }
       },
@@ -2092,53 +2085,53 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 22: A guard throws a bottle at a guard.
+## Example 22: A hero throws a bottle at a scout.
 ```json
 {
   "id": "scene_22",
-  "background": "mountain",
+  "background": "beach",
   "entities": [
     {
-      "id": "guard1",
+      "id": "hero1",
       "position": {
-        "x": 334,
+        "x": 347,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/sleeveless/sleeveless2/female",
-        "legs": "fur/thin",
-        "hair": "bob/adult"
+        "torso": "clothes/longsleeve/longsleeve/female",
+        "legs": "formal_striped/thin",
+        "hair": "long/adult"
       }
     },
     {
-      "id": "guard1",
+      "id": "scout1",
       "position": {
-        "x": 868,
+        "x": 800,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/wolf/male",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female",
-        "legs": "cuffed/thin",
-        "feet": "shoes/ghillies/thin",
+        "torso": "armour/legion/female",
+        "legs": "leggings2/thin",
+        "feet": "boots/basic/thin",
         "shield": "heater/original/pattern/chevron"
       }
     },
     {
       "id": "bottle1",
       "position": {
-        "x": 309,
+        "x": 237,
         "y": 450
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "triangle",
-      "color": "#d62828ff"
+      "shape": "rectangle",
+      "color": "#ffe66dff"
     }
   ],
   "timeline": {
@@ -2147,7 +2140,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "guard1",
+        "entityId": "hero1",
         "params": {
           "objectId": "bottle1"
         }
@@ -2162,34 +2155,34 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "turnTowards",
-        "entityId": "guard1",
+        "entityId": "hero1",
         "params": {
-          "targetId": "guard1"
+          "targetId": "scout1"
         }
       },
       {
         "type": "action",
         "name": "throw",
-        "entityId": "guard1",
+        "entityId": "hero1",
         "params": {
           "objectId": "bottle1",
           "target": {
             "x": 860,
             "y": 400
           },
-          "arcHeight": 56
+          "arcHeight": 51
         }
       },
       {
         "type": "action",
         "name": "knockBack",
-        "entityId": "guard1",
+        "entityId": "scout1",
         "params": {
           "direction": {
             "x": 1,
             "y": 0
           },
-          "strength": 40
+          "strength": 56
         }
       }
     ]
@@ -2201,7 +2194,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_23",
-  "background": "forest",
+  "background": "park",
   "entities": [
     {
       "id": "cleric1",
@@ -2213,9 +2206,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve/female",
-        "legs": "fur/thin",
-        "feet": "shoes/basic/thin"
+        "torso": "armour/plate/female",
+        "legs": "leggings2/thin",
+        "feet": "shoes/revised/thin"
       }
     },
     {
@@ -2228,10 +2221,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
-        "legs": "pants/male",
-        "hair": "plain/adult",
-        "feet": "sandals/male",
+        "torso": "clothes/longsleeve/longsleeve2_cardigan/male",
+        "legs": "shorts/short_shorts/male",
+        "hair": "twists_fade/adult",
+        "feet": "slippers/male",
         "arms": "gloves/male"
       }
     }
@@ -2297,7 +2290,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "emote",
             "entityId": "cleric1",
             "params": {
-              "emote": "exclaim",
+              "emote": "surprise",
               "duration": 2000
             }
           }
@@ -2308,42 +2301,42 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 24: An attack happens: orc_chief strikes scout, who flees.
+## Example 24: An attack happens: king strikes scout, who flees.
 ```json
 {
   "id": "scene_24",
   "soundtrack": "battle",
-  "background": "park",
+  "background": "mountain",
   "entities": [
     {
-      "id": "orc_chief1",
+      "id": "king1",
       "position": {
         "x": 400,
-        "y": 344
+        "y": 364
       },
       "scale": 2.5,
       "appearance": {
         "body": "bodies/male",
         "head": "heads/orc/male",
-        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
-        "legs": "leggings2/male",
-        "feet": "sandals/male"
+        "torso": "clothes/longsleeve/longsleeve2/male",
+        "legs": "formal/male",
+        "feet": "slippers/male"
       }
     },
     {
       "id": "scout1",
       "position": {
         "x": 620,
-        "y": 427
+        "y": 410
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/skeleton",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/female",
-        "legs": "pantaloons/thin",
-        "hair": "natural/adult",
-        "feet": "shoes/ghillies/thin"
+        "head": "heads/rabbit/adult",
+        "torso": "clothes/sleeveless/sleeveless2_vneck/female",
+        "legs": "fur/thin",
+        "hair": "messy1/adult",
+        "feet": "sandals/thin"
       }
     }
   ],
@@ -2353,7 +2346,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "move",
-        "entityId": "orc_chief1",
+        "entityId": "king1",
         "params": {
           "destination": {
             "x": 560,
@@ -2364,10 +2357,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "orc_chief1",
+        "entityId": "king1",
         "params": {
           "targetId": "scout1",
-          "weapon": "gun"
+          "weapon": "punch"
         }
       },
       {
@@ -2401,7 +2394,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "flee",
         "entityId": "scout1",
         "params": {
-          "targetId": "orc_chief1",
+          "targetId": "king1",
           "duration": 2000,
           "speed": 1.5
         }
@@ -2411,15 +2404,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 25: hero casts a healing spell on the injured knight.
+## Example 25: sage casts a healing spell on the injured knight.
 ```json
 {
   "id": "scene_25",
   "soundtrack": "mystical",
-  "background": "desert",
+  "background": "beach",
   "entities": [
     {
-      "id": "hero1",
+      "id": "sage1",
       "position": {
         "x": 300,
         "y": 400
@@ -2428,10 +2421,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "leggings2/thin",
-        "hair": "balding/adult",
-        "hat": "helmet/greathelm/female"
+        "torso": "clothes/sleeveless/sleeveless2/female",
+        "legs": "shorts/short_shorts/thin",
+        "hair": "bedhead/adult",
+        "hat": "helmet/barbuta/male"
       }
     },
     {
@@ -2443,10 +2436,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/alien/adult",
-        "torso": "clothes/sleeveless/sleeveless2_vneck/male",
+        "head": "heads/zombie/adult",
+        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
         "legs": "formal/male",
-        "hair": "loose/adult"
+        "hair": "balding/adult"
       }
     }
   ],
@@ -2456,10 +2449,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "heal",
-        "entityId": "hero1",
+        "entityId": "sage1",
         "params": {
           "targetId": "knight1",
-          "amount": 42,
+          "amount": 45,
           "duration": 1500
         }
       },
@@ -2515,11 +2508,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/child",
-        "torso": "aprons/overalls/female",
-        "legs": "pantaloons/thin",
-        "hair": "balding/adult",
-        "feet": "shoes/basic/thin"
+        "head": "heads/orc/female",
+        "torso": "clothes/longsleeve/longsleeve2_polo/female",
+        "legs": "pants2/thin",
+        "hair": "curly_long/adult",
+        "feet": "boots/basic/thin"
       }
     }
   ],
@@ -2540,8 +2533,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "entityId": "warrior1",
         "params": {
           "destination": {
-            "x": 481,
-            "y": 423
+            "x": 414,
+            "y": 443
           }
         }
       },
@@ -2565,14 +2558,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 27: scout patrols an area with physics active.
+## Example 27: soldier patrols an area with physics active.
 ```json
 {
   "id": "scene_27",
-  "background": "beach",
+  "background": "desert",
   "entities": [
     {
-      "id": "scout1",
+      "id": "soldier1",
       "position": {
         "x": 400,
         "y": 450
@@ -2581,11 +2574,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt_vneck/female",
-        "legs": "leggings/thin",
-        "hair": "ponytail/adult/fg",
-        "feet": "boots/fold/thin",
-        "hat": "formal/crown/adult"
+        "torso": "clothes/shortsleeve/tshirt/female",
+        "legs": "pantaloons/thin",
+        "hair": "high_and_tight/adult",
+        "feet": "boots/rimmed/thin",
+        "hat": "cloth/leather_cap/adult"
       }
     }
   ],
@@ -2595,10 +2588,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "jump",
-        "entityId": "scout1",
+        "entityId": "soldier1",
         "params": {
-          "height": 77,
-          "distance": 42
+          "height": 94,
+          "distance": 48
         }
       },
       {
@@ -2611,14 +2604,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "patrol",
-        "entityId": "scout1",
+        "entityId": "soldier1",
         "params": {
           "pointA": {
             "x": 400,
             "y": 450
           },
           "pointB": {
-            "x": 728,
+            "x": 756,
             "y": 450
           },
           "laps": 2,
@@ -2634,7 +2627,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_28",
-  "background": "desert",
+  "background": "forest",
   "entities": [],
   "timeline": {
     "type": "sequence",
@@ -2644,12 +2637,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "spawn",
         "params": {
           "entityId": "magic_obj",
-          "x": 725,
-          "y": 397,
+          "x": 647,
+          "y": 364,
           "scale": 0.5,
           "isObject": true,
-          "shape": "circle",
-          "color": "#e63946ff"
+          "shape": "capsule",
+          "color": "#c4e538ff"
         }
       },
       {
@@ -2667,7 +2660,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "rotate",
             "entityId": "magic_obj",
             "params": {
-              "angle": 389,
+              "angle": 923,
               "duration": 2000
             }
           },
@@ -2703,14 +2696,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 29: king gives a scroll to warrior.
+## Example 29: hero gives a scroll to friend.
 ```json
 {
   "id": "scene_29",
-  "background": "desert",
+  "background": "forest",
   "entities": [
     {
-      "id": "king1",
+      "id": "hero1",
       "position": {
         "x": 300,
         "y": 450
@@ -2719,15 +2712,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve/female",
-        "legs": "formal_striped/thin",
-        "hair": "pigtails/adult",
-        "feet": "slippers/thin",
+        "torso": "clothes/longsleeve/longsleeve2/female",
+        "legs": "pantaloons/thin",
+        "hair": "swoop/adult",
+        "feet": "shoes/ghillies/thin",
         "weapon": "magic/wand/female"
       }
     },
     {
-      "id": "warrior1",
+      "id": "friend1",
       "position": {
         "x": 700,
         "y": 450
@@ -2736,9 +2729,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "shorts/short_shorts/thin",
-        "hair": "high_and_tight/adult",
+        "torso": "clothes/sleeveless/sleeveless2_vneck/female",
+        "legs": "fur/thin",
+        "hair": "plain/adult",
         "feet": "shoes/ghillies/thin"
       }
     },
@@ -2750,8 +2743,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "square",
-      "color": "#2a9d8fff"
+      "shape": "rectangle",
+      "color": "#4ecdc4ff"
     }
   ],
   "timeline": {
@@ -2760,7 +2753,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "king1",
+        "entityId": "hero1",
         "params": {
           "objectId": "scroll1"
         }
@@ -2775,10 +2768,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "give",
-        "entityId": "king1",
+        "entityId": "hero1",
         "params": {
           "objectId": "scroll1",
-          "targetId": "warrior1",
+          "targetId": "friend1",
           "reachDistance": 80
         }
       },
@@ -2792,7 +2785,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "dance",
-        "entityId": "warrior1",
+        "entityId": "friend1",
         "params": {
           "duration": 2000
         }
@@ -2802,25 +2795,25 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 30: knight wanders randomly and then speaks.
+## Example 30: peasant wanders randomly and then speaks.
 ```json
 {
   "id": "scene_30",
-  "background": "beach",
+  "background": "forest",
   "entities": [
     {
-      "id": "knight1",
+      "id": "peasant1",
       "position": {
-        "x": 539,
-        "y": 333
+        "x": 641,
+        "y": 364
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "aprons/suspenders/female",
-        "hat": "helmet/pointed/adult",
-        "facial": "glasses/sunglasses/adult"
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/female",
+        "hat": "magic/wizard/buckle/adult",
+        "facial": "glasses/nerd/adult"
       }
     }
   ],
@@ -2830,7 +2823,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "wander",
-        "entityId": "knight1",
+        "entityId": "peasant1",
         "params": {
           "area": {
             "x": 400,
@@ -2851,17 +2844,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "faceDirection",
-        "entityId": "knight1",
+        "entityId": "peasant1",
         "params": {
-          "direction": "LEFT"
+          "direction": "RIGHT"
         }
       },
       {
         "type": "action",
         "name": "speak",
-        "entityId": "knight1",
+        "entityId": "peasant1",
         "params": {
-          "text": "I sense danger.",
+          "text": "This place is strange.",
           "duration": 1500
         }
       }
@@ -2870,15 +2863,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 31: warrior chases rogue across the area.
+## Example 31: guard chases thief across the area.
 ```json
 {
   "id": "scene_31",
   "soundtrack": "battle",
-  "background": "park",
+  "background": "forest",
   "entities": [
     {
-      "id": "warrior1",
+      "id": "guard1",
       "position": {
         "x": 200,
         "y": 420
@@ -2887,14 +2880,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
-        "legs": "leggings/male",
-        "hair": "flat_top_fade/adult",
+        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
+        "legs": "leggings2/male",
+        "hair": "unkempt/adult",
         "arms": "gloves/male"
       }
     },
     {
-      "id": "rogue1",
+      "id": "thief1",
       "position": {
         "x": 500,
         "y": 420
@@ -2903,8 +2896,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/wolf/male",
-        "torso": "clothes/shortsleeve/tshirt/male",
-        "legs": "hose/male"
+        "torso": "aprons/overalls/male",
+        "legs": "shorts/shorts/male"
       }
     }
   ],
@@ -2914,7 +2907,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "warrior1",
+        "entityId": "guard1",
         "params": {
           "text": "Stop right there!",
           "duration": 1500
@@ -2923,9 +2916,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "follow",
-        "entityId": "warrior1",
+        "entityId": "guard1",
         "params": {
-          "targetId": "rogue1",
+          "targetId": "thief1",
           "duration": 2000,
           "speed": 1.8
         }
@@ -2933,9 +2926,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "rogue1",
+        "entityId": "thief1",
         "params": {
-          "targetId": "warrior1",
+          "targetId": "guard1",
           "duration": 2500,
           "speed": 2
         }
@@ -2950,7 +2943,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "warrior1",
+        "entityId": "guard1",
         "params": {
           "emote": "angry",
           "duration": 1500
@@ -2961,7 +2954,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 32: warrior and troll engage in a dramatic duel.
+## Example 32: hero and villain engage in a dramatic duel.
 ```json
 {
   "id": "scene_32",
@@ -2969,7 +2962,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "desert",
   "entities": [
     {
-      "id": "warrior1",
+      "id": "hero1",
       "position": {
         "x": 300,
         "y": 400
@@ -2977,17 +2970,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2.2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/goblin/adult",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
-        "legs": "hose/thin",
-        "hair": "mop/adult",
-        "feet": "shoes/ghillies/thin",
-        "facial": "earrings/simple/right/adult",
+        "head": "heads/zombie/adult",
+        "torso": "clothes/longsleeve/longsleeve2/female",
+        "legs": "pants/thin",
+        "hair": "idol/adult",
+        "feet": "boots/revised/thin",
+        "facial": "glasses/sunglasses/adult",
         "arms": "gloves/female"
       }
     },
     {
-      "id": "troll1",
+      "id": "villain1",
       "position": {
         "x": 700,
         "y": 400
@@ -2995,11 +2988,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2.2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/vampire/adult",
-        "torso": "clothes/shortsleeve/tshirt_scoop/female",
-        "hair": "dreadlocks_short/adult",
-        "feet": "sandals/thin",
-        "hat": "holiday/christmas/adult",
+        "head": "heads/boarman/adult",
+        "torso": "clothes/longsleeve/longsleeve2_vneck/female",
+        "hair": "loose/adult",
+        "feet": "shoes/revised/thin",
+        "hat": "formal/crown/adult",
         "weapon": "magic/wand/female"
       }
     }
@@ -3013,7 +3006,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "warrior1",
+            "entityId": "hero1",
             "params": {
               "destination": {
                 "x": 480,
@@ -3024,7 +3017,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "troll1",
+            "entityId": "villain1",
             "params": {
               "destination": {
                 "x": 550,
@@ -3037,9 +3030,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "warrior1",
+        "entityId": "hero1",
         "params": {
-          "targetId": "troll1",
+          "targetId": "villain1",
           "weapon": "punch"
         }
       },
@@ -3053,9 +3046,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "troll1",
+        "entityId": "villain1",
         "params": {
-          "targetId": "warrior1",
+          "targetId": "hero1",
           "weapon": "punch"
         }
       },
@@ -3065,7 +3058,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "warrior1",
+            "entityId": "hero1",
             "params": {
               "direction": {
                 "x": -1,
@@ -3077,7 +3070,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "troll1",
+            "entityId": "villain1",
             "params": {
               "direction": {
                 "x": 1,
@@ -3094,7 +3087,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "warrior1",
+            "entityId": "hero1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -3103,7 +3096,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "troll1",
+            "entityId": "villain1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -3116,15 +3109,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 33: hero, mage, and rogue have a dance party.
+## Example 33: mage, peasant, and hero have a dance party.
 ```json
 {
   "id": "scene_33",
   "soundtrack": "dance",
-  "background": "park",
+  "background": "city",
   "entities": [
     {
-      "id": "hero1",
+      "id": "mage1",
       "position": {
         "x": 300,
         "y": 450
@@ -3133,14 +3126,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt/female",
-        "legs": "leggings2/thin",
-        "hair": "long_messy/adult",
-        "facial": "patches/eyepatch/right/adult"
+        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
+        "legs": "fur/thin",
+        "hair": "parted/adult",
+        "facial": "glasses/halfmoon/adult"
       }
     },
     {
-      "id": "mage1",
+      "id": "peasant1",
       "position": {
         "x": 500,
         "y": 450
@@ -3149,13 +3142,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "armour/plate/female",
-        "hair": "unkempt/adult",
-        "feet": "shoes/ghillies/thin"
+        "torso": "clothes/shortsleeve/tshirt_buttoned/female",
+        "hair": "idol/adult",
+        "feet": "shoes/revised/thin"
       }
     },
     {
-      "id": "rogue1",
+      "id": "hero1",
       "position": {
         "x": 700,
         "y": 450
@@ -3163,13 +3156,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/female",
+        "head": "heads/orc/child",
         "torso": "aprons/overalls/female",
-        "legs": "pantaloons/thin",
-        "hair": "afro/adult",
-        "feet": "shoes/revised/thin",
-        "facial": "patches/eyepatch/right/adult",
-        "shield": "heater/original/paint"
+        "legs": "pants/thin",
+        "hair": "flat_top_fade/adult",
+        "feet": "boots/basic/thin",
+        "facial": "monocle/right/adult",
+        "shield": "heater/revised/paint"
       }
     }
   ],
@@ -3182,7 +3175,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "speak",
-            "entityId": "hero1",
+            "entityId": "mage1",
             "params": {
               "text": "Let's dance!",
               "duration": 1500
@@ -3191,7 +3184,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "mage1",
+            "entityId": "peasant1",
             "params": {
               "emote": "love",
               "duration": 1500
@@ -3212,14 +3205,6 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "hero1",
-            "params": {
-              "duration": 3000
-            }
-          },
-          {
-            "type": "action",
-            "name": "dance",
             "entityId": "mage1",
             "params": {
               "duration": 3000
@@ -3228,7 +3213,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "rogue1",
+            "entityId": "peasant1",
+            "params": {
+              "duration": 3000
+            }
+          },
+          {
+            "type": "action",
+            "name": "dance",
+            "entityId": "hero1",
             "params": {
               "duration": 3000
             }
@@ -3240,14 +3233,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 34: thief sneaks up and steals a gem from hero.
+## Example 34: villain sneaks up and steals a gem from guard.
 ```json
 {
   "id": "scene_34",
-  "background": "forest",
+  "background": "desert",
   "entities": [
     {
-      "id": "thief1",
+      "id": "villain1",
       "position": {
         "x": 800,
         "y": 430
@@ -3255,16 +3248,16 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/lizard/male",
-        "torso": "aprons/overalls/female",
-        "legs": "leggings/thin",
-        "hair": "pixie/adult",
-        "shield": "heater/revised/trim",
+        "head": "heads/lizard/female",
+        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female",
+        "legs": "pantaloons/thin",
+        "hair": "dreadlocks_long/adult",
+        "shield": "heater/revised/pattern/chevron",
         "arms": "gloves/female"
       }
     },
     {
-      "id": "hero1",
+      "id": "guard1",
       "position": {
         "x": 400,
         "y": 430
@@ -3273,10 +3266,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "aprons/suspenders/female",
-        "legs": "formal_striped/thin",
-        "hair": "parted/adult",
-        "feet": "shoes/ghillies/thin"
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/female",
+        "legs": "formal/thin",
+        "hair": "balding/adult",
+        "feet": "slippers/thin"
       }
     },
     {
@@ -3288,7 +3281,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 0.4,
       "isObject": true,
       "shape": "square",
-      "color": "#457b9dff"
+      "color": "#95e1d3ff"
     }
   ],
   "timeline": {
@@ -3297,7 +3290,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "thief1",
+        "entityId": "villain1",
         "params": {
           "duration": 800
         }
@@ -3305,7 +3298,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "thief1",
+        "entityId": "villain1",
         "params": {
           "destination": {
             "x": 420,
@@ -3316,7 +3309,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "thief1",
+        "entityId": "villain1",
         "params": {
           "objectId": "gem1",
           "attachmentPoint": "hand"
@@ -3332,9 +3325,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "thief1",
+        "entityId": "villain1",
         "params": {
-          "targetId": "hero1",
+          "targetId": "guard1",
           "duration": 2000,
           "speed": 2
         }
@@ -3342,7 +3335,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "hero1",
+        "entityId": "guard1",
         "params": {
           "emote": "surprise",
           "duration": 1500
@@ -3370,10 +3363,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
-        "legs": "leggings2/male",
-        "hair": "bangs/adult",
-        "feet": "slippers/male"
+        "torso": "clothes/longsleeve/longsleeve/male",
+        "legs": "cuffed/male",
+        "hair": "long/adult",
+        "feet": "shoes/ghillies/male"
       }
     },
     {
@@ -3386,11 +3379,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
-        "hair": "messy1/adult",
-        "feet": "shoes/basic/male",
-        "weapon": "magic/wand/female",
-        "neck": "tie/necktie/male"
+        "torso": "clothes/shortsleeve/tshirt_vneck/male",
+        "hair": "jewfro/adult",
+        "feet": "boots/basic/male",
+        "weapon": "magic/wand/male",
+        "neck": "tie/bowtie2/adult"
       }
     },
     {
@@ -3403,8 +3396,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/lizard/male",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/male",
-        "hair": "flat_top_fade/adult"
+        "torso": "clothes/shortsleeve/shortsleeve/male",
+        "hair": "pigtails/adult"
       }
     }
   ],
@@ -3498,7 +3491,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 {
   "id": "scene_36",
   "soundtrack": "dance",
-  "background": "park",
+  "background": "desert",
   "entities": [
     {
       "id": "rogue1",
@@ -3510,9 +3503,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/wolf/female",
-        "torso": "clothes/longsleeve/longsleeve2_polo/male",
-        "legs": "fur/male",
-        "feet": "boots/rimmed/male"
+        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
+        "legs": "pantaloons/male",
+        "feet": "shoes/revised/male"
       }
     },
     {
@@ -3525,8 +3518,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/child",
-        "torso": "aprons/overalls/female",
-        "legs": "cuffed/thin"
+        "torso": "armour/legion/female",
+        "legs": "shorts/short_shorts/thin"
       }
     }
   ],
@@ -3601,14 +3594,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 37: hero juggles objects by picking up and throwing them.
+## Example 37: knight juggles objects by picking up and throwing them.
 ```json
 {
   "id": "scene_37",
-  "background": "forest",
+  "background": "park",
   "entities": [
     {
-      "id": "hero1",
+      "id": "knight1",
       "position": {
         "x": 500,
         "y": 420
@@ -3616,9 +3609,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/mouse/adult",
-        "torso": "clothes/shortsleeve/shortsleeve/female",
-        "feet": "shoes/basic/thin"
+        "head": "heads/goblin/adult",
+        "torso": "clothes/sleeveless/sleeveless1/female",
+        "feet": "boots/fold/thin"
       }
     },
     {
@@ -3630,7 +3623,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 0.4,
       "isObject": true,
       "shape": "capsule",
-      "color": "#95e1d3ff"
+      "color": "#2a9d8fff"
     },
     {
       "id": "ball_b",
@@ -3641,7 +3634,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 0.4,
       "isObject": true,
       "shape": "capsule",
-      "color": "#e9c46aff"
+      "color": "#4ecdc4ff"
     }
   ],
   "timeline": {
@@ -3650,7 +3643,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "hero1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_a",
           "attachmentPoint": "hand"
@@ -3659,7 +3652,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "throw",
-        "entityId": "hero1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_a",
           "target": {
@@ -3679,7 +3672,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "hero1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_b",
           "attachmentPoint": "hand"
@@ -3688,7 +3681,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "throw",
-        "entityId": "hero1",
+        "entityId": "knight1",
         "params": {
           "objectId": "ball_b",
           "target": {
@@ -3701,7 +3694,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "hero1",
+        "entityId": "knight1",
         "params": {
           "emote": "laugh",
           "duration": 1500
@@ -3712,15 +3705,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 38: villain ambushes hero from behind.
+## Example 38: orc ambushes hero from behind.
 ```json
 {
   "id": "scene_38",
   "soundtrack": "battle",
-  "background": "desert",
+  "background": "mountain",
   "entities": [
     {
-      "id": "villain1",
+      "id": "orc1",
       "position": {
         "x": 800,
         "y": 400
@@ -3728,11 +3721,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/lizard/female",
-        "torso": "armour/plate/male",
-        "legs": "formal_striped/male",
-        "hair": "mop/adult",
-        "feet": "shoes/basic/male"
+        "head": "heads/lizard/male",
+        "torso": "clothes/longsleeve/longsleeve/male",
+        "legs": "pants2/male",
+        "hair": "page/adult",
+        "feet": "shoes/revised/male"
       }
     },
     {
@@ -3745,9 +3738,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/female",
-        "torso": "aprons/suspenders/female",
-        "hair": "parted/adult",
-        "feet": "slippers/thin"
+        "torso": "clothes/sleeveless/sleeveless2/female",
+        "hair": "flat_top_fade/adult",
+        "feet": "shoes/basic/thin"
       }
     }
   ],
@@ -3765,7 +3758,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "move",
-        "entityId": "villain1",
+        "entityId": "orc1",
         "params": {
           "destination": {
             "x": 470,
@@ -3776,7 +3769,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "villain1",
+        "entityId": "orc1",
         "params": {
           "targetId": "hero1",
           "weapon": "punch"
@@ -3811,7 +3804,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "villain1",
+        "entityId": "orc1",
         "params": {
           "text": "Surprise!",
           "duration": 1200
@@ -3822,15 +3815,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 39: guard escorts hero safely across the battlefield.
+## Example 39: knight escorts king safely across the battlefield.
 ```json
 {
   "id": "scene_39",
   "soundtrack": "calm",
-  "background": "city",
+  "background": "desert",
   "entities": [
     {
-      "id": "guard1",
+      "id": "knight1",
       "position": {
         "x": 200,
         "y": 430
@@ -3839,14 +3832,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "legs": "cuffed/male",
-        "hair": "shorthawk/adult",
-        "feet": "shoes/revised/male"
+        "torso": "clothes/longsleeve/longsleeve2_cardigan/male",
+        "legs": "formal_striped/male",
+        "hair": "pigtails/adult",
+        "feet": "boots/fold/male"
       }
     },
     {
-      "id": "hero1",
+      "id": "king1",
       "position": {
         "x": 250,
         "y": 430
@@ -3854,11 +3847,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 1.8,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/male",
-        "torso": "clothes/longsleeve/scoop/female",
-        "legs": "leggings2/thin",
-        "hair": "curly_long/adult",
-        "feet": "shoes/revised/thin"
+        "head": "heads/orc/child",
+        "torso": "armour/plate/female",
+        "legs": "fur/thin",
+        "hair": "loose/adult",
+        "feet": "boots/basic/thin"
       }
     }
   ],
@@ -3868,7 +3861,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "guard1",
+        "entityId": "knight1",
         "params": {
           "text": "Stay close.",
           "duration": 1500
@@ -3887,7 +3880,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "guard1",
+            "entityId": "knight1",
             "params": {
               "destination": {
                 "x": 750,
@@ -3898,9 +3891,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "follow",
-            "entityId": "hero1",
+            "entityId": "king1",
             "params": {
-              "targetId": "guard1",
+              "targetId": "knight1",
               "duration": 4000,
               "speed": 1
             }
@@ -3910,7 +3903,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "guard1",
+        "entityId": "knight1",
         "params": {
           "text": "We're safe now.",
           "duration": 1500
@@ -3919,7 +3912,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "hero1",
+        "entityId": "king1",
         "params": {
           "emote": "love",
           "duration": 1500
@@ -3930,12 +3923,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 40: hero and friend rest around a campfire.
+## Example 40: hero and rogue rest around a campfire.
 ```json
 {
   "id": "scene_40",
   "soundtrack": "calm",
-  "background": "mountain",
+  "background": "forest",
   "entities": [
     {
       "id": "hero1",
@@ -3947,15 +3940,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
-        "legs": "fur/male",
-        "hair": "page/adult",
-        "feet": "boots/basic/male",
-        "shield": "heater/revised/pattern/cross"
+        "torso": "clothes/shortsleeve/tshirt_vneck/male",
+        "legs": "pants/male",
+        "hair": "shorthawk/adult",
+        "feet": "boots/fold/male",
+        "shield": "heater/original/trim"
       }
     },
     {
-      "id": "friend1",
+      "id": "rogue1",
       "position": {
         "x": 620,
         "y": 450
@@ -3963,12 +3956,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/male",
-        "torso": "clothes/longsleeve/longsleeve/male",
-        "legs": "formal_striped/male",
-        "hair": "half_up/adult",
-        "feet": "boots/fold/male",
-        "facial": "glasses/glasses/adult"
+        "head": "heads/orc/child",
+        "torso": "aprons/overalls/male",
+        "legs": "pants/male",
+        "hair": "high_and_tight/adult",
+        "feet": "slippers/male",
+        "facial": "glasses/sunglasses/adult"
       }
     },
     {
@@ -3979,8 +3972,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.6,
       "isObject": true,
-      "shape": "square",
-      "color": "#00b894ff"
+      "shape": "heart",
+      "color": "#264653ff"
     }
   ],
   "timeline": {
@@ -3994,13 +3987,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "turnTowards",
             "entityId": "hero1",
             "params": {
-              "targetId": "friend1"
+              "targetId": "rogue1"
             }
           },
           {
             "type": "action",
             "name": "turnTowards",
-            "entityId": "friend1",
+            "entityId": "rogue1",
             "params": {
               "targetId": "hero1"
             }
@@ -4026,7 +4019,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "friend1",
+        "entityId": "rogue1",
         "params": {
           "text": "Yeah, let's rest here.",
           "duration": 2000
@@ -4047,7 +4040,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "friend1",
+            "entityId": "rogue1",
             "params": {
               "emote": "zzz",
               "duration": 2500
@@ -4064,33 +4057,33 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_41",
-  "background": "beach",
+  "background": "forest",
   "entities": [
     {
       "id": "knight1",
       "position": {
-        "x": 344,
-        "y": 443
+        "x": 178,
+        "y": 433
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/sheep/adult",
-        "torso": "clothes/shortsleeve/tshirt_vneck/female",
-        "legs": "pantaloons/thin",
-        "hair": "pigtails/adult"
+        "head": "heads/mouse/adult",
+        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
+        "legs": "leggings2/thin",
+        "hair": "mop/adult"
       }
     },
     {
       "id": "apple1",
       "position": {
-        "x": 593,
-        "y": 463
+        "x": 353,
+        "y": 438
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "cylinder",
-      "color": "#fd79a8ff"
+      "shape": "square",
+      "color": "#aa96daff"
     }
   ],
   "timeline": {
@@ -4102,8 +4095,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "entityId": "knight1",
         "params": {
           "destination": {
-            "x": 573,
-            "y": 463
+            "x": 333,
+            "y": 438
           }
         }
       },
@@ -4121,51 +4114,51 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 42: A rogue throws a key at a villain.
+## Example 42: A mage throws a key at a knight.
 ```json
 {
   "id": "scene_42",
   "background": "city",
   "entities": [
     {
-      "id": "rogue1",
+      "id": "mage1",
       "position": {
-        "x": 260,
+        "x": 310,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "legs": "shorts/short_shorts/male"
+        "torso": "clothes/shortsleeve/tshirt/male",
+        "legs": "leggings2/male"
       }
     },
     {
-      "id": "villain1",
+      "id": "knight1",
       "position": {
-        "x": 907,
+        "x": 819,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/male",
-        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
-        "hair": "buzzcut/adult",
-        "feet": "shoes/revised/thin"
+        "head": "heads/orc/child",
+        "torso": "clothes/sleeveless/sleeveless1/female",
+        "hair": "ponytail/adult/fg",
+        "feet": "boots/revised/thin"
       }
     },
     {
       "id": "key1",
       "position": {
-        "x": 359,
+        "x": 302,
         "y": 450
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "cylinder",
-      "color": "#f4a261ff"
+      "shape": "heart",
+      "color": "#e9c46aff"
     }
   ],
   "timeline": {
@@ -4174,7 +4167,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "rogue1",
+        "entityId": "mage1",
         "params": {
           "objectId": "key1"
         }
@@ -4189,39 +4182,38 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "turnTowards",
-        "entityId": "rogue1",
+        "entityId": "mage1",
         "params": {
-          "targetId": "villain1"
+          "targetId": "knight1"
         }
       },
       {
         "type": "action",
         "name": "throw",
-        "entityId": "rogue1",
+        "entityId": "mage1",
         "params": {
           "objectId": "key1",
           "target": {
             "x": 860,
             "y": 400
           },
-          "arcHeight": 54
+          "arcHeight": 56
         }
       },
       {
         "type": "action",
         "name": "knockBack",
-        "entityId": "villain1",
+        "entityId": "knight1",
         "params": {
           "direction": {
             "x": 1,
             "y": 0
           },
-          "strength": 53
+          "strength": 62
         }
       }
     ]
-  },
-  "soundtrack": "dance"
+  }
 }
 ```
 
@@ -4229,7 +4221,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_43",
-  "background": "city",
+  "background": "beach",
   "entities": [
     {
       "id": "knight1",
@@ -4241,11 +4233,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/skeleton",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/male",
-        "legs": "pants/male",
-        "hair": "ponytail/adult/fg",
-        "feet": "boots/fold/male",
-        "facial": "glasses/nerd/adult",
+        "torso": "clothes/sleeveless/sleeveless1/male",
+        "legs": "leggings/male",
+        "hair": "mop/adult",
+        "feet": "shoes/basic/male",
+        "facial": "glasses/shades/adult",
         "arms": "gloves/male"
       }
     },
@@ -4259,9 +4251,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/shortsleeve/male",
-        "legs": "pants/male",
-        "hair": "flat_top_fade/adult",
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
+        "legs": "pantaloons/male",
+        "hair": "swoop/adult",
         "weapon": "magic/wand/female",
         "arms": "gloves/male"
       }
@@ -4328,7 +4320,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "emote",
             "entityId": "knight1",
             "params": {
-              "emote": "love",
+              "emote": "surprise",
               "duration": 2000
             }
           }
@@ -4339,44 +4331,44 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 44: An attack happens: knight strikes rogue, who flees.
+## Example 44: An attack happens: knight strikes mage, who flees.
 ```json
 {
   "id": "scene_44",
   "soundtrack": "battle",
-  "background": "park",
+  "background": "desert",
   "entities": [
     {
       "id": "knight1",
       "position": {
         "x": 400,
-        "y": 363
+        "y": 354
       },
       "scale": 2.5,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2/female",
-        "legs": "leggings/thin",
-        "hair": "dreadlocks_long/adult",
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
+        "legs": "shorts/short_shorts/thin",
+        "hair": "longhawk/adult",
         "feet": "boots/fold/thin",
         "weapon": "magic/wand/female",
         "arms": "gloves/female"
       }
     },
     {
-      "id": "rogue1",
+      "id": "mage1",
       "position": {
         "x": 620,
-        "y": 397
+        "y": 440
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2/female",
-        "legs": "leggings2/thin",
-        "hair": "dreadlocks_long/adult"
+        "torso": "clothes/sleeveless/sleeveless1/female",
+        "legs": "formal_striped/thin",
+        "hair": "jewfro/adult"
       }
     }
   ],
@@ -4399,8 +4391,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "attack",
         "entityId": "knight1",
         "params": {
-          "targetId": "rogue1",
-          "weapon": "punch"
+          "targetId": "mage1",
+          "weapon": "gun"
         }
       },
       {
@@ -4409,7 +4401,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "rogue1",
+            "entityId": "mage1",
             "params": {
               "direction": {
                 "x": 1,
@@ -4421,7 +4413,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "rogue1",
+            "entityId": "mage1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -4432,7 +4424,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "rogue1",
+        "entityId": "mage1",
         "params": {
           "targetId": "knight1",
           "duration": 2000,
@@ -4444,15 +4436,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 45: sage casts a healing spell on the injured warrior.
+## Example 45: hero casts a healing spell on the injured rogue.
 ```json
 {
   "id": "scene_45",
   "soundtrack": "mystical",
-  "background": "mountain",
+  "background": "city",
   "entities": [
     {
-      "id": "sage1",
+      "id": "hero1",
       "position": {
         "x": 300,
         "y": 400
@@ -4461,13 +4453,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_polo/female",
-        "legs": "hose/thin",
-        "feet": "boots/fold/thin"
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
+        "legs": "formal/thin",
+        "feet": "shoes/ghillies/thin"
       }
     },
     {
-      "id": "warrior1",
+      "id": "rogue1",
       "position": {
         "x": 520,
         "y": 400
@@ -4476,10 +4468,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "armour/plate/female",
-        "legs": "cuffed/thin",
-        "hair": "natural/adult",
-        "feet": "shoes/basic/thin"
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/female",
+        "legs": "pants2/thin",
+        "hair": "idol/adult",
+        "feet": "shoes/revised/thin"
       }
     }
   ],
@@ -4489,10 +4481,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "heal",
-        "entityId": "sage1",
+        "entityId": "hero1",
         "params": {
-          "targetId": "warrior1",
-          "amount": 53,
+          "targetId": "rogue1",
+          "amount": 66,
           "duration": 1500
         }
       },
@@ -4509,7 +4501,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "warrior1",
+            "entityId": "rogue1",
             "params": {
               "emote": "love",
               "duration": 1500
@@ -4518,7 +4510,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "oscillate",
-            "entityId": "warrior1",
+            "entityId": "rogue1",
             "params": {
               "amplitude": 5,
               "frequency": 10,
@@ -4532,15 +4524,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 46: A friend crawls to a location and falls asleep.
+## Example 46: A warrior crawls to a location and falls asleep.
 ```json
 {
   "id": "scene_46",
   "soundtrack": "calm",
-  "background": "mountain",
+  "background": "park",
   "entities": [
     {
-      "id": "friend1",
+      "id": "warrior1",
       "position": {
         "x": 200,
         "y": 300
@@ -4549,7 +4541,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female"
+        "torso": "clothes/shortsleeve/tshirt/female"
       }
     }
   ],
@@ -4559,7 +4551,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "friend1",
+        "entityId": "warrior1",
         "params": {
           "duration": 1000
         }
@@ -4567,11 +4559,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "friend1",
+        "entityId": "warrior1",
         "params": {
           "destination": {
-            "x": 481,
-            "y": 382
+            "x": 401,
+            "y": 427
           }
         }
       },
@@ -4585,7 +4577,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "sleep",
-        "entityId": "friend1",
+        "entityId": "warrior1",
         "params": {
           "duration": 5000
         }
@@ -4595,14 +4587,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 47: soldier patrols an area with physics active.
+## Example 47: peasant patrols an area with physics active.
 ```json
 {
   "id": "scene_47",
   "background": "city",
   "entities": [
     {
-      "id": "soldier1",
+      "id": "peasant1",
       "position": {
         "x": 400,
         "y": 450
@@ -4611,10 +4603,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "armour/legion/male",
-        "legs": "leggings/male",
-        "hair": "flat_top_fade/adult",
-        "feet": "boots/basic/male"
+        "torso": "clothes/shortsleeve/tshirt/male",
+        "legs": "formal_striped/male",
+        "hair": "loose/adult",
+        "feet": "boots/revised/male"
       }
     }
   ],
@@ -4624,10 +4616,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "jump",
-        "entityId": "soldier1",
+        "entityId": "peasant1",
         "params": {
-          "height": 59,
-          "distance": 55
+          "height": 67,
+          "distance": 64
         }
       },
       {
@@ -4640,14 +4632,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "patrol",
-        "entityId": "soldier1",
+        "entityId": "peasant1",
         "params": {
           "pointA": {
             "x": 400,
             "y": 450
           },
           "pointB": {
-            "x": 671,
+            "x": 746,
             "y": 450
           },
           "laps": 2,
@@ -4673,12 +4665,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "spawn",
         "params": {
           "entityId": "magic_obj",
-          "x": 589,
-          "y": 376,
+          "x": 745,
+          "y": 338,
           "scale": 0.5,
           "isObject": true,
-          "shape": "rectangle",
-          "color": "#00b894ff"
+          "shape": "triangle",
+          "color": "#6a0572ff"
         }
       },
       {
@@ -4696,7 +4688,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "rotate",
             "entityId": "magic_obj",
             "params": {
-              "angle": 563,
+              "angle": 375,
               "duration": 2000
             }
           },
@@ -4732,14 +4724,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 49: hero gives a sword to peasant.
+## Example 49: mage gives a sword to rogue.
 ```json
 {
   "id": "scene_49",
-  "background": "mountain",
+  "background": "beach",
   "entities": [
     {
-      "id": "hero1",
+      "id": "mage1",
       "position": {
         "x": 300,
         "y": 450
@@ -4748,15 +4740,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
-        "legs": "formal/male",
-        "hair": "shorthawk/adult",
-        "facial": "glasses/halfmoon/adult",
-        "shield": "heater/revised/paint"
+        "torso": "clothes/sleeveless/sleeveless2/male",
+        "legs": "leggings2/male",
+        "hair": "parted/adult",
+        "facial": "glasses/nerd/adult",
+        "shield": "heater/revised/pattern/chevron"
       }
     },
     {
-      "id": "peasant1",
+      "id": "rogue1",
       "position": {
         "x": 700,
         "y": 450
@@ -4765,9 +4757,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve2_polo/male",
-        "legs": "cuffed/male",
-        "feet": "shoes/revised/male"
+        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
+        "legs": "shorts/shorts/male",
+        "feet": "boots/rimmed/male"
       }
     },
     {
@@ -4778,8 +4770,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "capsule",
-      "color": "#aa96daff"
+      "shape": "square",
+      "color": "#4ecdc4ff"
     }
   ],
   "timeline": {
@@ -4788,7 +4780,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "hero1",
+        "entityId": "mage1",
         "params": {
           "objectId": "sword1"
         }
@@ -4803,10 +4795,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "give",
-        "entityId": "hero1",
+        "entityId": "mage1",
         "params": {
           "objectId": "sword1",
-          "targetId": "peasant1",
+          "targetId": "rogue1",
           "reachDistance": 80
         }
       },
@@ -4820,7 +4812,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "dance",
-        "entityId": "peasant1",
+        "entityId": "rogue1",
         "params": {
           "duration": 2000
         }
@@ -4834,22 +4826,22 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_50",
-  "background": "beach",
+  "background": "park",
   "entities": [
     {
       "id": "rogue1",
       "position": {
-        "x": 636,
-        "y": 362
+        "x": 625,
+        "y": 329
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt/male",
-        "legs": "cuffed/male",
-        "hair": "curly_short/adult",
-        "feet": "shoes/basic/male"
+        "torso": "clothes/shortsleeve/tshirt_scoop/male",
+        "legs": "fur/male",
+        "hair": "curtains/adult",
+        "feet": "boots/revised/male"
       }
     }
   ],
@@ -4882,7 +4874,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "faceDirection",
         "entityId": "rogue1",
         "params": {
-          "direction": "DOWN"
+          "direction": "RIGHT"
         }
       },
       {
@@ -4899,7 +4891,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 51: knight chases villain across the area.
+## Example 51: knight chases thief across the area.
 ```json
 {
   "id": "scene_51",
@@ -4916,14 +4908,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/scoop/female",
-        "legs": "shorts/short_shorts/thin",
-        "feet": "boots/revised/thin",
+        "torso": "armour/plate/female",
+        "legs": "formal/thin",
+        "feet": "shoes/ghillies/thin",
         "weapon": "magic/wand/female"
       }
     },
     {
-      "id": "villain1",
+      "id": "thief1",
       "position": {
         "x": 500,
         "y": 420
@@ -4932,10 +4924,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "leggings/thin",
-        "hair": "messy1/adult",
-        "feet": "shoes/ghillies/thin"
+        "torso": "clothes/sleeveless/sleeveless2_vneck/female",
+        "legs": "pantaloons/thin",
+        "hair": "bedhead/adult",
+        "feet": "shoes/revised/thin"
       }
     }
   ],
@@ -4956,7 +4948,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "follow",
         "entityId": "knight1",
         "params": {
-          "targetId": "villain1",
+          "targetId": "thief1",
           "duration": 2000,
           "speed": 1.8
         }
@@ -4964,7 +4956,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "villain1",
+        "entityId": "thief1",
         "params": {
           "targetId": "knight1",
           "duration": 2500,
@@ -4992,7 +4984,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 52: knight and orc engage in a dramatic duel.
+## Example 52: hero and villain engage in a dramatic duel.
 ```json
 {
   "id": "scene_52",
@@ -5000,7 +4992,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "forest",
   "entities": [
     {
-      "id": "knight1",
+      "id": "hero1",
       "position": {
         "x": 300,
         "y": 400
@@ -5008,17 +5000,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2.2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/female",
-        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
-        "legs": "hose/thin",
-        "hair": "page/adult",
-        "feet": "boots/rimmed/thin",
-        "hat": "pirate/tricorne/basic/adult",
-        "neck": "tie/necktie/female"
+        "head": "heads/orc/male",
+        "torso": "clothes/longsleeve/longsleeve2_cardigan/female",
+        "legs": "pants/thin",
+        "hair": "pigtails/adult",
+        "feet": "shoes/revised/thin",
+        "hat": "cloth/leather_cap/adult",
+        "neck": "tie/necktie/male"
       }
     },
     {
-      "id": "orc1",
+      "id": "villain1",
       "position": {
         "x": 700,
         "y": 400
@@ -5027,10 +5019,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve/male",
-        "legs": "leggings2/male",
-        "hair": "twists_straight/adult",
-        "feet": "boots/revised/male",
+        "torso": "clothes/longsleeve/longsleeve2/male",
+        "legs": "hose/male",
+        "hair": "ponytail/adult/fg",
+        "feet": "sandals/male",
         "weapon": "magic/wand/male"
       }
     }
@@ -5044,7 +5036,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "knight1",
+            "entityId": "hero1",
             "params": {
               "destination": {
                 "x": 480,
@@ -5055,7 +5047,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "orc1",
+            "entityId": "villain1",
             "params": {
               "destination": {
                 "x": 550,
@@ -5068,9 +5060,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "knight1",
+        "entityId": "hero1",
         "params": {
-          "targetId": "orc1",
+          "targetId": "villain1",
           "weapon": "punch"
         }
       },
@@ -5084,9 +5076,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "orc1",
+        "entityId": "villain1",
         "params": {
-          "targetId": "knight1",
+          "targetId": "hero1",
           "weapon": "punch"
         }
       },
@@ -5096,7 +5088,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "knight1",
+            "entityId": "hero1",
             "params": {
               "direction": {
                 "x": -1,
@@ -5108,7 +5100,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "orc1",
+            "entityId": "villain1",
             "params": {
               "direction": {
                 "x": 1,
@@ -5125,7 +5117,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "knight1",
+            "entityId": "hero1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -5134,7 +5126,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "orc1",
+            "entityId": "villain1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -5147,7 +5139,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 53: hero, guard, and mage have a dance party.
+## Example 53: knight, friend, and guard have a dance party.
 ```json
 {
   "id": "scene_53",
@@ -5155,7 +5147,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "city",
   "entities": [
     {
-      "id": "hero1",
+      "id": "knight1",
       "position": {
         "x": 300,
         "y": 450
@@ -5163,14 +5155,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/wolf/female",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/female",
-        "legs": "formal/thin",
+        "head": "heads/wolf/male",
+        "torso": "clothes/sleeveless/sleeveless2/female",
+        "legs": "cuffed/thin",
         "feet": "boots/rimmed/thin"
       }
     },
     {
-      "id": "guard1",
+      "id": "friend1",
       "position": {
         "x": 500,
         "y": 450
@@ -5180,15 +5172,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "body": "bodies/male",
         "head": "heads/human/male",
         "torso": "clothes/sleeveless/sleeveless2/male",
-        "legs": "pants/male",
-        "hair": "ponytail/adult/fg",
-        "hat": "pirate/bandana/adult",
+        "legs": "pants2/male",
+        "hair": "page/adult",
+        "hat": "helmet/morion/adult",
         "weapon": "magic/wand/male",
         "arms": "gloves/male"
       }
     },
     {
-      "id": "mage1",
+      "id": "guard1",
       "position": {
         "x": 700,
         "y": 450
@@ -5197,10 +5189,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/wolf/female",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/female",
-        "legs": "formal/thin",
-        "hair": "spiked/adult",
-        "shield": "heater/revised/pattern/cross"
+        "torso": "armour/legion/female",
+        "legs": "shorts/shorts/thin",
+        "hair": "idol/adult",
+        "shield": "heater/original/wood"
       }
     }
   ],
@@ -5213,7 +5205,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "speak",
-            "entityId": "hero1",
+            "entityId": "knight1",
             "params": {
               "text": "Let's dance!",
               "duration": 1500
@@ -5222,7 +5214,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "guard1",
+            "entityId": "friend1",
             "params": {
               "emote": "love",
               "duration": 1500
@@ -5243,7 +5235,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "hero1",
+            "entityId": "knight1",
+            "params": {
+              "duration": 3000
+            }
+          },
+          {
+            "type": "action",
+            "name": "dance",
+            "entityId": "friend1",
             "params": {
               "duration": 3000
             }
@@ -5255,14 +5255,6 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "params": {
               "duration": 3000
             }
-          },
-          {
-            "type": "action",
-            "name": "dance",
-            "entityId": "mage1",
-            "params": {
-              "duration": 3000
-            }
           }
         ]
       }
@@ -5271,14 +5263,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 54: villain sneaks up and steals a key from guard.
+## Example 54: rogue sneaks up and steals a key from mage.
 ```json
 {
   "id": "scene_54",
-  "background": "park",
+  "background": "forest",
   "entities": [
     {
-      "id": "villain1",
+      "id": "rogue1",
       "position": {
         "x": 800,
         "y": 430
@@ -5286,16 +5278,16 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/troll/adult",
+        "head": "heads/sheep/adult",
         "torso": "clothes/sleeveless/sleeveless2_vneck/male",
-        "legs": "pants/male",
-        "hair": "messy1/adult",
-        "feet": "boots/basic/male",
-        "facial": "monocle/left/adult"
+        "legs": "cuffed/male",
+        "hair": "plain/adult",
+        "feet": "boots/fold/male",
+        "facial": "glasses/round/adult"
       }
     },
     {
-      "id": "guard1",
+      "id": "mage1",
       "position": {
         "x": 400,
         "y": 430
@@ -5304,9 +5296,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/male",
-        "legs": "pants/male",
-        "hair": "long_messy/adult",
+        "torso": "clothes/shortsleeve/tshirt/male",
+        "legs": "shorts/shorts/male",
+        "hair": "bedhead/adult",
         "feet": "shoes/revised/male"
       }
     },
@@ -5318,8 +5310,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "rectangle",
-      "color": "#e63946ff"
+      "shape": "heart",
+      "color": "#264653ff"
     }
   ],
   "timeline": {
@@ -5328,7 +5320,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "villain1",
+        "entityId": "rogue1",
         "params": {
           "duration": 800
         }
@@ -5336,7 +5328,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "villain1",
+        "entityId": "rogue1",
         "params": {
           "destination": {
             "x": 420,
@@ -5347,7 +5339,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "villain1",
+        "entityId": "rogue1",
         "params": {
           "objectId": "key1",
           "attachmentPoint": "hand"
@@ -5363,9 +5355,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "villain1",
+        "entityId": "rogue1",
         "params": {
-          "targetId": "guard1",
+          "targetId": "mage1",
           "duration": 2000,
           "speed": 2
         }
@@ -5373,7 +5365,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "guard1",
+        "entityId": "mage1",
         "params": {
           "emote": "surprise",
           "duration": 1500
@@ -5389,7 +5381,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 {
   "id": "scene_55",
   "soundtrack": "calm",
-  "background": "forest",
+  "background": "mountain",
   "entities": [
     {
       "id": "friend1",
@@ -5401,11 +5393,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt/female",
-        "hair": "plain/adult",
-        "facial": "monocle/right/adult",
-        "shield": "heater/revised/paint",
-        "neck": "tie/necktie/female"
+        "torso": "clothes/shortsleeve/shortsleeve/female",
+        "hair": "mop/adult",
+        "facial": "glasses/round/adult",
+        "shield": "heater/original/pattern/cross",
+        "neck": "tie/bowtie2/adult"
       }
     },
     {
@@ -5418,9 +5410,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/male",
-        "torso": "armour/legion/female",
-        "hair": "bangs/adult",
-        "hat": "helmet/greathelm/male"
+        "torso": "aprons/suspenders/female",
+        "hair": "swoop/adult",
+        "hat": "headband/thick/adult"
       }
     },
     {
@@ -5433,9 +5425,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/scoop/female",
-        "legs": "hose/thin",
-        "feet": "shoes/revised/thin"
+        "torso": "clothes/longsleeve/longsleeve2_polo/female",
+        "legs": "pantaloons/thin",
+        "feet": "boots/fold/thin"
       }
     }
   ],
@@ -5524,15 +5516,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 56: scout and knight race to the finish line.
+## Example 56: warrior and mage race to the finish line.
 ```json
 {
   "id": "scene_56",
   "soundtrack": "dance",
-  "background": "desert",
+  "background": "park",
   "entities": [
     {
-      "id": "scout1",
+      "id": "warrior1",
       "position": {
         "x": 150,
         "y": 380
@@ -5541,14 +5533,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/sleeveless/sleeveless2/female",
-        "legs": "formal/thin",
+        "torso": "clothes/longsleeve/longsleeve/female",
+        "legs": "shorts/short_shorts/thin",
         "hair": "longhawk/adult",
-        "feet": "shoes/basic/thin"
+        "feet": "boots/rimmed/thin"
       }
     },
     {
-      "id": "knight1",
+      "id": "mage1",
       "position": {
         "x": 150,
         "y": 460
@@ -5557,10 +5549,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
-        "legs": "fur/male",
-        "hair": "parted/adult",
-        "feet": "shoes/basic/male"
+        "torso": "aprons/suspenders/male",
+        "legs": "shorts/shorts/male",
+        "hair": "loose/adult",
+        "feet": "shoes/revised/male"
       }
     }
   ],
@@ -5570,7 +5562,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "scout1",
+        "entityId": "warrior1",
         "params": {
           "text": "Ready... Go!",
           "duration": 1200
@@ -5589,7 +5581,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "scout1",
+            "entityId": "warrior1",
             "params": {
               "destination": {
                 "x": 850,
@@ -5601,7 +5593,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "knight1",
+            "entityId": "mage1",
             "params": {
               "destination": {
                 "x": 850,
@@ -5615,7 +5607,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "scout1",
+        "entityId": "warrior1",
         "params": {
           "emote": "laugh",
           "duration": 1500
@@ -5624,7 +5616,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "knight1",
+        "entityId": "mage1",
         "params": {
           "text": "I'll win next time!",
           "duration": 1500
@@ -5635,14 +5627,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 57: mage juggles objects by picking up and throwing them.
+## Example 57: hero juggles objects by picking up and throwing them.
 ```json
 {
   "id": "scene_57",
-  "background": "city",
+  "background": "beach",
   "entities": [
     {
-      "id": "mage1",
+      "id": "hero1",
       "position": {
         "x": 500,
         "y": 420
@@ -5651,10 +5643,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/lizard/male",
-        "torso": "aprons/overalls/female",
-        "legs": "pantaloons/thin",
-        "feet": "shoes/revised/thin",
-        "hat": "pirate/bicorne/athwart/basic/adult"
+        "torso": "clothes/longsleeve/longsleeve2_vneck/female",
+        "legs": "leggings2/thin",
+        "feet": "slippers/thin",
+        "hat": "helmet/barbuta/male"
       }
     },
     {
@@ -5665,8 +5657,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "star",
-      "color": "#ab83a1ff"
+      "shape": "triangle",
+      "color": "#aa96daff"
     },
     {
       "id": "ball_b",
@@ -5676,7 +5668,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "heart",
+      "shape": "capsule",
       "color": "#95e1d3ff"
     }
   ],
@@ -5686,7 +5678,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "objectId": "ball_a",
           "attachmentPoint": "hand"
@@ -5695,7 +5687,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "throw",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "objectId": "ball_a",
           "target": {
@@ -5715,7 +5707,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "objectId": "ball_b",
           "attachmentPoint": "hand"
@@ -5724,7 +5716,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "throw",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "objectId": "ball_b",
           "target": {
@@ -5737,7 +5729,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "emote": "laugh",
           "duration": 1500
@@ -5748,12 +5740,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 58: orc ambushes guard from behind.
+## Example 58: orc ambushes peasant from behind.
 ```json
 {
   "id": "scene_58",
   "soundtrack": "battle",
-  "background": "forest",
+  "background": "desert",
   "entities": [
     {
       "id": "orc1",
@@ -5765,12 +5757,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
+        "torso": "aprons/suspenders/female",
         "legs": "formal/thin"
       }
     },
     {
-      "id": "guard1",
+      "id": "peasant1",
       "position": {
         "x": 400,
         "y": 400
@@ -5779,8 +5771,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/female",
-        "feet": "shoes/basic/thin"
+        "torso": "clothes/longsleeve/longsleeve2/female",
+        "feet": "boots/rimmed/thin"
       }
     }
   ],
@@ -5790,7 +5782,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "faceDirection",
-        "entityId": "guard1",
+        "entityId": "peasant1",
         "params": {
           "direction": "LEFT"
         }
@@ -5811,7 +5803,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "attack",
         "entityId": "orc1",
         "params": {
-          "targetId": "guard1",
+          "targetId": "peasant1",
           "weapon": "punch"
         }
       },
@@ -5821,7 +5813,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "guard1",
+            "entityId": "peasant1",
             "params": {
               "direction": {
                 "x": -1,
@@ -5833,7 +5825,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "guard1",
+            "entityId": "peasant1",
             "params": {
               "emote": "surprise",
               "duration": 1500
@@ -5872,11 +5864,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_vneck/female",
-        "legs": "formal/thin",
-        "hair": "balding/adult",
-        "feet": "boots/rimmed/thin",
-        "hat": "pirate/bandana/adult"
+        "torso": "clothes/longsleeve/longsleeve2_polo/female",
+        "legs": "fur/thin",
+        "hair": "jewfro/adult",
+        "feet": "shoes/basic/thin",
+        "hat": "pirate/tricorne/basic/adult"
       }
     },
     {
@@ -5889,10 +5881,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/orc/female",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
-        "legs": "pantaloons/male",
-        "hair": "natural/adult",
-        "feet": "boots/basic/male"
+        "torso": "aprons/suspenders/male",
+        "legs": "hose/male",
+        "hair": "pixie/adult",
+        "feet": "sandals/male"
       }
     }
   ],
@@ -5964,15 +5956,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 60: knight and friend rest around a campfire.
+## Example 60: hero and guard rest around a campfire.
 ```json
 {
   "id": "scene_60",
   "soundtrack": "calm",
-  "background": "mountain",
+  "background": "forest",
   "entities": [
     {
-      "id": "knight1",
+      "id": "hero1",
       "position": {
         "x": 380,
         "y": 450
@@ -5980,15 +5972,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/female",
-        "torso": "clothes/shortsleeve/tshirt/male",
-        "feet": "boots/revised/male",
+        "head": "heads/orc/male",
+        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
+        "feet": "boots/rimmed/male",
         "hat": "cloth/bandana/adult",
-        "facial": "glasses/sunglasses/adult"
+        "facial": "patches/eyepatch/right/adult"
       }
     },
     {
-      "id": "friend1",
+      "id": "guard1",
       "position": {
         "x": 620,
         "y": 450
@@ -5996,11 +5988,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/wolf/female",
-        "torso": "clothes/shortsleeve/shortsleeve/female",
-        "legs": "formal_striped/thin",
-        "hair": "half_up/adult",
-        "hat": "helmet/legion/adult"
+        "head": "heads/wolf/male",
+        "torso": "clothes/longsleeve/longsleeve/female",
+        "legs": "leggings/thin",
+        "hair": "bob/adult",
+        "hat": "cloth/bandana/adult"
       }
     },
     {
@@ -6011,8 +6003,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.6,
       "isObject": true,
-      "shape": "triangle",
-      "color": "#023e8aff"
+      "shape": "rectangle",
+      "color": "#f38181ff"
     }
   ],
   "timeline": {
@@ -6024,17 +6016,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "turnTowards",
-            "entityId": "knight1",
+            "entityId": "hero1",
             "params": {
-              "targetId": "friend1"
+              "targetId": "guard1"
             }
           },
           {
             "type": "action",
             "name": "turnTowards",
-            "entityId": "friend1",
+            "entityId": "guard1",
             "params": {
-              "targetId": "knight1"
+              "targetId": "hero1"
             }
           }
         ]
@@ -6042,7 +6034,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "knight1",
+        "entityId": "hero1",
         "params": {
           "text": "Long day, huh?",
           "duration": 2000
@@ -6058,7 +6050,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "friend1",
+        "entityId": "guard1",
         "params": {
           "text": "Yeah, let's rest here.",
           "duration": 2000
@@ -6070,7 +6062,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "knight1",
+            "entityId": "hero1",
             "params": {
               "emote": "zzz",
               "duration": 2500
@@ -6079,7 +6071,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "friend1",
+            "entityId": "guard1",
             "params": {
               "emote": "zzz",
               "duration": 2500
@@ -6101,28 +6093,28 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
     {
       "id": "knight1",
       "position": {
-        "x": 320,
-        "y": 453
+        "x": 396,
+        "y": 387
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt_scoop/female",
-        "legs": "pantaloons/thin",
-        "hair": "idol/adult"
+        "torso": "clothes/shortsleeve/tshirt_buttoned/female",
+        "legs": "formal_striped/thin",
+        "hair": "lob/adult"
       }
     },
     {
       "id": "apple1",
       "position": {
-        "x": 610,
-        "y": 468
+        "x": 649,
+        "y": 403
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "cylinder",
-      "color": "#ffe66dff"
+      "shape": "triangle",
+      "color": "#f4a261ff"
     }
   ],
   "timeline": {
@@ -6134,8 +6126,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "entityId": "knight1",
         "params": {
           "destination": {
-            "x": 590,
-            "y": 468
+            "x": 629,
+            "y": 403
           }
         }
       },
@@ -6153,7 +6145,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 62: A rogue throws a coin at a scout.
+## Example 62: A rogue throws a coin at a peasant.
 ```json
 {
   "id": "scene_62",
@@ -6162,44 +6154,44 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
     {
       "id": "rogue1",
       "position": {
-        "x": 236,
+        "x": 257,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/child",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
-        "legs": "leggings/thin",
-        "hair": "dreadlocks_long/adult",
-        "feet": "boots/fold/thin",
+        "head": "heads/orc/male",
+        "torso": "clothes/longsleeve/longsleeve2/female",
+        "legs": "leggings2/thin",
+        "hair": "messy1/adult",
+        "feet": "boots/rimmed/thin",
         "weapon": "magic/wand/female"
       }
     },
     {
-      "id": "scout1",
+      "id": "peasant1",
       "position": {
-        "x": 878,
+        "x": 879,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/female",
-        "legs": "formal/thin"
+        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female",
+        "legs": "fur/thin"
       }
     },
     {
       "id": "coin1",
       "position": {
-        "x": 263,
+        "x": 250,
         "y": 450
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "capsule",
-      "color": "#00b894ff"
+      "shape": "star",
+      "color": "#ff6b6bff"
     }
   ],
   "timeline": {
@@ -6225,7 +6217,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "turnTowards",
         "entityId": "rogue1",
         "params": {
-          "targetId": "scout1"
+          "targetId": "peasant1"
         }
       },
       {
@@ -6238,24 +6230,23 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "x": 860,
             "y": 400
           },
-          "arcHeight": 62
+          "arcHeight": 61
         }
       },
       {
         "type": "action",
         "name": "knockBack",
-        "entityId": "scout1",
+        "entityId": "peasant1",
         "params": {
           "direction": {
             "x": 1,
             "y": 0
           },
-          "strength": 76
+          "strength": 47
         }
       }
     ]
-  },
-  "soundtrack": "calm"
+  }
 }
 ```
 
@@ -6263,7 +6254,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_63",
-  "background": "city",
+  "background": "desert",
   "entities": [
     {
       "id": "guard1",
@@ -6275,10 +6266,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "legs": "hose/male",
-        "hair": "natural/adult",
-        "feet": "slippers/male",
+        "torso": "armour/plate/male",
+        "legs": "formal_striped/male",
+        "hair": "twists_straight/adult",
+        "feet": "shoes/revised/male",
         "neck": "tie/necktie/female",
         "arms": "gloves/male"
       }
@@ -6293,10 +6284,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "armour/plate/male",
-        "legs": "leggings/male",
-        "hair": "twists_straight/adult",
-        "weapon": "magic/wand/female"
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
+        "legs": "pants/male",
+        "hair": "unkempt/adult",
+        "weapon": "magic/wand/male"
       }
     }
   ],
@@ -6361,7 +6352,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "emote",
             "entityId": "guard1",
             "params": {
-              "emote": "laugh",
+              "emote": "question",
               "duration": 2000
             }
           }
@@ -6372,40 +6363,40 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 64: An attack happens: king strikes knight, who flees.
+## Example 64: An attack happens: guard strikes scout, who flees.
 ```json
 {
   "id": "scene_64",
   "soundtrack": "battle",
-  "background": "beach",
+  "background": "city",
   "entities": [
     {
-      "id": "king1",
+      "id": "guard1",
       "position": {
         "x": 400,
-        "y": 331
+        "y": 336
       },
       "scale": 2.5,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
-        "legs": "formal_striped/thin",
-        "feet": "boots/fold/thin"
+        "torso": "clothes/sleeveless/sleeveless2/female",
+        "legs": "fur/thin",
+        "feet": "boots/rimmed/thin"
       }
     },
     {
-      "id": "knight1",
+      "id": "scout1",
       "position": {
         "x": 620,
-        "y": 424
+        "y": 393
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
-        "legs": "pants2/male"
+        "torso": "clothes/shortsleeve/tshirt_scoop/male",
+        "legs": "formal_striped/male"
       }
     }
   ],
@@ -6415,7 +6406,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "move",
-        "entityId": "king1",
+        "entityId": "guard1",
         "params": {
           "destination": {
             "x": 560,
@@ -6426,9 +6417,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "king1",
+        "entityId": "guard1",
         "params": {
-          "targetId": "knight1",
+          "targetId": "scout1",
           "weapon": "punch"
         }
       },
@@ -6438,7 +6429,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "knight1",
+            "entityId": "scout1",
             "params": {
               "direction": {
                 "x": 1,
@@ -6450,7 +6441,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "knight1",
+            "entityId": "scout1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -6461,9 +6452,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "knight1",
+        "entityId": "scout1",
         "params": {
-          "targetId": "king1",
+          "targetId": "guard1",
           "duration": 2000,
           "speed": 1.5
         }
@@ -6473,15 +6464,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 65: guard casts a healing spell on the injured king.
+## Example 65: cleric casts a healing spell on the injured king.
 ```json
 {
   "id": "scene_65",
   "soundtrack": "mystical",
-  "background": "mountain",
+  "background": "desert",
   "entities": [
     {
-      "id": "guard1",
+      "id": "cleric1",
       "position": {
         "x": 300,
         "y": 400
@@ -6490,10 +6481,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
-        "hair": "spiked/adult",
-        "feet": "slippers/thin",
-        "hat": "helmet/legion/adult"
+        "torso": "clothes/sleeveless/sleeveless2/female",
+        "hair": "natural/adult",
+        "feet": "sandals/thin",
+        "hat": "pirate/cavalier/adult"
       }
     },
     {
@@ -6505,11 +6496,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/child",
-        "torso": "clothes/sleeveless/sleeveless2/male",
-        "legs": "formal/male",
-        "hair": "plain/adult",
-        "feet": "boots/fold/male"
+        "head": "heads/orc/female",
+        "torso": "clothes/longsleeve/longsleeve/male",
+        "legs": "shorts/shorts/male",
+        "hair": "jewfro/adult",
+        "feet": "sandals/male"
       }
     }
   ],
@@ -6519,10 +6510,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "heal",
-        "entityId": "guard1",
+        "entityId": "cleric1",
         "params": {
           "targetId": "king1",
-          "amount": 58,
+          "amount": 48,
           "duration": 1500
         }
       },
@@ -6562,15 +6553,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 66: A mage crawls to a location and falls asleep.
+## Example 66: A hero crawls to a location and falls asleep.
 ```json
 {
   "id": "scene_66",
   "soundtrack": "calm",
-  "background": "beach",
+  "background": "city",
   "entities": [
     {
-      "id": "mage1",
+      "id": "hero1",
       "position": {
         "x": 200,
         "y": 300
@@ -6578,10 +6569,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/mouse/adult",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
-        "legs": "pantaloons/male",
-        "feet": "boots/rimmed/male"
+        "head": "heads/pig/adult",
+        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
+        "legs": "shorts/shorts/male",
+        "feet": "shoes/revised/male"
       }
     }
   ],
@@ -6591,7 +6582,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "duration": 1000
         }
@@ -6599,11 +6590,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "destination": {
-            "x": 483,
-            "y": 422
+            "x": 410,
+            "y": 385
           }
         }
       },
@@ -6617,7 +6608,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "sleep",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "duration": 5000
         }
@@ -6627,14 +6618,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 67: peasant patrols an area with physics active.
+## Example 67: scout patrols an area with physics active.
 ```json
 {
   "id": "scene_67",
-  "background": "city",
+  "background": "mountain",
   "entities": [
     {
-      "id": "peasant1",
+      "id": "scout1",
       "position": {
         "x": 400,
         "y": 450
@@ -6642,11 +6633,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/child",
-        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
-        "legs": "pantaloons/male",
-        "hair": "bedhead/adult",
-        "feet": "boots/basic/male"
+        "head": "heads/orc/female",
+        "torso": "clothes/longsleeve/longsleeve2_polo/male",
+        "legs": "pants/male",
+        "hair": "afro/adult",
+        "feet": "boots/revised/male"
       }
     }
   ],
@@ -6656,10 +6647,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "jump",
-        "entityId": "peasant1",
+        "entityId": "scout1",
         "params": {
-          "height": 58,
-          "distance": 40
+          "height": 89,
+          "distance": 58
         }
       },
       {
@@ -6672,14 +6663,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "patrol",
-        "entityId": "peasant1",
+        "entityId": "scout1",
         "params": {
           "pointA": {
             "x": 400,
             "y": 450
           },
           "pointB": {
-            "x": 686,
+            "x": 721,
             "y": 450
           },
           "laps": 2,
@@ -6705,12 +6696,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "spawn",
         "params": {
           "entityId": "magic_obj",
-          "x": 627,
-          "y": 358,
+          "x": 613,
+          "y": 346,
           "scale": 0.5,
           "isObject": true,
           "shape": "heart",
-          "color": "#e63946ff"
+          "color": "#d62828ff"
         }
       },
       {
@@ -6728,7 +6719,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "rotate",
             "entityId": "magic_obj",
             "params": {
-              "angle": 782,
+              "angle": 873,
               "duration": 2000
             }
           },
@@ -6764,14 +6755,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 69: hero gives a potion to rogue.
+## Example 69: king gives a potion to rogue.
 ```json
 {
   "id": "scene_69",
-  "background": "desert",
+  "background": "city",
   "entities": [
     {
-      "id": "hero1",
+      "id": "king1",
       "position": {
         "x": 300,
         "y": 450
@@ -6780,8 +6771,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "feet": "shoes/revised/thin",
+        "torso": "clothes/longsleeve/longsleeve2/female",
+        "feet": "shoes/basic/thin",
         "weapon": "magic/wand/female"
       }
     },
@@ -6795,8 +6786,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_scoop/male",
-        "legs": "leggings2/male"
+        "torso": "clothes/sleeveless/sleeveless1/male",
+        "legs": "fur/male"
       }
     },
     {
@@ -6807,8 +6798,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "rectangle",
-      "color": "#aa96daff"
+      "shape": "square",
+      "color": "#f38181ff"
     }
   ],
   "timeline": {
@@ -6817,7 +6808,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "hero1",
+        "entityId": "king1",
         "params": {
           "objectId": "potion1"
         }
@@ -6832,7 +6823,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "give",
-        "entityId": "hero1",
+        "entityId": "king1",
         "params": {
           "objectId": "potion1",
           "targetId": "rogue1",
@@ -6859,25 +6850,25 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 70: peasant wanders randomly and then speaks.
+## Example 70: villain wanders randomly and then speaks.
 ```json
 {
   "id": "scene_70",
-  "background": "beach",
+  "background": "forest",
   "entities": [
     {
-      "id": "peasant1",
+      "id": "villain1",
       "position": {
-        "x": 510,
-        "y": 365
+        "x": 584,
+        "y": 346
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/goblin/adult",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "hair": "shorthawk/adult",
-        "facial": "patches/eyepatch/right/adult"
+        "head": "heads/sheep/adult",
+        "torso": "armour/legion/male",
+        "hair": "afro/adult",
+        "facial": "monocle/right/adult"
       }
     }
   ],
@@ -6887,7 +6878,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "wander",
-        "entityId": "peasant1",
+        "entityId": "villain1",
         "params": {
           "area": {
             "x": 400,
@@ -6908,17 +6899,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "faceDirection",
-        "entityId": "peasant1",
+        "entityId": "villain1",
         "params": {
-          "direction": "RIGHT"
+          "direction": "DOWN"
         }
       },
       {
         "type": "action",
         "name": "speak",
-        "entityId": "peasant1",
+        "entityId": "villain1",
         "params": {
-          "text": "What a view!",
+          "text": "I sense danger.",
           "duration": 1500
         }
       }
@@ -6927,7 +6918,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 71: knight chases goblin across the area.
+## Example 71: hunter chases goblin across the area.
 ```json
 {
   "id": "scene_71",
@@ -6935,7 +6926,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "desert",
   "entities": [
     {
-      "id": "knight1",
+      "id": "hunter1",
       "position": {
         "x": 200,
         "y": 420
@@ -6943,11 +6934,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/alien/adult",
-        "torso": "clothes/shortsleeve/tshirt_scoop/male",
+        "head": "heads/vampire/adult",
+        "torso": "clothes/longsleeve/longsleeve2/male",
         "legs": "pantaloons/male",
-        "hair": "pigtails/adult",
-        "hat": "helmet/horned/adult",
+        "hair": "messy1/adult",
+        "hat": "formal/crown/adult",
         "beards": "mustache"
       }
     },
@@ -6961,8 +6952,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve/female",
-        "legs": "leggings2/thin"
+        "torso": "clothes/longsleeve/longsleeve2_polo/female",
+        "legs": "formal_striped/thin"
       }
     }
   ],
@@ -6972,7 +6963,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "knight1",
+        "entityId": "hunter1",
         "params": {
           "text": "Stop right there!",
           "duration": 1500
@@ -6981,7 +6972,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "follow",
-        "entityId": "knight1",
+        "entityId": "hunter1",
         "params": {
           "targetId": "goblin1",
           "duration": 2000,
@@ -6993,7 +6984,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "flee",
         "entityId": "goblin1",
         "params": {
-          "targetId": "knight1",
+          "targetId": "hunter1",
           "duration": 2500,
           "speed": 2
         }
@@ -7008,7 +6999,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "knight1",
+        "entityId": "hunter1",
         "params": {
           "emote": "angry",
           "duration": 1500
@@ -7019,15 +7010,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 72: knight and orc engage in a dramatic duel.
+## Example 72: warrior and villain engage in a dramatic duel.
 ```json
 {
   "id": "scene_72",
   "soundtrack": "battle",
-  "background": "forest",
+  "background": "desert",
   "entities": [
     {
-      "id": "knight1",
+      "id": "warrior1",
       "position": {
         "x": 300,
         "y": 400
@@ -7036,14 +7027,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt_scoop/female",
-        "legs": "formal_striped/thin",
-        "hair": "balding/adult",
+        "torso": "clothes/shortsleeve/shortsleeve/female",
+        "legs": "shorts/shorts/thin",
+        "hair": "long_messy/adult",
         "weapon": "magic/wand/female"
       }
     },
     {
-      "id": "orc1",
+      "id": "villain1",
       "position": {
         "x": 700,
         "y": 400
@@ -7051,11 +7042,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2.2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/boarman/adult",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "shorts/short_shorts/thin",
-        "feet": "boots/revised/thin",
-        "hat": "pirate/bandana/adult",
+        "head": "heads/sheep/adult",
+        "torso": "clothes/shortsleeve/tshirt_vneck/female",
+        "legs": "cuffed/thin",
+        "feet": "shoes/ghillies/thin",
+        "hat": "formal/tiara/adult",
         "weapon": "magic/wand/female"
       }
     }
@@ -7069,7 +7060,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "knight1",
+            "entityId": "warrior1",
             "params": {
               "destination": {
                 "x": 480,
@@ -7080,7 +7071,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "orc1",
+            "entityId": "villain1",
             "params": {
               "destination": {
                 "x": 550,
@@ -7093,9 +7084,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "knight1",
+        "entityId": "warrior1",
         "params": {
-          "targetId": "orc1",
+          "targetId": "villain1",
           "weapon": "punch"
         }
       },
@@ -7109,9 +7100,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "orc1",
+        "entityId": "villain1",
         "params": {
-          "targetId": "knight1",
+          "targetId": "warrior1",
           "weapon": "punch"
         }
       },
@@ -7121,7 +7112,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "knight1",
+            "entityId": "warrior1",
             "params": {
               "direction": {
                 "x": -1,
@@ -7133,7 +7124,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "orc1",
+            "entityId": "villain1",
             "params": {
               "direction": {
                 "x": 1,
@@ -7150,7 +7141,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "knight1",
+            "entityId": "warrior1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -7159,7 +7150,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "orc1",
+            "entityId": "villain1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -7172,15 +7163,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 73: rogue, mage, and knight have a dance party.
+## Example 73: guard, peasant, and hero have a dance party.
 ```json
 {
   "id": "scene_73",
   "soundtrack": "dance",
-  "background": "park",
+  "background": "city",
   "entities": [
     {
-      "id": "rogue1",
+      "id": "guard1",
       "position": {
         "x": 300,
         "y": 450
@@ -7189,18 +7180,18 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless1/male",
+        "torso": "aprons/suspenders/male",
         "legs": "shorts/short_shorts/male",
-        "feet": "boots/rimmed/male",
-        "hat": "helmet/barbuta/male",
-        "facial": "glasses/nerd/adult",
+        "feet": "shoes/revised/male",
+        "hat": "headband/thick/adult",
+        "facial": "monocle/right/adult",
         "beards": "beard",
-        "shield": "heater/revised/pattern/cross",
+        "shield": "heater/revised/trim",
         "arms": "gloves/male"
       }
     },
     {
-      "id": "mage1",
+      "id": "peasant1",
       "position": {
         "x": 500,
         "y": 450
@@ -7208,14 +7199,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/boarman/adult",
-        "torso": "clothes/shortsleeve/tshirt_scoop/female",
+        "head": "heads/vampire/adult",
+        "torso": "clothes/sleeveless/sleeveless1/female",
         "hair": "curly_short/adult",
-        "feet": "boots/basic/thin"
+        "feet": "boots/revised/thin"
       }
     },
     {
-      "id": "knight1",
+      "id": "hero1",
       "position": {
         "x": 700,
         "y": 450
@@ -7224,11 +7215,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve/male",
-        "feet": "boots/revised/male",
-        "hat": "formal/crown/adult",
-        "beards": "mustache",
-        "neck": "tie/necktie/male",
+        "torso": "aprons/overalls/male",
+        "feet": "shoes/basic/male",
+        "hat": "helmet/nasal/adult",
+        "beards": "beard",
+        "neck": "tie/bowtie2/adult",
         "arms": "gloves/male"
       }
     }
@@ -7242,7 +7233,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "speak",
-            "entityId": "rogue1",
+            "entityId": "guard1",
             "params": {
               "text": "Let's dance!",
               "duration": 1500
@@ -7251,7 +7242,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "mage1",
+            "entityId": "peasant1",
             "params": {
               "emote": "love",
               "duration": 1500
@@ -7272,7 +7263,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "rogue1",
+            "entityId": "guard1",
             "params": {
               "duration": 3000
             }
@@ -7280,7 +7271,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "mage1",
+            "entityId": "peasant1",
             "params": {
               "duration": 3000
             }
@@ -7288,7 +7279,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "knight1",
+            "entityId": "hero1",
             "params": {
               "duration": 3000
             }
@@ -7300,14 +7291,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 74: thief sneaks up and steals a scroll from guard.
+## Example 74: rogue sneaks up and steals a key from peasant.
 ```json
 {
   "id": "scene_74",
-  "background": "mountain",
+  "background": "park",
   "entities": [
     {
-      "id": "thief1",
+      "id": "rogue1",
       "position": {
         "x": 800,
         "y": 430
@@ -7316,13 +7307,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "aprons/suspenders/female",
-        "legs": "formal_striped/thin",
-        "feet": "boots/basic/thin"
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/female",
+        "legs": "cuffed/thin",
+        "feet": "boots/fold/thin"
       }
     },
     {
-      "id": "guard1",
+      "id": "peasant1",
       "position": {
         "x": 400,
         "y": 430
@@ -7331,21 +7322,21 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
-        "legs": "cuffed/male",
-        "hair": "jewfro/adult",
-        "feet": "boots/basic/male"
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
+        "legs": "shorts/short_shorts/male",
+        "hair": "curly_short/adult",
+        "feet": "shoes/basic/male"
       }
     },
     {
-      "id": "scroll1",
+      "id": "key1",
       "position": {
         "x": 380,
         "y": 450
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "triangle",
+      "shape": "rectangle",
       "color": "#00b894ff"
     }
   ],
@@ -7355,7 +7346,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
           "duration": 800
         }
@@ -7363,7 +7354,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
           "destination": {
             "x": 420,
@@ -7374,9 +7365,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
-          "objectId": "scroll1",
+          "objectId": "key1",
           "attachmentPoint": "hand"
         }
       },
@@ -7390,9 +7381,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
-          "targetId": "guard1",
+          "targetId": "peasant1",
           "duration": 2000,
           "speed": 2
         }
@@ -7400,7 +7391,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "guard1",
+        "entityId": "peasant1",
         "params": {
           "emote": "surprise",
           "duration": 1500
@@ -7416,7 +7407,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 {
   "id": "scene_75",
   "soundtrack": "calm",
-  "background": "mountain",
+  "background": "forest",
   "entities": [
     {
       "id": "friend1",
@@ -7428,11 +7419,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
+        "torso": "armour/legion/male",
         "legs": "formal/male",
-        "hair": "unkempt/adult",
-        "feet": "boots/fold/male",
-        "beards": "beard"
+        "hair": "afro/adult",
+        "feet": "boots/rimmed/male",
+        "beards": "mustache"
       }
     },
     {
@@ -7445,12 +7436,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/troll/adult",
-        "torso": "aprons/suspenders/male",
+        "torso": "clothes/shortsleeve/tshirt_scoop/male",
         "legs": "leggings/male",
-        "hair": "bedhead/adult",
-        "feet": "shoes/basic/male",
-        "hat": "magic/wizard/base/adult",
-        "weapon": "magic/wand/male"
+        "hair": "longhawk/adult",
+        "feet": "shoes/ghillies/male",
+        "hat": "helmet/greathelm/male",
+        "weapon": "magic/wand/female"
       }
     },
     {
@@ -7463,11 +7454,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/male",
-        "hair": "shorthawk/adult",
-        "feet": "shoes/ghillies/male",
-        "hat": "cloth/bandana2/adult",
-        "weapon": "magic/wand/female"
+        "torso": "aprons/suspenders/male",
+        "hair": "parted/adult",
+        "feet": "boots/rimmed/male",
+        "hat": "helmet/close/male",
+        "weapon": "magic/wand/male"
       }
     }
   ],
@@ -7556,15 +7547,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 76: hero and mage race to the finish line.
+## Example 76: warrior and mage race to the finish line.
 ```json
 {
   "id": "scene_76",
   "soundtrack": "dance",
-  "background": "beach",
+  "background": "park",
   "entities": [
     {
-      "id": "hero1",
+      "id": "warrior1",
       "position": {
         "x": 150,
         "y": 380
@@ -7573,9 +7564,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2/female",
-        "legs": "formal/thin",
-        "hair": "dreadlocks_short/adult"
+        "torso": "clothes/shortsleeve/tshirt/female",
+        "legs": "leggings/thin",
+        "hair": "twists_fade/adult"
       }
     },
     {
@@ -7588,9 +7579,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
-        "legs": "hose/thin",
-        "hair": "buzzcut/adult",
+        "torso": "armour/legion/female",
+        "legs": "pantaloons/thin",
+        "hair": "spiked/adult",
         "feet": "shoes/basic/thin"
       }
     }
@@ -7601,7 +7592,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "hero1",
+        "entityId": "warrior1",
         "params": {
           "text": "Ready... Go!",
           "duration": 1200
@@ -7620,7 +7611,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "hero1",
+            "entityId": "warrior1",
             "params": {
               "destination": {
                 "x": 850,
@@ -7646,7 +7637,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "hero1",
+        "entityId": "warrior1",
         "params": {
           "emote": "laugh",
           "duration": 1500
@@ -7670,7 +7661,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_77",
-  "background": "desert",
+  "background": "beach",
   "entities": [
     {
       "id": "knight1",
@@ -7682,8 +7673,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt_scoop/female",
-        "feet": "boots/fold/thin"
+        "torso": "aprons/suspenders/female",
+        "feet": "shoes/revised/thin"
       }
     },
     {
@@ -7694,8 +7685,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "capsule",
-      "color": "#4ecdc4ff"
+      "shape": "cylinder",
+      "color": "#ff6b6bff"
     },
     {
       "id": "ball_b",
@@ -7705,8 +7696,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "rectangle",
-      "color": "#4ecdc4ff"
+      "shape": "cylinder",
+      "color": "#d62828ff"
     }
   ],
   "timeline": {
@@ -7782,7 +7773,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 {
   "id": "scene_78",
   "soundtrack": "battle",
-  "background": "desert",
+  "background": "mountain",
   "entities": [
     {
       "id": "villain1",
@@ -7793,10 +7784,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/female",
-        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
-        "legs": "fur/male",
-        "facial": "patches/eyepatch/ambi/adult"
+        "head": "heads/orc/male",
+        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
+        "legs": "shorts/short_shorts/male",
+        "facial": "glasses/secretary/adult"
       }
     },
     {
@@ -7808,11 +7799,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/wolf/male",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "legs": "pantaloons/male",
-        "hair": "plain/adult",
-        "feet": "shoes/revised/male"
+        "head": "heads/wolf/female",
+        "torso": "clothes/shortsleeve/shortsleeve/male",
+        "legs": "shorts/short_shorts/male",
+        "hair": "curly_short/adult",
+        "feet": "slippers/male"
       }
     }
   ],
@@ -7887,7 +7878,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 79: guard escorts cleric safely across the battlefield.
+## Example 79: knight escorts hero safely across the battlefield.
 ```json
 {
   "id": "scene_79",
@@ -7895,7 +7886,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "city",
   "entities": [
     {
-      "id": "guard1",
+      "id": "knight1",
       "position": {
         "x": 200,
         "y": 430
@@ -7903,15 +7894,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2.2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/lizard/male",
-        "torso": "clothes/longsleeve/longsleeve2_vneck/female",
-        "legs": "pantaloons/thin",
-        "hair": "longhawk/adult",
-        "feet": "boots/basic/thin"
+        "head": "heads/lizard/female",
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/female",
+        "legs": "pants2/thin",
+        "hair": "cornrows/adult",
+        "feet": "boots/rimmed/thin"
       }
     },
     {
-      "id": "cleric1",
+      "id": "hero1",
       "position": {
         "x": 250,
         "y": 430
@@ -7920,9 +7911,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "armour/plate/female",
-        "legs": "leggings2/thin",
-        "hair": "swoop/adult"
+        "torso": "aprons/suspenders/female",
+        "legs": "hose/thin",
+        "hair": "pixie/adult"
       }
     }
   ],
@@ -7932,7 +7923,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "guard1",
+        "entityId": "knight1",
         "params": {
           "text": "Stay close.",
           "duration": 1500
@@ -7951,7 +7942,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "guard1",
+            "entityId": "knight1",
             "params": {
               "destination": {
                 "x": 750,
@@ -7962,9 +7953,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "follow",
-            "entityId": "cleric1",
+            "entityId": "hero1",
             "params": {
-              "targetId": "guard1",
+              "targetId": "knight1",
               "duration": 4000,
               "speed": 1
             }
@@ -7974,7 +7965,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "guard1",
+        "entityId": "knight1",
         "params": {
           "text": "We're safe now.",
           "duration": 1500
@@ -7983,7 +7974,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "cleric1",
+        "entityId": "hero1",
         "params": {
           "emote": "love",
           "duration": 1500
@@ -7994,7 +7985,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 80: knight and rogue rest around a campfire.
+## Example 80: mage and rogue rest around a campfire.
 ```json
 {
   "id": "scene_80",
@@ -8002,7 +7993,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "forest",
   "entities": [
     {
-      "id": "knight1",
+      "id": "mage1",
       "position": {
         "x": 380,
         "y": 450
@@ -8011,10 +8002,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2_vneck/male",
-        "legs": "fur/male",
-        "hair": "ponytail/adult/fg",
-        "weapon": "magic/wand/male",
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
+        "legs": "shorts/shorts/male",
+        "hair": "dreadlocks_short/adult",
+        "weapon": "magic/wand/female",
         "arms": "gloves/male"
       }
     },
@@ -8027,12 +8018,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/male",
-        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
-        "legs": "pants2/male",
-        "hair": "ponytail/adult/fg",
+        "head": "heads/orc/female",
+        "torso": "armour/legion/male",
+        "legs": "hose/male",
+        "hair": "curly_short/adult",
         "feet": "boots/rimmed/male",
-        "facial": "glasses/sunglasses/adult"
+        "facial": "masks/plain"
       }
     },
     {
@@ -8043,8 +8034,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.6,
       "isObject": true,
-      "shape": "cylinder",
-      "color": "#6c5ce7ff"
+      "shape": "heart",
+      "color": "#c4e538ff"
     }
   ],
   "timeline": {
@@ -8056,7 +8047,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "turnTowards",
-            "entityId": "knight1",
+            "entityId": "mage1",
             "params": {
               "targetId": "rogue1"
             }
@@ -8066,7 +8057,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "turnTowards",
             "entityId": "rogue1",
             "params": {
-              "targetId": "knight1"
+              "targetId": "mage1"
             }
           }
         ]
@@ -8074,7 +8065,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "knight1",
+        "entityId": "mage1",
         "params": {
           "text": "Long day, huh?",
           "duration": 2000
@@ -8102,7 +8093,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "knight1",
+            "entityId": "mage1",
             "params": {
               "emote": "zzz",
               "duration": 2500
@@ -8128,32 +8119,32 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_81",
-  "background": "desert",
+  "background": "beach",
   "entities": [
     {
       "id": "knight1",
       "position": {
-        "x": 324,
-        "y": 425
+        "x": 215,
+        "y": 417
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/tshirt/female",
-        "legs": "fur/thin"
+        "torso": "clothes/longsleeve/longsleeve2_vneck/female",
+        "legs": "formal_striped/thin"
       }
     },
     {
       "id": "apple1",
       "position": {
-        "x": 547,
-        "y": 426
+        "x": 498,
+        "y": 444
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "heart",
-      "color": "#ffe66dff"
+      "shape": "triangle",
+      "color": "#d62828ff"
     }
   ],
   "timeline": {
@@ -8165,8 +8156,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "entityId": "knight1",
         "params": {
           "destination": {
-            "x": 527,
-            "y": 426
+            "x": 478,
+            "y": 444
           }
         }
       },
@@ -8184,53 +8175,53 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 82: A mage throws a bottle at a peasant.
+## Example 82: A hero throws a bottle at a villain.
 ```json
 {
   "id": "scene_82",
   "background": "city",
   "entities": [
     {
-      "id": "mage1",
+      "id": "hero1",
       "position": {
-        "x": 209,
+        "x": 284,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/sleeveless/sleeveless2/female",
-        "legs": "leggings2/thin",
-        "hair": "bangs/adult"
+        "torso": "clothes/longsleeve/longsleeve/female",
+        "legs": "formal/thin",
+        "hair": "page/adult"
       }
     },
     {
-      "id": "peasant1",
+      "id": "villain1",
       "position": {
-        "x": 892,
+        "x": 912,
         "y": 400
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
-        "hair": "jewfro/adult",
-        "feet": "shoes/revised/male",
-        "hat": "helmet/close/male"
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
+        "hair": "long/adult",
+        "feet": "boots/fold/male",
+        "hat": "helmet/barbuta/male"
       }
     },
     {
       "id": "bottle1",
       "position": {
-        "x": 348,
+        "x": 256,
         "y": 450
       },
       "scale": 0.5,
       "isObject": true,
-      "shape": "rectangle",
-      "color": "#457b9dff"
+      "shape": "square",
+      "color": "#6a0572ff"
     }
   ],
   "timeline": {
@@ -8239,7 +8230,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "objectId": "bottle1"
         }
@@ -8254,39 +8245,39 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "turnTowards",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
-          "targetId": "peasant1"
+          "targetId": "villain1"
         }
       },
       {
         "type": "action",
         "name": "throw",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "objectId": "bottle1",
           "target": {
             "x": 860,
             "y": 400
           },
-          "arcHeight": 43
+          "arcHeight": 55
         }
       },
       {
         "type": "action",
         "name": "knockBack",
-        "entityId": "peasant1",
+        "entityId": "villain1",
         "params": {
           "direction": {
             "x": 1,
             "y": 0
           },
-          "strength": 52
+          "strength": 66
         }
       }
     ]
   },
-  "soundtrack": "dance"
+  "soundtrack": "mystical"
 }
 ```
 
@@ -8294,7 +8285,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 ```json
 {
   "id": "scene_83",
-  "background": "park",
+  "background": "mountain",
   "entities": [
     {
       "id": "cleric1",
@@ -8305,11 +8296,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/male",
-        "torso": "clothes/longsleeve/scoop/female",
-        "legs": "shorts/shorts/thin",
+        "head": "heads/orc/child",
+        "torso": "clothes/longsleeve/longsleeve2/female",
+        "legs": "formal/thin",
         "weapon": "magic/wand/female",
-        "shield": "heater/revised/pattern/cross"
+        "shield": "heater/original/pattern/cross"
       }
     },
     {
@@ -8322,10 +8313,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "legs": "cuffed/male",
-        "hair": "natural/adult",
-        "feet": "boots/fold/male"
+        "torso": "clothes/shortsleeve/tshirt_vneck/male",
+        "legs": "shorts/short_shorts/male",
+        "hair": "messy1/adult",
+        "feet": "shoes/ghillies/male"
       }
     }
   ],
@@ -8390,7 +8381,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "emote",
             "entityId": "cleric1",
             "params": {
-              "emote": "angry",
+              "emote": "laugh",
               "duration": 2000
             }
           }
@@ -8401,43 +8392,43 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 84: An attack happens: orc_chief strikes scout, who flees.
+## Example 84: An attack happens: villain strikes peasant, who flees.
 ```json
 {
   "id": "scene_84",
   "soundtrack": "battle",
-  "background": "mountain",
+  "background": "forest",
   "entities": [
     {
-      "id": "orc_chief1",
+      "id": "villain1",
       "position": {
         "x": 400,
-        "y": 349
+        "y": 354
       },
       "scale": 2.5,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female",
-        "legs": "formal/thin",
-        "hair": "parted/adult",
-        "shield": "heater/revised/pattern/chevron"
+        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
+        "legs": "pantaloons/thin",
+        "hair": "dreadlocks_long/adult",
+        "shield": "heater/original/pattern/cross"
       }
     },
     {
-      "id": "scout1",
+      "id": "peasant1",
       "position": {
         "x": 620,
-        "y": 382
+        "y": 410
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve2_vneck/male",
-        "legs": "formal_striped/male",
-        "hair": "pixie/adult",
-        "feet": "boots/fold/male"
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/male",
+        "legs": "shorts/shorts/male",
+        "hair": "bangs/adult",
+        "feet": "shoes/ghillies/male"
       }
     }
   ],
@@ -8447,7 +8438,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "move",
-        "entityId": "orc_chief1",
+        "entityId": "villain1",
         "params": {
           "destination": {
             "x": 560,
@@ -8458,10 +8449,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "orc_chief1",
+        "entityId": "villain1",
         "params": {
-          "targetId": "scout1",
-          "weapon": "gun"
+          "targetId": "peasant1",
+          "weapon": "punch"
         }
       },
       {
@@ -8470,7 +8461,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "scout1",
+            "entityId": "peasant1",
             "params": {
               "direction": {
                 "x": 1,
@@ -8482,7 +8473,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "scout1",
+            "entityId": "peasant1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -8493,9 +8484,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "scout1",
+        "entityId": "peasant1",
         "params": {
-          "targetId": "orc_chief1",
+          "targetId": "villain1",
           "duration": 2000,
           "speed": 1.5
         }
@@ -8505,12 +8496,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 85: hero casts a healing spell on the injured knight.
+## Example 85: hero casts a healing spell on the injured warrior.
 ```json
 {
   "id": "scene_85",
   "soundtrack": "mystical",
-  "background": "forest",
+  "background": "beach",
   "entities": [
     {
       "id": "hero1",
@@ -8522,15 +8513,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/scoop/male",
-        "legs": "leggings2/male",
-        "hair": "dreadlocks_long/adult",
-        "feet": "boots/revised/male",
-        "hat": "formal/bowler/adult"
+        "torso": "clothes/shortsleeve/shortsleeve_cardigan/male",
+        "legs": "pantaloons/male",
+        "hair": "ponytail/adult/fg",
+        "feet": "boots/fold/male",
+        "hat": "cloth/bandana2/adult"
       }
     },
     {
-      "id": "knight1",
+      "id": "warrior1",
       "position": {
         "x": 520,
         "y": 400
@@ -8538,11 +8529,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/lizard/female",
-        "torso": "clothes/sleeveless/sleeveless1/male",
-        "legs": "leggings/male",
-        "hair": "curtains/adult",
-        "feet": "slippers/male"
+        "head": "heads/lizard/male",
+        "torso": "clothes/shortsleeve/tshirt/male",
+        "legs": "leggings2/male",
+        "hair": "flat_top_fade/adult",
+        "feet": "shoes/ghillies/male"
       }
     }
   ],
@@ -8554,8 +8545,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "heal",
         "entityId": "hero1",
         "params": {
-          "targetId": "knight1",
-          "amount": 35,
+          "targetId": "warrior1",
+          "amount": 32,
           "duration": 1500
         }
       },
@@ -8572,7 +8563,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "knight1",
+            "entityId": "warrior1",
             "params": {
               "emote": "love",
               "duration": 1500
@@ -8581,7 +8572,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "oscillate",
-            "entityId": "knight1",
+            "entityId": "warrior1",
             "params": {
               "amplitude": 5,
               "frequency": 10,
@@ -8595,15 +8586,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 86: A scout crawls to a location and falls asleep.
+## Example 86: A rogue crawls to a location and falls asleep.
 ```json
 {
   "id": "scene_86",
   "soundtrack": "calm",
-  "background": "park",
+  "background": "beach",
   "entities": [
     {
-      "id": "scout1",
+      "id": "rogue1",
       "position": {
         "x": 200,
         "y": 300
@@ -8611,11 +8602,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/lizard/female",
-        "torso": "clothes/longsleeve/longsleeve/female",
-        "legs": "shorts/shorts/thin",
-        "hair": "bangs/adult",
-        "feet": "slippers/thin"
+        "head": "heads/lizard/male",
+        "torso": "clothes/longsleeve/longsleeve2_cardigan/female",
+        "legs": "hose/thin",
+        "hair": "bob/adult",
+        "feet": "boots/rimmed/thin"
       }
     }
   ],
@@ -8625,7 +8616,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "scout1",
+        "entityId": "rogue1",
         "params": {
           "duration": 1000
         }
@@ -8633,11 +8624,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "scout1",
+        "entityId": "rogue1",
         "params": {
           "destination": {
-            "x": 421,
-            "y": 429
+            "x": 425,
+            "y": 443
           }
         }
       },
@@ -8651,7 +8642,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "sleep",
-        "entityId": "scout1",
+        "entityId": "rogue1",
         "params": {
           "duration": 5000
         }
@@ -8661,14 +8652,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 87: knight patrols an area with physics active.
+## Example 87: guard patrols an area with physics active.
 ```json
 {
   "id": "scene_87",
-  "background": "mountain",
+  "background": "desert",
   "entities": [
     {
-      "id": "knight1",
+      "id": "guard1",
       "position": {
         "x": 400,
         "y": 450
@@ -8677,12 +8668,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/orc/female",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/male",
-        "legs": "fur/male",
-        "hair": "long_messy/adult",
-        "feet": "boots/fold/male",
+        "torso": "clothes/longsleeve/longsleeve2_vneck/male",
+        "legs": "pantaloons/male",
+        "hair": "plain/adult",
+        "feet": "sandals/male",
         "facial": "glasses/glasses/adult",
-        "weapon": "magic/wand/female"
+        "weapon": "magic/wand/male"
       }
     }
   ],
@@ -8692,9 +8683,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "jump",
-        "entityId": "knight1",
+        "entityId": "guard1",
         "params": {
-          "height": 81,
+          "height": 61,
           "distance": 49
         }
       },
@@ -8708,14 +8699,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "patrol",
-        "entityId": "knight1",
+        "entityId": "guard1",
         "params": {
           "pointA": {
             "x": 400,
             "y": 450
           },
           "pointB": {
-            "x": 675,
+            "x": 774,
             "y": 450
           },
           "laps": 2,
@@ -8741,12 +8732,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "spawn",
         "params": {
           "entityId": "magic_obj",
-          "x": 652,
-          "y": 325,
+          "x": 533,
+          "y": 320,
           "scale": 0.5,
           "isObject": true,
-          "shape": "cylinder",
-          "color": "#c4e538ff"
+          "shape": "square",
+          "color": "#6c5ce7ff"
         }
       },
       {
@@ -8764,7 +8755,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
             "name": "rotate",
             "entityId": "magic_obj",
             "params": {
-              "angle": 454,
+              "angle": 841,
               "duration": 2000
             }
           },
@@ -8800,14 +8791,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 89: mage gives a scroll to peasant.
+## Example 89: king gives a scroll to friend.
 ```json
 {
   "id": "scene_89",
-  "background": "desert",
+  "background": "forest",
   "entities": [
     {
-      "id": "mage1",
+      "id": "king1",
       "position": {
         "x": 300,
         "y": 450
@@ -8816,15 +8807,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_polo/female",
-        "legs": "leggings/thin",
-        "hair": "buzzcut/adult",
-        "feet": "slippers/thin",
-        "shield": "heater/original/paint"
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
+        "legs": "pants2/thin",
+        "hair": "pixie/adult",
+        "feet": "boots/rimmed/thin",
+        "shield": "heater/original/trim"
       }
     },
     {
-      "id": "peasant1",
+      "id": "friend1",
       "position": {
         "x": 700,
         "y": 450
@@ -8832,11 +8823,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/zombie/adult",
-        "torso": "armour/plate/male",
-        "legs": "hose/male",
-        "hair": "plain/adult",
-        "feet": "sandals/male"
+        "head": "heads/minotaur/male",
+        "torso": "clothes/sleeveless/sleeveless1/male",
+        "legs": "shorts/shorts/male",
+        "hair": "jewfro/adult",
+        "feet": "boots/rimmed/male"
       }
     },
     {
@@ -8847,8 +8838,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "triangle",
-      "color": "#f38181ff"
+      "shape": "rectangle",
+      "color": "#00b894ff"
     }
   ],
   "timeline": {
@@ -8857,7 +8848,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "mage1",
+        "entityId": "king1",
         "params": {
           "objectId": "scroll1"
         }
@@ -8872,10 +8863,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "give",
-        "entityId": "mage1",
+        "entityId": "king1",
         "params": {
           "objectId": "scroll1",
-          "targetId": "peasant1",
+          "targetId": "friend1",
           "reachDistance": 80
         }
       },
@@ -8889,7 +8880,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "dance",
-        "entityId": "peasant1",
+        "entityId": "friend1",
         "params": {
           "duration": 2000
         }
@@ -8899,27 +8890,27 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 90: knight wanders randomly and then speaks.
+## Example 90: villain wanders randomly and then speaks.
 ```json
 {
   "id": "scene_90",
-  "background": "desert",
+  "background": "city",
   "entities": [
     {
-      "id": "knight1",
+      "id": "villain1",
       "position": {
-        "x": 526,
-        "y": 311
+        "x": 674,
+        "y": 395
       },
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/male",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/female",
-        "legs": "formal/thin",
-        "hair": "messy1/adult",
-        "feet": "boots/revised/thin",
-        "shield": "heater/revised/pattern/chevron"
+        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female",
+        "legs": "pants2/thin",
+        "hair": "afro/adult",
+        "feet": "shoes/revised/thin",
+        "shield": "heater/revised/trim"
       }
     }
   ],
@@ -8929,7 +8920,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "wander",
-        "entityId": "knight1",
+        "entityId": "villain1",
         "params": {
           "area": {
             "x": 400,
@@ -8950,15 +8941,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "faceDirection",
-        "entityId": "knight1",
+        "entityId": "villain1",
         "params": {
-          "direction": "RIGHT"
+          "direction": "UP"
         }
       },
       {
         "type": "action",
         "name": "speak",
-        "entityId": "knight1",
+        "entityId": "villain1",
         "params": {
           "text": "I'm lost.",
           "duration": 1500
@@ -8969,7 +8960,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 91: hunter chases villain across the area.
+## Example 91: guard chases villain across the area.
 ```json
 {
   "id": "scene_91",
@@ -8977,7 +8968,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "beach",
   "entities": [
     {
-      "id": "hunter1",
+      "id": "guard1",
       "position": {
         "x": 200,
         "y": 420
@@ -8986,9 +8977,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_scoop/male",
-        "hair": "twists_straight/adult",
-        "facial": "glasses/halfmoon/adult"
+        "torso": "clothes/longsleeve/longsleeve2/male",
+        "hair": "mop/adult",
+        "facial": "patches/eyepatch/ambi/adult"
       }
     },
     {
@@ -9000,10 +8991,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/alien/adult",
-        "torso": "clothes/shortsleeve/tshirt/female",
-        "legs": "pantaloons/thin",
-        "hair": "longhawk/adult"
+        "head": "heads/sheep/adult",
+        "torso": "clothes/longsleeve/longsleeve/female",
+        "legs": "pants/thin",
+        "hair": "pigtails/adult"
       }
     }
   ],
@@ -9013,7 +9004,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "hunter1",
+        "entityId": "guard1",
         "params": {
           "text": "Stop right there!",
           "duration": 1500
@@ -9022,7 +9013,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "follow",
-        "entityId": "hunter1",
+        "entityId": "guard1",
         "params": {
           "targetId": "villain1",
           "duration": 2000,
@@ -9034,7 +9025,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "flee",
         "entityId": "villain1",
         "params": {
-          "targetId": "hunter1",
+          "targetId": "guard1",
           "duration": 2500,
           "speed": 2
         }
@@ -9049,7 +9040,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "hunter1",
+        "entityId": "guard1",
         "params": {
           "emote": "angry",
           "duration": 1500
@@ -9060,12 +9051,12 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 92: hero and villain engage in a dramatic duel.
+## Example 92: hero and troll engage in a dramatic duel.
 ```json
 {
   "id": "scene_92",
   "soundtrack": "battle",
-  "background": "forest",
+  "background": "desert",
   "entities": [
     {
       "id": "hero1",
@@ -9077,14 +9068,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "armour/legion/female",
-        "legs": "cuffed/thin",
-        "hat": "helmet/horned/adult",
-        "neck": "tie/necktie/male"
+        "torso": "clothes/longsleeve/longsleeve2_buttoned/female",
+        "legs": "pantaloons/thin",
+        "hat": "formal/bowler/adult",
+        "neck": "tie/bowtie/adult"
       }
     },
     {
-      "id": "villain1",
+      "id": "troll1",
       "position": {
         "x": 700,
         "y": 400
@@ -9093,11 +9084,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2/male",
-        "legs": "formal/male",
-        "hair": "buzzcut/adult",
-        "hat": "helmet/horned/adult",
-        "shield": "heater/original/wood"
+        "torso": "clothes/longsleeve/longsleeve2_vneck/male",
+        "legs": "cuffed/male",
+        "hair": "bedhead/adult",
+        "hat": "holiday/christmas/adult",
+        "shield": "heater/original/trim"
       }
     }
   ],
@@ -9121,7 +9112,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "villain1",
+            "entityId": "troll1",
             "params": {
               "destination": {
                 "x": 550,
@@ -9136,7 +9127,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
         "name": "attack",
         "entityId": "hero1",
         "params": {
-          "targetId": "villain1",
+          "targetId": "troll1",
           "weapon": "punch"
         }
       },
@@ -9150,7 +9141,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "villain1",
+        "entityId": "troll1",
         "params": {
           "targetId": "hero1",
           "weapon": "punch"
@@ -9174,7 +9165,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "villain1",
+            "entityId": "troll1",
             "params": {
               "direction": {
                 "x": 1,
@@ -9200,7 +9191,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "villain1",
+            "entityId": "troll1",
             "params": {
               "emote": "angry",
               "duration": 1500
@@ -9213,7 +9204,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 93: mage, rogue, and guard have a dance party.
+## Example 93: knight, rogue, and peasant have a dance party.
 ```json
 {
   "id": "scene_93",
@@ -9221,7 +9212,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "park",
   "entities": [
     {
-      "id": "mage1",
+      "id": "knight1",
       "position": {
         "x": 300,
         "y": 450
@@ -9230,9 +9221,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "armour/plate/male",
-        "legs": "cuffed/male",
-        "weapon": "magic/wand/female"
+        "torso": "clothes/longsleeve/longsleeve2/male",
+        "legs": "pants/male",
+        "weapon": "magic/wand/male"
       }
     },
     {
@@ -9245,15 +9236,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/female",
-        "hair": "balding/adult",
-        "feet": "boots/revised/thin",
-        "hat": "helmet/barbuta/male",
-        "shield": "heater/revised/wood"
+        "torso": "clothes/shortsleeve/shortsleeve/female",
+        "hair": "jewfro/adult",
+        "feet": "boots/basic/thin",
+        "hat": "pirate/bicorne/athwart/basic/adult",
+        "shield": "heater/original/trim"
       }
     },
     {
-      "id": "guard1",
+      "id": "peasant1",
       "position": {
         "x": 700,
         "y": 450
@@ -9261,11 +9252,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/orc/child",
-        "torso": "clothes/shortsleeve/shortsleeve_polo/female",
-        "hair": "pigtails/adult",
-        "feet": "shoes/basic/thin",
-        "facial": "glasses/secretary/adult"
+        "head": "heads/orc/male",
+        "torso": "clothes/sleeveless/sleeveless1/female",
+        "hair": "cornrows/adult",
+        "feet": "shoes/revised/thin",
+        "facial": "glasses/nerd/adult"
       }
     }
   ],
@@ -9278,7 +9269,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "speak",
-            "entityId": "mage1",
+            "entityId": "knight1",
             "params": {
               "text": "Let's dance!",
               "duration": 1500
@@ -9308,7 +9299,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "mage1",
+            "entityId": "knight1",
             "params": {
               "duration": 3000
             }
@@ -9324,7 +9315,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "dance",
-            "entityId": "guard1",
+            "entityId": "peasant1",
             "params": {
               "duration": 3000
             }
@@ -9336,14 +9327,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 94: thief sneaks up and steals a coin from mage.
+## Example 94: rogue sneaks up and steals a gem from mage.
 ```json
 {
   "id": "scene_94",
-  "background": "park",
+  "background": "city",
   "entities": [
     {
-      "id": "thief1",
+      "id": "rogue1",
       "position": {
         "x": 800,
         "y": 430
@@ -9352,11 +9343,11 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/longsleeve/longsleeve2_polo/female",
-        "legs": "pants/thin",
-        "hair": "curly_short/adult",
-        "feet": "sandals/thin",
-        "facial": "glasses/nerd/adult"
+        "torso": "clothes/shortsleeve/shortsleeve/female",
+        "legs": "fur/thin",
+        "hair": "curly_long/adult",
+        "feet": "boots/fold/thin",
+        "facial": "patches/eyepatch/ambi/adult"
       }
     },
     {
@@ -9369,20 +9360,20 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/scoop/male",
-        "legs": "cuffed/male"
+        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
+        "legs": "formal_striped/male"
       }
     },
     {
-      "id": "coin1",
+      "id": "gem1",
       "position": {
         "x": 380,
         "y": 450
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "triangle",
-      "color": "#c4e538ff"
+      "shape": "circle",
+      "color": "#023e8aff"
     }
   ],
   "timeline": {
@@ -9391,7 +9382,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crouch",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
           "duration": 800
         }
@@ -9399,7 +9390,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "crawl",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
           "destination": {
             "x": 420,
@@ -9410,9 +9401,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "grab",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
-          "objectId": "coin1",
+          "objectId": "gem1",
           "attachmentPoint": "hand"
         }
       },
@@ -9426,7 +9417,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "flee",
-        "entityId": "thief1",
+        "entityId": "rogue1",
         "params": {
           "targetId": "mage1",
           "duration": 2000,
@@ -9452,7 +9443,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 {
   "id": "scene_95",
   "soundtrack": "calm",
-  "background": "forest",
+  "background": "mountain",
   "entities": [
     {
       "id": "friend1",
@@ -9463,13 +9454,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/zombie/adult",
-        "torso": "aprons/overalls/male",
-        "legs": "pantaloons/male",
-        "hair": "swoop/adult",
-        "hat": "helmet/morion/adult",
+        "head": "heads/vampire/adult",
+        "torso": "clothes/sleeveless/sleeveless2_vneck/male",
+        "legs": "formal/male",
+        "hair": "lob/adult",
+        "hat": "helmet/greathelm/female",
         "beards": "mustache",
-        "shield": "heater/revised/paint"
+        "shield": "heater/revised/trim"
       }
     },
     {
@@ -9481,10 +9472,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/vampire/adult",
-        "torso": "clothes/longsleeve/longsleeve2/male",
-        "legs": "cuffed/male",
-        "feet": "shoes/basic/male"
+        "head": "heads/alien/adult",
+        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
+        "legs": "fur/male",
+        "feet": "slippers/male"
       }
     },
     {
@@ -9496,9 +9487,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/male",
-        "head": "heads/orc/male",
-        "torso": "clothes/longsleeve/longsleeve2_cardigan/male",
-        "hair": "long_messy/adult",
+        "head": "heads/orc/child",
+        "torso": "clothes/shortsleeve/shortsleeve_polo/male",
+        "hair": "parted/adult",
         "weapon": "magic/wand/male"
       }
     }
@@ -9588,7 +9579,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 96: scout and friend race to the finish line.
+## Example 96: rogue and mage race to the finish line.
 ```json
 {
   "id": "scene_96",
@@ -9596,7 +9587,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "park",
   "entities": [
     {
-      "id": "scout1",
+      "id": "rogue1",
       "position": {
         "x": 150,
         "y": 380
@@ -9604,14 +9595,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 2,
       "appearance": {
         "body": "bodies/female",
-        "head": "heads/rabbit/adult",
-        "torso": "clothes/longsleeve/longsleeve2/female",
-        "legs": "shorts/shorts/thin",
-        "feet": "boots/rimmed/thin"
+        "head": "heads/vampire/adult",
+        "torso": "clothes/sleeveless/sleeveless1/female",
+        "legs": "leggings/thin",
+        "feet": "shoes/ghillies/thin"
       }
     },
     {
-      "id": "friend1",
+      "id": "mage1",
       "position": {
         "x": 150,
         "y": 460
@@ -9620,8 +9611,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/human/female",
-        "torso": "clothes/shortsleeve/shortsleeve_cardigan/female",
-        "legs": "cuffed/thin"
+        "torso": "clothes/sleeveless/sleeveless2_vneck/female",
+        "legs": "shorts/short_shorts/thin"
       }
     }
   ],
@@ -9631,7 +9622,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "scout1",
+        "entityId": "rogue1",
         "params": {
           "text": "Ready... Go!",
           "duration": 1200
@@ -9650,7 +9641,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "scout1",
+            "entityId": "rogue1",
             "params": {
               "destination": {
                 "x": 850,
@@ -9662,7 +9653,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "move",
-            "entityId": "friend1",
+            "entityId": "mage1",
             "params": {
               "destination": {
                 "x": 850,
@@ -9676,7 +9667,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "emote",
-        "entityId": "scout1",
+        "entityId": "rogue1",
         "params": {
           "emote": "laugh",
           "duration": 1500
@@ -9685,7 +9676,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "friend1",
+        "entityId": "mage1",
         "params": {
           "text": "I'll win next time!",
           "duration": 1500
@@ -9712,14 +9703,14 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2/male",
-        "legs": "hose/male",
-        "hair": "unkempt/adult",
-        "feet": "shoes/revised/male",
+        "torso": "armour/plate/male",
+        "legs": "fur/male",
+        "hair": "bedhead/adult",
+        "feet": "shoes/basic/male",
         "hat": "helmet/horned/adult",
-        "facial": "glasses/halfmoon/adult",
+        "facial": "glasses/sunglasses/adult",
         "weapon": "magic/wand/female",
-        "shield": "heater/original/trim"
+        "shield": "heater/revised/pattern/chevron"
       }
     },
     {
@@ -9731,7 +9722,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "scale": 0.4,
       "isObject": true,
       "shape": "circle",
-      "color": "#fd79a8ff"
+      "color": "#023e8aff"
     },
     {
       "id": "ball_b",
@@ -9741,8 +9732,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.4,
       "isObject": true,
-      "shape": "rectangle",
-      "color": "#d62828ff"
+      "shape": "triangle",
+      "color": "#ffe66dff"
     }
   ],
   "timeline": {
@@ -9813,7 +9804,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 98: orc ambushes hero from behind.
+## Example 98: goblin ambushes guard from behind.
 ```json
 {
   "id": "scene_98",
@@ -9821,7 +9812,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "forest",
   "entities": [
     {
-      "id": "orc1",
+      "id": "goblin1",
       "position": {
         "x": 800,
         "y": 400
@@ -9830,13 +9821,13 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/child",
-        "torso": "armour/plate/female",
-        "legs": "pantaloons/thin",
+        "torso": "clothes/shortsleeve/tshirt/female",
+        "legs": "formal_striped/thin",
         "feet": "boots/rimmed/thin"
       }
     },
     {
-      "id": "hero1",
+      "id": "guard1",
       "position": {
         "x": 400,
         "y": 400
@@ -9845,10 +9836,10 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/sleeveless/sleeveless2_buttoned/male",
-        "legs": "leggings2/male",
-        "hair": "long_messy/adult",
-        "feet": "boots/basic/male"
+        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
+        "legs": "shorts/short_shorts/male",
+        "hair": "plain/adult",
+        "feet": "boots/rimmed/male"
       }
     }
   ],
@@ -9858,7 +9849,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "faceDirection",
-        "entityId": "hero1",
+        "entityId": "guard1",
         "params": {
           "direction": "LEFT"
         }
@@ -9866,7 +9857,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "move",
-        "entityId": "orc1",
+        "entityId": "goblin1",
         "params": {
           "destination": {
             "x": 470,
@@ -9877,9 +9868,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "attack",
-        "entityId": "orc1",
+        "entityId": "goblin1",
         "params": {
-          "targetId": "hero1",
+          "targetId": "guard1",
           "weapon": "punch"
         }
       },
@@ -9889,7 +9880,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "knockBack",
-            "entityId": "hero1",
+            "entityId": "guard1",
             "params": {
               "direction": {
                 "x": -1,
@@ -9901,7 +9892,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "hero1",
+            "entityId": "guard1",
             "params": {
               "emote": "surprise",
               "duration": 1500
@@ -9912,7 +9903,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "orc1",
+        "entityId": "goblin1",
         "params": {
           "text": "Surprise!",
           "duration": 1200
@@ -9928,7 +9919,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 {
   "id": "scene_99",
   "soundtrack": "calm",
-  "background": "desert",
+  "background": "mountain",
   "entities": [
     {
       "id": "guard1",
@@ -9940,9 +9931,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/shortsleeve/tshirt_buttoned/male",
-        "legs": "pantaloons/male",
-        "hair": "long_messy/adult"
+        "torso": "aprons/suspenders/male",
+        "legs": "pants2/male",
+        "hair": "spiked/adult"
       }
     },
     {
@@ -9955,9 +9946,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/orc/child",
-        "torso": "clothes/shortsleeve/tshirt_vneck/female",
-        "hair": "lob/adult",
-        "feet": "shoes/revised/thin"
+        "torso": "clothes/shortsleeve/tshirt_scoop/female",
+        "hair": "longhawk/adult",
+        "feet": "shoes/ghillies/thin"
       }
     }
   ],
@@ -10029,7 +10020,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
 }
 ```
 
-## Example 100: mage and friend rest around a campfire.
+## Example 100: hero and rogue rest around a campfire.
 ```json
 {
   "id": "scene_100",
@@ -10037,7 +10028,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
   "background": "forest",
   "entities": [
     {
-      "id": "mage1",
+      "id": "hero1",
       "position": {
         "x": 380,
         "y": 450
@@ -10046,15 +10037,15 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/female",
         "head": "heads/wolf/male",
-        "torso": "aprons/suspenders/female",
+        "torso": "clothes/sleeveless/sleeveless1/female",
         "legs": "formal_striped/thin",
-        "hat": "cloth/bandana2/adult",
+        "hat": "helmet/kettle/adult",
         "weapon": "magic/wand/female",
-        "shield": "heater/original/pattern/cross"
+        "shield": "heater/revised/pattern/cross"
       }
     },
     {
-      "id": "friend1",
+      "id": "rogue1",
       "position": {
         "x": 620,
         "y": 450
@@ -10063,9 +10054,9 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       "appearance": {
         "body": "bodies/male",
         "head": "heads/human/male",
-        "torso": "clothes/longsleeve/longsleeve/male",
-        "legs": "formal/male",
-        "feet": "shoes/ghillies/male",
+        "torso": "clothes/longsleeve/longsleeve2/male",
+        "legs": "leggings2/male",
+        "feet": "sandals/male",
         "neck": "tie/bowtie/adult"
       }
     },
@@ -10077,8 +10068,8 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       },
       "scale": 0.6,
       "isObject": true,
-      "shape": "heart",
-      "color": "#c4e538ff"
+      "shape": "star",
+      "color": "#00b894ff"
     }
   ],
   "timeline": {
@@ -10090,17 +10081,17 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "turnTowards",
-            "entityId": "mage1",
+            "entityId": "hero1",
             "params": {
-              "targetId": "friend1"
+              "targetId": "rogue1"
             }
           },
           {
             "type": "action",
             "name": "turnTowards",
-            "entityId": "friend1",
+            "entityId": "rogue1",
             "params": {
-              "targetId": "mage1"
+              "targetId": "hero1"
             }
           }
         ]
@@ -10108,7 +10099,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "mage1",
+        "entityId": "hero1",
         "params": {
           "text": "Long day, huh?",
           "duration": 2000
@@ -10124,7 +10115,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
       {
         "type": "action",
         "name": "speak",
-        "entityId": "friend1",
+        "entityId": "rogue1",
         "params": {
           "text": "Yeah, let's rest here.",
           "duration": 2000
@@ -10136,7 +10127,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "mage1",
+            "entityId": "hero1",
             "params": {
               "emote": "zzz",
               "duration": 2500
@@ -10145,7 +10136,7 @@ When generating scenes, structure the JSON as shown in the examples. Note the us
           {
             "type": "action",
             "name": "emote",
-            "entityId": "friend1",
+            "entityId": "rogue1",
             "params": {
               "emote": "zzz",
               "duration": 2500

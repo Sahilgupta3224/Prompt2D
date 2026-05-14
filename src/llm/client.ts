@@ -40,11 +40,17 @@ async function callBackend(prompt: string): Promise<SceneDefinition> {
     }
 
     const data = await response.json();
-    const validated = SceneDefSchema.safeParse(data);
+    if (data.error && data.raw_scene !== undefined) {
+        throw new Error(`validation error: ${data.error}`);
+    }
 
+    const validated = SceneDefSchema.safeParse(data);
+    console.log("[Client] Raw scene data:", data);
     if (!validated.success) {
-        console.error("❌ Scene validation failed:", validated.error.format());
-        throw new Error("Invalid SceneDefinition received from backend");
+        validated.error.issues.forEach((issue, i) => {
+            console.error(`  [${i + 1}] path: ${issue.path.join(".")} | ${issue.message}`);
+        });
+        throw new Error("invalid scenedefinition");
     }
 
     return validated.data;
@@ -96,7 +102,7 @@ export async function generateScene(
             return response as LLMResult;
         }
     } catch (e) {
-        console.error("[Client] Unexpected failure:", e);
+        console.error("[Client] Error:", e);
     }
 
     return {

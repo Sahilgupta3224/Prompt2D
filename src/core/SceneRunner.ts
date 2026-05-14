@@ -92,7 +92,7 @@ export class SceneRunner {
     }
 
     startAudio(): void {
-        // console.log("music started")
+        if (!this.soundtrackManager) return;
         this.soundtrackManager.play(this.chosenTrack);
     }
 
